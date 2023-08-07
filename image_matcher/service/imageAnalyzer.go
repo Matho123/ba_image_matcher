@@ -32,7 +32,6 @@ func (ORB ORBImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.
 
 func extractKeypointsAndDescriptors(imageMatPointer gocv.Mat, imageAnalyzer ImageAnalyzer) ([]gocv.KeyPoint, []byte) {
 	keypoints, descriptorMatPointer := imageAnalyzer.analyzeImage(imageMatPointer)
-	gocv.IMWrite("test/images/test.png", descriptorMatPointer)
 	defer imageMatPointer.Close()
 
 	descriptorByteArray := convertImageMatToByteArray(descriptorMatPointer)

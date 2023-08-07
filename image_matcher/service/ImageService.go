@@ -72,7 +72,6 @@ func MatchAgainstDatabase(rawQueryImage RawImage, analyzer string, matcher strin
 		_, queryImageDescriptor := imageAnalyzer.analyzeImage(rawQueryImage.Data)
 		for _, databaseImage := range databaseImages {
 			databaseImageDescriptor := convertByteArrayToMat(databaseImage.descriptorData)
-			gocv.IMWrite("test/images/querydesc.png", databaseImageDescriptor)
 			matches := imageMatcher.findMatches(queryImageDescriptor, databaseImageDescriptor)
 
 			isMatch, _ := determineSimilarity(matches)
@@ -105,8 +104,6 @@ func AnalyzeAndMatchTwoImages(
 	keypoints2, imageDescriptors2 := imageAnalyzer.analyzeImage(image2.Data)
 
 	matches := imageMatcher.findMatches(imageDescriptors1, imageDescriptors2)
-	gocv.IMWrite("test/images/descriptor1.png", imageDescriptors1)
-	gocv.IMWrite("test/images/descriptor2.png", imageDescriptors2)
 
 	imagesAreMatch, bestMatches := determineSimilarity(matches)
 
@@ -165,5 +162,4 @@ func drawMatches(
 		[]byte{},
 		gocv.DrawMatchesFlag(0),
 	)
-	gocv.IMWrite("test/images/matches.png", outImage)
 }
