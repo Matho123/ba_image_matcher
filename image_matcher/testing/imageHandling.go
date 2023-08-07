@@ -58,12 +58,12 @@ func loadImage(filePath string) *service.RawImage {
 	if !isAllowedImageFile(filePath) {
 		return nil
 	}
-	image := gocv.IMRead(filePath, 0)
+	image := gocv.IMRead(filePath, gocv.IMReadGrayScale)
 
 	if image.Empty() {
 		return nil
 	}
-	log.Println("successfully loaded: " + filePath)
+	log.Println("successfully loaded: ", filePath)
 	return &service.RawImage{ExternalReference: filePath, Data: image}
 }
 

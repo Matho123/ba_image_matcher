@@ -33,7 +33,7 @@ func AnalyzeAndSave(rawImages []*RawImage, analyzer string) error {
 	defer databaseConnection.Close()
 
 	for _, rawImage := range rawImages {
-		_, descriptor := extractKeypointsAndDescriptors(rawImage.Data, imageAnalyzer)
+		_, descriptor := extractKeypointsAndDescriptors(&rawImage.Data, imageAnalyzer)
 
 		processedImage := ProcessedImage{externalReference: rawImage.ExternalReference, descriptorData: descriptor}
 
@@ -69,7 +69,7 @@ func MatchAgainstDatabase(rawQueryImage RawImage, analyzer string, matcher strin
 			return "", err
 		}
 
-		_, queryImageDescriptor := imageAnalyzer.analyzeImage(rawQueryImage.Data)
+		_, queryImageDescriptor := imageAnalyzer.analyzeImage(&rawQueryImage.Data)
 		for _, databaseImage := range databaseImages {
 			databaseImageDescriptor := convertByteArrayToMat(databaseImage.descriptorData)
 			matches := imageMatcher.findMatches(queryImageDescriptor, databaseImageDescriptor)
@@ -100,8 +100,8 @@ func AnalyzeAndMatchTwoImages(
 		return false, err
 	}
 
-	keypoints1, imageDescriptors1 := imageAnalyzer.analyzeImage(image1.Data)
-	keypoints2, imageDescriptors2 := imageAnalyzer.analyzeImage(image2.Data)
+	keypoints1, imageDescriptors1 := imageAnalyzer.analyzeImage(&image1.Data)
+	keypoints2, imageDescriptors2 := imageAnalyzer.analyzeImage(&image2.Data)
 
 	matches := imageMatcher.findMatches(imageDescriptors1, imageDescriptors2)
 
@@ -162,4 +162,5 @@ func drawMatches(
 		[]byte{},
 		gocv.DrawMatchesFlag(0),
 	)
+	gocv.IMWrite("debug/matches.png", outImage)
 }

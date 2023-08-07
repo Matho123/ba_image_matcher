@@ -29,6 +29,9 @@ func (BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2
 	defer convertedDescriptor1.Close()
 	defer convertedDescriptor2.Close()
 
+	gocv.IMWrite("debug/descriptor1.png", convertedDescriptor1)
+	gocv.IMWrite("debug/descriptor2.png", convertedDescriptor2)
+
 	//TODO: Maybe sort matches by distance?
 	return bruteForceMatcher.KnnMatch(convertedDescriptor1, convertedDescriptor2, 2)
 }
@@ -45,11 +48,9 @@ func (FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv
 
 func convertImageDescriptors(descriptor1 gocv.Mat, descriptor2 gocv.Mat) (gocv.Mat, gocv.Mat) {
 	convertedDescriptor1 := gocv.NewMat()
-	defer convertedDescriptor1.Close()
 	descriptor1.ConvertTo(&convertedDescriptor1, gocv.MatTypeCV32F)
 
 	convertedDescriptor2 := gocv.NewMat()
-	defer convertedDescriptor2.Close()
 	descriptor2.ConvertTo(&convertedDescriptor2, gocv.MatTypeCV32F)
 
 	return convertedDescriptor1, convertedDescriptor2
