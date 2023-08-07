@@ -3,8 +3,9 @@ package service
 import "gocv.io/x/gocv"
 
 var imageAnalyzerMapping = map[string]ImageAnalyzer{
-	"orb":  ORBImageAnalyzer{},
-	"sift": SiftImageAnalyzer{},
+	"orb":   ORBImageAnalyzer{},
+	"sift":  SiftImageAnalyzer{},
+	"akaze": AKAZEImageAnalyzer{},
 }
 
 type ImageAnalyzer interface {
@@ -13,21 +14,30 @@ type ImageAnalyzer interface {
 
 type SiftImageAnalyzer struct{}
 
-func (SIFT SiftImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+func (SiftImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
 	sift := gocv.NewSIFT()
 	defer sift.Close()
 
 	//TODO: different Image for mask and original image in color
-	return sift.DetectAndCompute(image, image)
+	return sift.DetectAndCompute(image, gocv.NewMat())
 }
 
 type ORBImageAnalyzer struct{}
 
-func (ORB ORBImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+func (ORBImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
 	orb := gocv.NewORB()
 	defer orb.Close()
 
-	return orb.DetectAndCompute(image, image)
+	return orb.DetectAndCompute(image, gocv.NewMat())
+}
+
+type AKAZEImageAnalyzer struct{}
+
+func (AKAZEImageAnalyzer) analyzeImage(image gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+	akaze := gocv.NewAKAZE()
+	defer akaze.Close()
+
+	return akaze.DetectAndCompute(image, gocv.NewMat())
 }
 
 func extractKeypointsAndDescriptors(imageMatPointer gocv.Mat, imageAnalyzer ImageAnalyzer) ([]gocv.KeyPoint, []byte) {
