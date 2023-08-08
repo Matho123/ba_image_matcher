@@ -21,19 +21,12 @@ type ImageMatcher interface {
 type BruteForceMatcher struct{}
 
 func (BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
-	//TODO: fix this
-	bruteForceMatcher := gocv.NewBFMatcherWithParams(gocv.NormHamming, true)
+	bruteForceMatcher := gocv.NewBFMatcher()
 	defer bruteForceMatcher.Close()
 
-	convertedDescriptor1, convertedDescriptor2 := convertImageDescriptors(imageDescriptor1, imageDescriptor2)
-	defer convertedDescriptor1.Close()
-	defer convertedDescriptor2.Close()
+	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
 
-	gocv.IMWrite("debug/descriptor1.png", convertedDescriptor1)
-	gocv.IMWrite("debug/descriptor2.png", convertedDescriptor2)
-
-	//TODO: Maybe sort matches by distance?
-	return bruteForceMatcher.KnnMatch(convertedDescriptor1, convertedDescriptor2, 2)
+	return bruteForceMatcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
 type FLANNMatcher struct{}
@@ -42,18 +35,19 @@ func (FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv
 	flannBasedMatcher := gocv.NewFlannBasedMatcher()
 	defer flannBasedMatcher.Close()
 
-	//TODO: Maybe sort matches by distance?
+	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
+
 	return flannBasedMatcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
-func convertImageDescriptors(descriptor1 gocv.Mat, descriptor2 gocv.Mat) (gocv.Mat, gocv.Mat) {
-	convertedDescriptor1 := gocv.NewMat()
-	descriptor1.ConvertTo(&convertedDescriptor1, gocv.MatTypeCV32F)
-
-	convertedDescriptor2 := gocv.NewMat()
-	descriptor2.ConvertTo(&convertedDescriptor2, gocv.MatTypeCV32F)
-
-	return convertedDescriptor1, convertedDescriptor2
+func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalType gocv.MatType) (*gocv.Mat, *gocv.Mat) {
+	if descriptor1.Type() != goalType {
+		descriptor1.ConvertTo(descriptor1, gocv.MatTypeCV32F)
+	}
+	if descriptor2.Type() != goalType {
+		descriptor2.ConvertTo(descriptor2, gocv.MatTypeCV32F)
+	}
+	return descriptor1, descriptor2
 }
 
 func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
@@ -78,8 +72,9 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 	averageDistance := distanceSum / float64(len(goodMatches))
 	similarityScore := 1.0 - averageDistance
 
-	log.Println("distanceSum: ", distanceSum)
-	log.Println("good matches: ", float64(len(goodMatches)))
+	//log.Println("distanceSum: ", distanceSum)
+	//log.Println("good matches: ", float64(len(goodMatches)))
 	log.Println("similarity score: ", similarityScore)
+
 	return similarityScore > SimilarityThreshold, goodMatches
 }
