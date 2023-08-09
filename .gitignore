@@ -1,3 +1,4 @@
 image_matcher/image_matcher
 image-matcher.iml
-images
+.idea
+/images/
