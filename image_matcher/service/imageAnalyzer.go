@@ -18,7 +18,6 @@ func (SiftImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Ma
 	sift := gocv.NewSIFT()
 	defer sift.Close()
 
-	//TODO: different Image for mask and original image in color
 	return sift.DetectAndCompute(*image, gocv.NewMat())
 }
 
