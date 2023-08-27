@@ -1,14 +1,17 @@
 package service
 
-import "gocv.io/x/gocv"
+import (
+	"gocv.io/x/gocv"
+	"image"
+)
 
-var imageAnalyzerMapping = map[string]ImageAnalyzer{
+var imageAnalyzerMapping = map[string]FeatureImageAnalyzer{
 	"orb":   ORBImageAnalyzer{},
 	"sift":  SiftImageAnalyzer{},
 	"akaze": AKAZEImageAnalyzer{},
 }
 
-type ImageAnalyzer interface {
+type FeatureImageAnalyzer interface {
 	analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat)
 }
 
@@ -39,7 +42,13 @@ func (AKAZEImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.M
 	return akaze.DetectAndCompute(*image, gocv.NewMat())
 }
 
-func extractKeypointsAndDescriptors(imageMatPointer *gocv.Mat, imageAnalyzer ImageAnalyzer) ([]gocv.KeyPoint, []byte) {
+type PHash struct{}
+
+func (PHash) getHash(image image.Image) uint64 {
+	return calculateHash(image)
+}
+
+func extractKeypointsAndDescriptors(imageMatPointer *gocv.Mat, imageAnalyzer FeatureImageAnalyzer) ([]gocv.KeyPoint, []byte) {
 	keypoints, descriptorMatPointer := imageAnalyzer.analyzeImage(imageMatPointer)
 	defer imageMatPointer.Close()
 

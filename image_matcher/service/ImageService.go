@@ -114,7 +114,7 @@ func AnalyzeAndMatchTwoImages(
 	return imagesAreMatch, nil
 }
 
-func getAnalyzerAndMatcher(analyzer, matcher string) (ImageAnalyzer, ImageMatcher, error) {
+func getAnalyzerAndMatcher(analyzer, matcher string) (FeatureImageAnalyzer, ImageMatcher, error) {
 	imageAnalyzer := imageAnalyzerMapping[analyzer]
 	imageMatcher := imageMatcherMapping[matcher]
 
