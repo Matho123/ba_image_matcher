@@ -6,8 +6,7 @@ import (
 )
 
 // TODO: needs to be tested
-const MatchDistanceRatioThreshold = 0.7
-const SimilarityThreshold = 0.8
+const SimilarityThreshold = 0.7
 
 var imageMatcherMapping = map[string]ImageMatcher{
 	"bfm":   BruteForceMatcher{},
@@ -50,31 +49,47 @@ func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalT
 	return descriptor1, descriptor2
 }
 
+// TODO: refine with testing
 func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
-	var goodMatches []gocv.DMatch
+	var filteredMatches []gocv.DMatch
+	var maxDist = 0.0
+	var minDist = 0.0
+
 	for _, matchPair := range matches {
-		bestMatch := matchPair[0]
+		firstBestMatch := matchPair[0]
 		secondBestMatch := matchPair[1]
 
-		//TODO: Watch out for x/0
-		ratio := bestMatch.Distance / secondBestMatch.Distance
-		if ratio < MatchDistanceRatioThreshold {
-			goodMatches = append(goodMatches, bestMatch)
+		firstBestMatchDistance := firstBestMatch.Distance
+		secondBestMatchDistance := secondBestMatch.Distance
+
+		if firstBestMatchDistance < 0.75*secondBestMatchDistance {
+			filteredMatches = append(filteredMatches, firstBestMatch)
+
+			if firstBestMatchDistance > maxDist {
+				maxDist = firstBestMatchDistance
+			}
+			if firstBestMatchDistance < minDist || minDist == 0 {
+				minDist = firstBestMatchDistance
+			}
 		}
 	}
 
-	var distanceSum = 0.0
-	for _, match := range goodMatches {
-		distanceSum += match.Distance
+	var normalizedDistanceSum = 0.0
+	for _, match := range filteredMatches {
+		if maxDist == 0 {
+			normalizedDistanceSum += 0
+		} else {
+			normalizedDistanceSum += (match.Distance - minDist) / (maxDist - minDist)
+		}
 	}
 
-	//TODO: refine
-	averageDistance := distanceSum / float64(len(goodMatches))
-	similarityScore := 1.0 - averageDistance
+	if len(filteredMatches) == 0 {
+		return false, nil
+	}
+	averageNormalizedDistance := normalizedDistanceSum / float64(len(filteredMatches))
+	similarityScore := 1.0 - averageNormalizedDistance
 
-	//log.Println("distanceSum: ", distanceSum)
-	//log.Println("good matches: ", float64(len(goodMatches)))
 	log.Println("similarity score: ", similarityScore)
 
-	return similarityScore > SimilarityThreshold, goodMatches
+	return similarityScore > SimilarityThreshold, filteredMatches
 }
