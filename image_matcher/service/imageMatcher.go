@@ -74,17 +74,16 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 		}
 	}
 
-	var normalizedDistanceSum = 0.0
-	for _, match := range filteredMatches {
-		if maxDist == 0 {
-			normalizedDistanceSum += 0
-		} else {
-			normalizedDistanceSum += (match.Distance - minDist) / (maxDist - minDist)
-		}
+	if len(filteredMatches) == 0 {
+		log.Println("no good matches found")
+		return false, nil
 	}
 
-	if len(filteredMatches) == 0 {
-		return false, nil
+	var normalizedDistanceSum = 0.0
+	if maxDist > 0 {
+		for _, match := range filteredMatches {
+			normalizedDistanceSum += (match.Distance - minDist) / (maxDist - minDist)
+		}
 	}
 	averageNormalizedDistance := normalizedDistanceSum / float64(len(filteredMatches))
 	similarityScore := 1.0 - averageNormalizedDistance
