@@ -8,6 +8,8 @@ import (
 // TODO: needs to be tested
 const SimilarityThreshold = 0.7
 
+const DistanceRatioThreshold = 0.8
+
 var imageMatcherMapping = map[string]ImageMatcher{
 	"bfm":   BruteForceMatcher{},
 	"flann": FLANNMatcher{},
@@ -55,6 +57,7 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 	var maxDist = 0.0
 	var minDist = 0.0
 
+	//ratio test according to D. Lowe
 	for _, matchPair := range matches {
 		firstBestMatch := matchPair[0]
 		secondBestMatch := matchPair[1]
@@ -62,7 +65,7 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 		firstBestMatchDistance := firstBestMatch.Distance
 		secondBestMatchDistance := secondBestMatch.Distance
 
-		if firstBestMatchDistance < 0.75*secondBestMatchDistance {
+		if firstBestMatchDistance < DistanceRatioThreshold*secondBestMatchDistance {
 			filteredMatches = append(filteredMatches, firstBestMatch)
 
 			if firstBestMatchDistance > maxDist {
@@ -79,6 +82,7 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 		return false, nil
 	}
 
+	//similarity score calculation
 	var normalizedDistanceSum = 0.0
 	if maxDist > 0 {
 		for _, match := range filteredMatches {
