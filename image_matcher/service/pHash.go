@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	"math/bits"
 	"sort"
 
 	"gonum.org/v1/gonum/dsp/fourier"
@@ -12,6 +13,8 @@ import (
 
 const DctWidth = 8
 const HighfreqFactor = 4
+
+const MaxHammingDistance = 4
 
 func calculateHash(image image.Image) uint64 {
 	imageSiteLength := DctWidth * HighfreqFactor
@@ -22,6 +25,11 @@ func calculateHash(image image.Image) uint64 {
 	median := calculateMedian(lowFrequencyMatrix)
 
 	return computeHash(lowFrequencyMatrix, median)
+}
+
+func determineHashSimilarity(hash1, hash2 uint64) (bool, int) {
+	hammingDistance := calculateHammingDistance(hash1, hash2)
+	return hammingDistance <= MaxHammingDistance, hammingDistance
 }
 
 func preprocessImage(img image.Image, width, height int) image.Image {
@@ -116,4 +124,8 @@ func computeHash(lowFreqDCT mat.Matrix, median float64) uint64 {
 		}
 	}
 	return hash
+}
+
+func calculateHammingDistance(hash1, hash2 uint64) int {
+	return bits.OnesCount64(hash1 ^ hash2)
 }
