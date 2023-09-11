@@ -1,0 +1,45 @@
+
+\input{Header/Header}
+
+
+\begin{document}
+
+%\include{Deckblatt/titel}						% Deckblatt der vorliegenden Arbeit
+% Die Daten werden in Header/Metadaten.tex eingstellt
+\include{Deckblatt/Deckblatt}
+
+\frontmatter												% Seitenzählerstart vor dem Text
+
+\include{Inhalt/Abstrakt}						% Abstrakt
+
+%% Empfehlung: Auf Danksagungen + Vorwort in wissenschaftlichen Arbeiten eher verzichten -- ggf. die entsprechenden Dateien im Ordner Inhalt anlegen und hier auskommentieren (PKW)
+%% \include{Inhalt/Danksagung}					% Danksagung
+%% \include{Inhalt/Vorwort}						% Vorwort
+
+\tableofcontents										% Inhaltsverzeichnis
+
+\mainmatter													% Seitenzählerstart Haupttext
+
+\include{Inhalt/Haupttext}					% hier steht der eigentliche Text der Arbeit
+
+\pagenumbering{Roman}
+\appendix	
+												
+\bibliography{Literatur/Literatur} 	% Literaturverzeichnis
+
+% Empfehlung: Verzeichnisse an das Ende der Arbeit (PKW)
+% Ein Glossar ist eher untypisch fuer Graduierungsarbeiten
+% Abkuerzungsverzeichnis an das Ende der Arbeit; Abkuerzungen und Begriffe muessen in jedem
+% Fall im Haupttext der Arbeit beim ersten Vorkommen definiert werden
+
+%% \printglossary[title=Glossar] 			% Glossar Einträge in Header/Glossar.tex vornehmen
+%%\printglossary[type=\acronymtype,title=Abk\"urzungsverzeichnis]	% Abkürzungsverzeichnis Einträge in Header/Abkuerzungen vornehmen
+
+\listoffigures											% Abbildungsverzeichnis
+\listoftables												% Tabellenverzeichnis
+
+
+\pagestyle{empty}
+\include{Inhalt/Selbstaendigkeitserklaerung}
+
+\end{document}
