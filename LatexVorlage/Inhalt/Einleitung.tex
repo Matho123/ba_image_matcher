@@ -1,0 +1,39 @@
+
+\chapter{Einleitung}
+\label{sec:Einleitung}
+
+\section{Motivation}
+\label{sec:Motivation}
+Bei Spreadshirt werden täglich tausende Designs hochgeladen. 
+Viele davon in der Partner-Area, wo Designer ihre Bilder zum Verkauf anbieten können. 
+Dabei muss seitens Spreadshirt sichergestellt werden, dass die hochgeladenen Designs nicht verfassungsfeindlich sind und auch nicht gegen das Urheberrecht oder Spreadshirts eigene Richtlinien verstoßen. 
+Die manuelle Überprüfung von so vielen Designs ist sehr aufwändig und häufig kommt es vor, dass die gleichen Designs mehrmals hochgeladen werden. 
+Eine automatische Sperrung, von bereits verbotenen Designs, die erneut hochgeladen werden, kann den Überprüfungsprozess entlasten.
+Daher ist ein System notwendig, dass bei neu hochgeladenen Designs Duplikate in der Datenbank der verbotenen Designs erkennen kann.
+
+\section{Aufgabenstellung}
+\label{sec:Aufgabenstellung}
+Ziel dieser Bachelorarbeit ist die Entwicklung eines Systems, dass in der Lage ist, bei neuen Bildern zu erkennen, ob diese bereits in einer Datenbank mit bereits gespeicherten Bildern auftauchen. 
+Ein neues Bild soll auch dann als Duplikat erkannt werden, wenn der Bildinhalt im Vergleich zum Original transformiert, also rotiert, skaliert, verschoben oder gespiegelt wurde. 
+Fälle in denen das Bild anders gefärbt ist oder als Teil eines größeren Bildes auftaucht, sollen ebenfalls berücksichtigt werden.
+
+Zur Implementierung des Systems soll ein "feature-based" (dt. merkmalbasierter) Algorithmus verwendet werden. 
+Es gibt eine Vielzahl an merkmalbasierten Algorithmen, die jeweils ihre eigenen Stärken und Schwächen haben. 
+Eine Auswahl dieser Algorithmen sollen innerhalb der Arbeit für den Anwendungsfall bei Spreadshirt getestet und miteinander verglichen werden.
+
+\section{Erfolgs- und Qualitätskriterien}
+\label{sec:ErfolgsUndQualitätskriterien}
+Die Güte des Bilderkennungssystems soll anhand von Testdatensätzen ermittelt werden. 
+Die Testdatensätze sind dabei in zwei Teilsätzen unterteilt. 
+Der erste Teilsatz an Bildern stellt die Menge an gespeicherten Datenbankbildern dar. 
+Der zweite Teilsatz enthält eine Untermenge an Duplikaten aus dem Datenbanksatz und eine Menge an neuen Bildern, die nicht im Datenbanksatz auftauchen. Getestet wird in verschiedenen Szenarien, die die Robustheit des Systems gegenüber bestimmter Sonderfälle testen soll. Je nach Szenario sind die Duplikate auf unterschiedliche Weise im Verglich zum Original verändert. Als Vergleich dient der pHash-Algorithmus, der momentan bei Spreadshirt zur Duplikatensuche verwendet wird.
+
+Die verwendeten Metriken werden in den Grundlagen erklärt.
+Am wichtigsten ist dabei ein hoher Recall, sodass möglichst viele Duplikate durch das System abgefangen werden. 
+Da automatisch gesperrte Designs nochmal manuell geprüft werden, fällt eine niedrigere Spezifizität bei der Auswertung nicht so sehr ins Gewicht. Laufzeit- und Speicherkosten sollen ebenfalls innerhalb der Arbeit abgeschätzt werden. 
+
+Um für die Verwendung bei Spreadshirt in Frage zu kommen, muss das neue System zuverlässiger sein, als die momentan eingesetzte pHash-Implementaion. 
+Dafür wird ein höherer Recall angestrebt. Um sicherzustellen, dass Spezifizität nicht zu sehr absinkt, wird auf eine höhere oder zumindest gleichbleibende Balancierte-Genauigkeit abgezielt.
+
+
+
