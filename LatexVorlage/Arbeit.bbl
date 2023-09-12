@@ -1,4 +1,28 @@
-\begin{thebibliography}{Tha20}
+\begin{thebibliography}{RRKB11}
+
+\bibitem[Low99]{sift1999}
+David~G Lowe.
+\newblock Object recognition from local scale-invariant features.
+\newblock In {\em Proceedings of the seventh IEEE international conference on
+  computer vision}, volume~2, pages 1150--1157. Ieee, 1999.
+
+\bibitem[Low04]{sift2004}
+David~G Lowe.
+\newblock Distinctive image features from scale-invariant keypoints.
+\newblock {\em International journal of computer vision}, 60:91--110, 2004.
+
+\bibitem[RD06]{fast2006}
+Edward Rosten and Tom Drummond.
+\newblock Machine learning for high-speed corner detection.
+\newblock In {\em Computer Vision--ECCV 2006: 9th European Conference on
+  Computer Vision, Graz, Austria, May 7-13, 2006. Proceedings, Part I 9}, pages
+  430--443. Springer, 2006.
+
+\bibitem[RRKB11]{orb2011}
+Ethan Rublee, Vincent Rabaud, Kurt Konolige, and Gary Bradski.
+\newblock Orb: An efficient alternative to sift or surf.
+\newblock In {\em 2011 International conference on computer vision}, pages
+  2564--2571. Ieee, 2011.
 
 \bibitem[Tha20]{classification}
 Alaa Tharwat.

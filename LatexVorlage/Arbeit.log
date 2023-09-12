@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  11 SEP 2023 17:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  12 SEP 2023 16:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -408,6 +408,13 @@ Package: longtable 2021-09-01 v4.17 Multi-page Table package (DPC)
 )
 Class scrbook Info: longtable captions redefined on input line 35.
 
+(/usr/share/texlive/texmf-dist/tex/latex/multirow/multirow.sty
+Package: multirow 2021/03/15 v2.8 Span multiple rows of a table
+\multirow@colwidth=\skip75
+\multirow@cntb=\count298
+\multirow@dima=\skip76
+\bigstrutjot=\dimen170
+)
 (/usr/share/texlive/texmf-dist/tex/latex/pstricks/pstricks.sty
 Package: pstricks 2021/08/23 v0.71 LaTeX wrapper for `PSTricks' (RN,HV)
 
@@ -440,26 +447,26 @@ Package: xkeyval 2020/11/20 v2.8 package option processing (HA)
 \XKV@toks=\toks29
 \XKV@tempa@toks=\toks30
 )
-\XKV@depth=\count298
+\XKV@depth=\count299
 File: xkeyval.tex 2014/12/03 v2.7a key=value parser (HA)
 )))
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pst-fp.tex
 `pst-fp' v0.06, 2020/11/20 (hv)
-\pstFP@xs=\count299
-\pstFP@xia=\count300
-\pstFP@xib=\count301
-\pstFP@xfa=\count302
-\pstFP@xfb=\count303
-\pstFP@rega=\count304
-\pstFP@regb=\count305
-\pstFP@regs=\count306
-\pstFP@times=\count307
+\pstFP@xs=\count300
+\pstFP@xia=\count301
+\pstFP@xib=\count302
+\pstFP@xfa=\count303
+\pstFP@xfb=\count304
+\pstFP@rega=\count305
+\pstFP@regb=\count306
+\pstFP@regs=\count307
+\pstFP@times=\count308
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common.tex
 \pgfutil@everybye=\toks31
-\pgfutil@tempdima=\dimen170
-\pgfutil@tempdimb=\dimen171
+\pgfutil@tempdima=\dimen171
+\pgfutil@tempdimb=\dimen172
 
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfutil-common-lists.t
 ex)) (/usr/share/texlive/texmf-dist/tex/generic/pgf/utilities/pgfkeys.code.tex
@@ -474,24 +481,24 @@ Loading pgffor.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmath.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathcalc.code.tex
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathutil.code.tex
-\pgf@x=\dimen172
-\pgf@xa=\dimen173
-\pgf@xb=\dimen174
-\pgf@xc=\dimen175
-\pgf@y=\dimen176
-\pgf@ya=\dimen177
-\pgf@yb=\dimen178
-\pgf@yc=\dimen179
-\c@pgf@counta=\count308
-\c@pgf@countb=\count309
-\c@pgf@countc=\count310
-\c@pgf@countd=\count311
-\pgfutil@tempcnta=\count312
-\pgfutil@tempcntb=\count313
+\pgf@x=\dimen173
+\pgf@xa=\dimen174
+\pgf@xb=\dimen175
+\pgf@xc=\dimen176
+\pgf@y=\dimen177
+\pgf@ya=\dimen178
+\pgf@yb=\dimen179
+\pgf@yc=\dimen180
+\c@pgf@counta=\count309
+\c@pgf@countb=\count310
+\c@pgf@countc=\count311
+\c@pgf@countd=\count312
+\pgfutil@tempcnta=\count313
+\pgfutil@tempcntb=\count314
 )
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathparser.code.tex
-\pgfmath@dimen=\dimen180
-\pgfmath@count=\count314
+\pgfmath@dimen=\dimen181
+\pgfmath@count=\count315
 \pgfmath@box=\box64
 \pgfmath@toks=\toks35
 \pgfmath@stack@operand=\toks36
@@ -515,70 +522,70 @@ tex)
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfunctions.integerari
 thmetics.code.tex)))
 (/usr/share/texlive/texmf-dist/tex/generic/pgf/math/pgfmathfloat.code.tex
-\c@pgfmathroundto@lastzeros=\count315
+\c@pgfmathroundto@lastzeros=\count316
 ))
-\pgffor@iter=\dimen181
-\pgffor@skip=\dimen182
+\pgffor@iter=\dimen182
+\pgffor@skip=\dimen183
 \pgffor@stack=\toks38
 \pgffor@toks=\toks39
 )
-\psLoopIndex=\count316
+\psLoopIndex=\count317
 
 `PSTricks' v3.13  <2022/01/09> (tvz,hv)
-\pst@dima=\dimen183
-\pst@dimb=\dimen184
-\pst@dimc=\dimen185
-\pst@dimd=\dimen186
-\pst@dimg=\dimen187
-\pst@dimh=\dimen188
-\pst@dimm=\dimen189
-\pst@dimn=\dimen190
-\pst@dimo=\dimen191
-\pst@dimp=\dimen192
+\pst@dima=\dimen184
+\pst@dimb=\dimen185
+\pst@dimc=\dimen186
+\pst@dimd=\dimen187
+\pst@dimg=\dimen188
+\pst@dimh=\dimen189
+\pst@dimm=\dimen190
+\pst@dimn=\dimen191
+\pst@dimo=\dimen192
+\pst@dimp=\dimen193
 \pst@hbox=\box65
 \pst@ibox=\box66
 \pst@boxg=\box67
-\pst@cnta=\count317
-\pst@cntb=\count318
-\pst@cntc=\count319
-\pst@cntd=\count320
-\pst@cntg=\count321
-\pst@cnth=\count322
-\pst@cntm=\count323
-\pst@cntn=\count324
-\pst@cnto=\count325
-\pst@cntp=\count326
-\@zero=\count327
+\pst@cnta=\count318
+\pst@cntb=\count319
+\pst@cntc=\count320
+\pst@cntd=\count321
+\pst@cntg=\count322
+\pst@cnth=\count323
+\pst@cntm=\count324
+\pst@cntn=\count325
+\pst@cnto=\count326
+\pst@cntp=\count327
+\@zero=\count328
 \pst@toks=\toks40
 --- We are running latex or xelatex ---
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks.con)
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks-color.tex)
-\psunit=\dimen193
-\psxunit=\dimen194
-\psyunit=\dimen195
-\pst@C@@rType=\count328
-\pslinewidth=\dimen196
-\psk@startLW=\dimen197
-\psk@endLW=\dimen198
+\psunit=\dimen194
+\psxunit=\dimen195
+\psyunit=\dimen196
+\pst@C@@rType=\count329
+\pslinewidth=\dimen197
+\psk@startLW=\dimen198
+\psk@endLW=\dimen199
 
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks-arrows.tex
-\pshooklength=\dimen199
-\pshookwidth=\dimen256
+\pshooklength=\dimen256
+\pshookwidth=\dimen257
 )
 \pst@customdefs=\toks41
 
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks-dots.tex)
-\pslinearc=\dimen257
-\pst@symbolStep=\dimen258
-\pst@symbolWidth=\dimen259
-\pst@symbolLinewidth=\dimen260
+\pslinearc=\dimen258
+\pst@symbolStep=\dimen259
+\pst@symbolWidth=\dimen260
+\pst@symbolLinewidth=\dimen261
 \everypsbox=\toks42
-\psframesep=\dimen261
-\pslabelsep=\dimen262
-\sh@wgridXunit=\dimen263
-\sh@wgridYunit=\dimen264
-\pst@shift=\dimen265
-\ps@imagectr=\count329
+\psframesep=\dimen262
+\pslabelsep=\dimen263
+\sh@wgridXunit=\dimen264
+\sh@wgridYunit=\dimen265
+\pst@shift=\dimen266
+\ps@imagectr=\count330
 
 (/usr/share/texlive/texmf-dist/tex/generic/pstricks/pstricks.con))
 File: pstricks.tex 2022/01/09 v3.13 `PSTricks' (tvz,hv)
@@ -595,28 +602,28 @@ Package: verbatim 2020-07-07 v1.5u LaTeX2e package for verbatim enhancements
 )
 (/usr/share/texlive/texmf-dist/tex/latex/moreverb/moreverb.sty
 Package: moreverb 2008/06/03 v2.3a `more' verbatim facilities
-\tab@position=\count330
-\tab@size=\count331
-\listing@line=\count332
+\tab@position=\count331
+\tab@size=\count332
+\listing@line=\count333
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty
-\lst@mode=\count333
+\lst@mode=\count334
 \lst@gtempboxa=\box68
 \lst@token=\toks45
-\lst@length=\count334
-\lst@currlwidth=\dimen266
-\lst@column=\count335
-\lst@pos=\count336
-\lst@lostspace=\dimen267
-\lst@width=\dimen268
-\lst@newlines=\count337
-\lst@lineno=\count338
-\lst@maxwidth=\dimen269
+\lst@length=\count335
+\lst@currlwidth=\dimen267
+\lst@column=\count336
+\lst@pos=\count337
+\lst@lostspace=\dimen268
+\lst@width=\dimen269
+\lst@newlines=\count338
+\lst@lineno=\count339
+\lst@maxwidth=\dimen270
 
 (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
 File: lstmisc.sty 2020/03/24 1.8d (Carsten Heinz)
-\c@lstnumber=\count339
-\lst@skipnumbers=\count340
+\c@lstnumber=\count340
+\lst@skipnumbers=\count341
 \lst@framebox=\box69
 )
 (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
@@ -646,7 +653,7 @@ Package: datatool-base 2019/09/27 v2.32 (NLCT)
 
 (/usr/share/texlive/texmf-dist/tex/latex/substr/substr.sty
 Package: substr 2009/10/20 v1.2 Handle substrings
-\c@su@anzahl=\count341
+\c@su@anzahl=\count342
 )
 (/usr/share/texlive/texmf-dist/tex/latex/datatool/datatool-fp.sty
 Package: datatool-fp 2019/09/27 v2.32 (NLCT)
@@ -657,19 +664,19 @@ Package: fp 1995/04/02
 `Fixed Point Package', Version 0.8, April 2, 1995 (C) Michael Mehlich
 (/usr/share/texlive/texmf-dist/tex/latex/fp/defpattern.sty
 Package: defpattern 1994/10/12
-\actioncount=\count342
+\actioncount=\count343
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-basic.sty
 Package: fp-basic 1996/05/13
-\FP@xs=\count343
-\FP@xia=\count344
-\FP@xib=\count345
-\FP@xfa=\count346
-\FP@xfb=\count347
-\FP@rega=\count348
-\FP@regb=\count349
-\FP@regs=\count350
-\FP@times=\count351
+\FP@xs=\count344
+\FP@xia=\count345
+\FP@xib=\count346
+\FP@xfa=\count347
+\FP@xfb=\count348
+\FP@rega=\count349
+\FP@regb=\count350
+\FP@regs=\count351
+\FP@times=\count352
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-addons.sty
 Package: fp-addons 1995/03/15
@@ -688,7 +695,7 @@ Package: fp-pas 1994/08/29
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-random.sty
 Package: fp-random 1995/02/23
-\FPseed=\count352
+\FPseed=\count353
 )
 (/usr/share/texlive/texmf-dist/tex/latex/fp/fp-eqn.sty
 Package: fp-eqn 1995/04/03
@@ -700,14 +707,14 @@ Package: fp-upn 1996/10/21
 Package: fp-eval 1995/04/03
 )))
 \@dtl@toks=\toks48
-\@dtl@tmpcount=\count353
-\dtl@tmplength=\skip75
-\dtl@sortresult=\count354
-\@dtl@numgrpsepcount=\count355
-\@dtl@datatype=\count356
-\dtl@codeA=\count357
-\dtl@codeB=\count358
-\@dtl@foreach@level=\count359
+\@dtl@tmpcount=\count354
+\dtl@tmplength=\skip77
+\dtl@sortresult=\count355
+\@dtl@numgrpsepcount=\count356
+\@dtl@datatype=\count357
+\dtl@codeA=\count358
+\dtl@codeB=\count359
+\@dtl@foreach@level=\count360
 )
 (/usr/share/texlive/texmf-dist/tex/latex/glossaries/base/glossaries-compatible-
 307.sty
@@ -723,9 +730,9 @@ Package: translator 2021-05-31 v1.12d Easy translation of strings in LaTeX
 f
 File: glossaries-german.ldf 2014/11/23 v1.0
 )
-\gls@level=\count360
+\gls@level=\count361
 \@gls@tmpb=\toks49
-\gls@tmplen=\skip76
+\gls@tmplen=\skip78
 \glskeylisttok=\toks50
 \glslabeltok=\toks51
 \glsshorttok=\toks52
@@ -736,35 +743,35 @@ y
 Package: glossary-hypernav 2021/11/01 v4.49 (NLCT)
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-list.sty
 Package: glossary-list 2021/11/01 v4.49 (NLCT)
-\glslistdottedwidth=\skip77
+\glslistdottedwidth=\skip79
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-long.sty
 Package: glossary-long 2021/11/01 v4.49 (NLCT)
-\glsdescwidth=\skip78
-\glspagelistwidth=\skip79
+\glsdescwidth=\skip80
+\glspagelistwidth=\skip81
 ) (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-super.sty
 Package: glossary-super 2021/11/01 v4.49 (NLCT)
 
 (/usr/share/texlive/texmf-dist/tex/latex/supertabular/supertabular.sty
 Package: supertabular 2020/02/02 v4.1g the supertabular environment
-\c@tracingst=\count361
-\ST@wd=\dimen270
-\ST@rightskip=\skip80
-\ST@leftskip=\skip81
-\ST@parfillskip=\skip82
-\ST@pageleft=\dimen271
-\ST@headht=\dimen272
-\ST@tailht=\dimen273
-\ST@pagesofar=\dimen274
-\ST@pboxht=\dimen275
-\ST@lineht=\dimen276
-\ST@prevht=\dimen277
-\ST@toadd=\dimen278
-\ST@dimen=\dimen279
+\c@tracingst=\count362
+\ST@wd=\dimen271
+\ST@rightskip=\skip82
+\ST@leftskip=\skip83
+\ST@parfillskip=\skip84
+\ST@pageleft=\dimen272
+\ST@headht=\dimen273
+\ST@tailht=\dimen274
+\ST@pagesofar=\dimen275
+\ST@pboxht=\dimen276
+\ST@lineht=\dimen277
+\ST@prevht=\dimen278
+\ST@toadd=\dimen279
+\ST@dimen=\dimen280
 \ST@pbox=\box70
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/glossaries/styles/glossary-tree.sty
 Package: glossary-tree 2021/11/01 v4.49 (NLCT)
-\glstreeindent=\skip83
+\glstreeindent=\skip85
 ))
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/hyperref.sty
 Package: hyperref 2021-06-07 v7.00m Hypertext links for LaTeX
@@ -800,9 +807,9 @@ Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
 (/usr/share/texlive/texmf-dist/tex/latex/kvoptions/kvoptions.sty
 Package: kvoptions 2020-10-07 v3.14 Key value format for package options (HO)
 )
-\@linkdim=\dimen280
-\Hy@linkcounter=\count362
-\Hy@pagecounter=\count363
+\@linkdim=\dimen281
+\Hy@linkcounter=\count363
+\Hy@pagecounter=\count364
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/pd1enc.def
 File: pd1enc.def 2021-06-07 v7.00m Hyperref: PDFDocEncoding definition (HO)
@@ -819,7 +826,7 @@ Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/etexcmds/etexcmds.sty
 Package: etexcmds 2019/12/15 v1.7 Avoid name clashes with e-TeX commands (HO)
 )
-\Hy@SavedSpaceFactor=\count364
+\Hy@SavedSpaceFactor=\count365
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/puenc.def
 File: puenc.def 2021-06-07 v7.00m Hyperref: PDF Unicode definition (HO)
@@ -834,14 +841,14 @@ Package hyperref Info: Plain pages OFF on input line 4207.
 Package hyperref Info: Backreferencing OFF on input line 4212.
 Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
 Package hyperref Info: Bookmarks ON on input line 4445.
-\c@Hy@tempcnt=\count365
+\c@Hy@tempcnt=\count366
 
 (/usr/share/texlive/texmf-dist/tex/latex/url/url.sty
 \Urlmuskip=\muskip17
 Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
 )
 LaTeX Info: Redefining \url on input line 4804.
-\XeTeXLinkMargin=\dimen281
+\XeTeXLinkMargin=\dimen282
 
 (/usr/share/texlive/texmf-dist/tex/generic/bitset/bitset.sty
 Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
@@ -850,9 +857,9 @@ Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
 Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO
 )
 ))
-\Fld@menulength=\count366
-\Field@Width=\dimen282
-\Fld@charsize=\dimen283
+\Fld@menulength=\count367
+\Field@Width=\dimen283
+\Fld@charsize=\dimen284
 Package hyperref Info: Hyper figures OFF on input line 6076.
 Package hyperref Info: Link nesting OFF on input line 6081.
 Package hyperref Info: Hyper index ON on input line 6084.
@@ -867,9 +874,9 @@ LaTeX Info: Redefining \pageref on input line 6150.
 Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
 package with kernel methods
 )
-\Hy@abspage=\count367
-\c@Item=\count368
-\c@Hfootnote=\count369
+\Hy@abspage=\count368
+\c@Item=\count369
+\c@Hfootnote=\count370
 )
 Package hyperref Info: Driver: hpdftex.
 
@@ -881,8 +888,8 @@ Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend pac
 kage
 with kernel methods
 )
-\Fld@listcount=\count370
-\c@bookmark@seq@number=\count371
+\Fld@listcount=\count371
+\c@bookmark@seq@number=\count372
 
 (/usr/share/texlive/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
 Package: rerunfilecheck 2019/12/05 v1.9 Rerun checks for auxiliary files (HO)
@@ -893,7 +900,7 @@ Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
 Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 86.
 )
-\Hy@SectionHShift=\skip84
+\Hy@SectionHShift=\skip86
 )
 (/usr/share/texlive/texmf-dist/tex/latex/oberdiek/hypcap.sty
 Package: hypcap 2016/05/16 v1.12 Adjusting the anchors of captions (HO)
@@ -906,21 +913,21 @@ Package: caption 2020/10/26 v3.5g Customizing captions (AR)
 
 (/usr/share/texlive/texmf-dist/tex/latex/caption/caption3.sty
 Package: caption3 2020/10/21 v2.2e caption3 kernel (AR)
-\captionmargin=\dimen284
-\captionmargin@=\dimen285
-\captionwidth=\dimen286
-\caption@tempdima=\dimen287
-\caption@indent=\dimen288
-\caption@parindent=\dimen289
-\caption@hangindent=\dimen290
+\captionmargin=\dimen285
+\captionmargin@=\dimen286
+\captionwidth=\dimen287
+\caption@tempdima=\dimen288
+\caption@indent=\dimen289
+\caption@parindent=\dimen290
+\caption@hangindent=\dimen291
 Package caption Info: KOMA-Script document class detected.
 
 (/usr/share/texlive/texmf-dist/tex/latex/caption/caption-koma.sto
 File: caption-koma.sto 2020/09/21 v2.0b Adaption of the caption package to the 
 KOMA-Script document classes (AR)
 ))
-\c@caption@flags=\count372
-\c@continuedfloat=\count373
+\c@caption@flags=\count373
+\c@continuedfloat=\count374
 Package caption Info: floatflt package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: hypcap package is loaded.
@@ -941,7 +948,7 @@ Package: expl3 2022-01-21 L3 programming layer (loader)
 
 (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2022-01-12 L3 backend support: PDF output (pdfTeX)
-\l__color_backend_stack_int=\count374
+\l__color_backend_stack_int=\count375
 \l__pdf_internal_box=\box71
 ))
 Package: xpatch 2020/03/25 v0.3a Extending etoolbox patching commands
@@ -993,7 +1000,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
  (./Arbeit.aux
 (./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux) (./Inhalt/Einleitung.aux)
-(./Inhalt/Grundlagen.aux) (./Inhalt/Selbstaendigkeitserklaerung.aux))
+(./Inhalt/Selbstaendigkeitserklaerung.aux))
 \openout1 = `Arbeit.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -1051,16 +1058,16 @@ LaTeX Font Info:    ... okay on input line 4.
 
 (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count375
-\scratchdimen=\dimen291
+\scratchcounter=\count376
+\scratchdimen=\dimen292
 \scratchbox=\box72
-\nofMPsegments=\count376
-\nofMParguments=\count377
+\nofMPsegments=\count377
+\nofMParguments=\count378
 \everyMPshowfont=\toks54
-\MPscratchCnt=\count378
-\MPscratchDim=\dimen292
-\MPnumerator=\count379
-\makeMPintoPDFobject=\count380
+\MPscratchCnt=\count379
+\MPscratchDim=\dimen293
+\MPnumerator=\count380
+\makeMPintoPDFobject=\count381
 \everyMPtoPDFconversion=\toks55
 ) (/usr/share/texlive/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
 Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
@@ -1071,7 +1078,7 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-\c@lstlisting=\count381
+\c@lstlisting=\count382
 Package hyperref Info: Link coloring ON on input line 4.
 
 (/usr/share/texlive/texmf-dist/tex/latex/hyperref/nameref.sty
@@ -1083,7 +1090,7 @@ Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
 (/usr/share/texlive/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
 Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
-\c@section@level=\count382
+\c@section@level=\count383
 )
 LaTeX Info: Redefining \ref on input line 4.
 LaTeX Info: Redefining \pageref on input line 4.
@@ -1107,7 +1114,7 @@ Package: bookmark 2020-11-06 v1.29 PDF bookmarks (HO)
 
 (/usr/share/texlive/texmf-dist/tex/latex/bookmark/bkm-pdftex.def
 File: bkm-pdftex.def 2020-11-06 v1.29 bookmark driver for pdfTeX (HO)
-\BKM@id=\count383
+\BKM@id=\count384
 ))
 Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: End \AtBeginDocument code.
@@ -1197,40 +1204,67 @@ l.30
 
 
 ]) [2]
-\openout2 = `Inhalt/Grundlagen.aux'.
-
- (./Inhalt/Grundlagen.tex
 chapter 2.
+(./Inhalt/Grundlagen/Merkmalbasierte-Algorithmen.tex)
+(./Inhalt/Grundlagen/SIFT.tex [3
 
-Overfull \hbox (76.96375pt too wide) in paragraph at lines 16--24
-[][] 
+
+
+
+] [4]
+Overfull \hbox (2.69006pt too wide) in paragraph at lines 38--39
+[]\T1/cmr/m/n/12 Jede Gradient-Orientierung wird in das His-to-gramm ein-ge-tra
+-gen und an-hand der Gradient-
  []
 
-[3
+) (./Inhalt/Grundlagen/ORB.tex) (./Inhalt/Grundlagen/Metriken.tex [5] [6])
+[7]
+chapter 3.
+[8
 
 
+]
+chapter 4.
+[9
 
 
+]
+chapter 5.
+[10
 
-]) [4] (./Arbeit.bbl
+
+]
+chapter 6.
+[11
+
+
+]
+chapter 7.
+[12
+
+
+]
+chapter 8.
+(./Arbeit.bbl [1
+
+
+]
 chapter without number
-) [1
-
-
+) [2
 
 
 ] (./Arbeit.lof)
 \tf@lof=\write5
 \openout5 = `Arbeit.lof'.
 
- [2
+ [3
 
 
 ] (./Arbeit.lot)
 \tf@lot=\write6
 \openout6 = `Arbeit.lot'.
 
- [3
+ [4
 
 
 ]
@@ -1242,25 +1276,27 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
 
  []
 
-) [4
+) [5
 
 
 
 ] (./Arbeit.aux (./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux)
-(./Inhalt/Einleitung.aux) (./Inhalt/Grundlagen.aux)
-(./Inhalt/Selbstaendigkeitserklaerung.aux))
+(./Inhalt/Einleitung.aux) (./Inhalt/Selbstaendigkeitserklaerung.aux))
 Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32381 strings out of 480153
- 598156 string characters out of 5892727
- 1225543 words of memory out of 5000000
- 49750 multiletter control sequences out of 15000+600000
- 483520 words of font info for 64 fonts, out of 8000000 for 9000
+ 32544 strings out of 480153
+ 601134 string characters out of 5892727
+ 1228101 words of memory out of 5000000
+ 49866 multiletter control sequences out of 15000+600000
+ 485728 words of font info for 67 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
- 113i,8n,123p,10623b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 113i,9n,123p,10623b,483s stack positions out of 5000i,500n,10000p,200000b,80000s
  </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600p
+k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600p
+k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1000.600p
+k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1440.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1728.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1200.600p
@@ -1269,11 +1305,12 @@ k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx2488.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600p
 k></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></us
-r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
-Output written on Arbeit.pdf (11 pages, 139110 bytes).
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on Arbeit.pdf (20 pages, 200255 bytes).
 PDF statistics:
- 437 PDF objects out of 1000 (max. 8388607)
- 146 compressed objects within 2 object streams
- 25 named destinations out of 1000 (max. 500000)
- 86 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 691 PDF objects out of 1000 (max. 8388607)
+ 268 compressed objects within 3 object streams
+ 59 named destinations out of 1000 (max. 500000)
+ 150 words of extra memory for PDF output out of 10000 (max. 10000000)
 
