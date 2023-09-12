@@ -28,7 +28,7 @@ Die Testdatensätze sind dabei in zwei Teilsätzen unterteilt.
 Der erste Teilsatz an Bildern stellt die Menge an gespeicherten Datenbankbildern dar. 
 Der zweite Teilsatz enthält eine Untermenge an Duplikaten aus dem Datenbanksatz und eine Menge an neuen Bildern, die nicht im Datenbanksatz auftauchen. Getestet wird in verschiedenen Szenarien, die die Robustheit des Systems gegenüber bestimmter Sonderfälle testen soll. Je nach Szenario sind die Duplikate auf unterschiedliche Weise im Verglich zum Original verändert. Als Vergleich dient der pHash-Algorithmus, der momentan bei Spreadshirt zur Duplikatensuche verwendet wird.
 
-Die verwendeten Metriken werden in den Grundlagen erklärt.
+Die verwendeten Metriken werden in den Grundlagen~\ref{sec:TestMetriken} erklärt.
 Am wichtigsten ist dabei ein hoher Recall, sodass möglichst viele Duplikate durch das System abgefangen werden. 
 Da automatisch gesperrte Designs nochmal manuell geprüft werden, fällt eine niedrigere Spezifizität bei der Auswertung nicht so sehr ins Gewicht. Laufzeit- und Speicherkosten sollen ebenfalls innerhalb der Arbeit abgeschätzt werden. 
 

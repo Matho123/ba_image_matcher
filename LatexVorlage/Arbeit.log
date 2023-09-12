@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  11 SEP 2023 15:34
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  11 SEP 2023 17:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -992,9 +992,8 @@ Package typearea Info: These are the values describing the layout:
 Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
  (./Arbeit.aux
-(./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux)
-No file Inhalt/Haupttext.aux.
-(./Inhalt/Selbstaendigkeitserklaerung.aux))
+(./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux) (./Inhalt/Einleitung.aux)
+(./Inhalt/Grundlagen.aux) (./Inhalt/Selbstaendigkeitserklaerung.aux))
 \openout1 = `Arbeit.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -1197,7 +1196,23 @@ l.30
 
 
 
-]) [2] (./Arbeit.bbl
+]) [2]
+\openout2 = `Inhalt/Grundlagen.aux'.
+
+ (./Inhalt/Grundlagen.tex
+chapter 2.
+
+Overfull \hbox (76.96375pt too wide) in paragraph at lines 16--24
+[][] 
+ []
+
+[3
+
+
+
+
+
+]) [4] (./Arbeit.bbl
 chapter without number
 ) [1
 
@@ -1232,18 +1247,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
 
 
 ] (./Arbeit.aux (./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux)
-(./Inhalt/Einleitung.aux) (./Inhalt/Selbstaendigkeitserklaerung.aux))
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
+(./Inhalt/Einleitung.aux) (./Inhalt/Grundlagen.aux)
+(./Inhalt/Selbstaendigkeitserklaerung.aux))
 Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32346 strings out of 480153
- 597113 string characters out of 5892727
+ 32381 strings out of 480153
+ 598156 string characters out of 5892727
  1225543 words of memory out of 5000000
- 49727 multiletter control sequences out of 15000+600000
+ 49750 multiletter control sequences out of 15000+600000
  483520 words of font info for 64 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  113i,8n,123p,10623b,481s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1255,11 +1268,12 @@ k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx2488.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx2074.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1728.600p
-k>
-Output written on Arbeit.pdf (9 pages, 109171 bytes).
+k></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></us
+r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb>
+Output written on Arbeit.pdf (11 pages, 139110 bytes).
 PDF statistics:
- 377 PDF objects out of 1000 (max. 8388607)
- 112 compressed objects within 2 object streams
- 21 named destinations out of 1000 (max. 500000)
- 62 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 437 PDF objects out of 1000 (max. 8388607)
+ 146 compressed objects within 2 object streams
+ 25 named destinations out of 1000 (max. 500000)
+ 86 words of extra memory for PDF output out of 10000 (max. 10000000)
 

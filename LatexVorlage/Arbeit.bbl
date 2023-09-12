@@ -1,14 +1,8 @@
-\begin{thebibliography}{Low04}
+\begin{thebibliography}{Tha20}
 
-\bibitem[Low99]{lowe1999}
-David~G Lowe.
-\newblock Object recognition from local scale-invariant features.
-\newblock In {\em Proceedings of the seventh IEEE international conference on
-  computer vision}, volume~2, pages 1150--1157. Ieee, 1999.
-
-\bibitem[Low04]{lowe2004}
-David~G Lowe.
-\newblock Distinctive image features from scale-invariant keypoints.
-\newblock {\em International journal of computer vision}, 60:91--110, 2004.
+\bibitem[Tha20]{classification}
+Alaa Tharwat.
+\newblock Classification assessment methods.
+\newblock {\em Applied computing and informatics}, 17(1):168--192, 2020.
 
 \end{thebibliography}

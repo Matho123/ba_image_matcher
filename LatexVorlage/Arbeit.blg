@@ -4,47 +4,48 @@ The top-level auxiliary file: Arbeit.aux
 The style file: alpha.bst
 A level-1 auxiliary file: Deckblatt/Deckblatt.aux
 A level-1 auxiliary file: Inhalt/Abstrakt.aux
-A level-1 auxiliary file: Inhalt/Haupttext.aux
+A level-1 auxiliary file: Inhalt/Einleitung.aux
+A level-1 auxiliary file: Inhalt/Grundlagen.aux
 A level-1 auxiliary file: Inhalt/Selbstaendigkeitserklaerung.aux
 Database file #1: Literatur/Literatur.bib
-You've used 2 entries,
+You've used 1 entry,
             2543 wiz_defined-function locations,
-            576 strings with 4844 characters,
-and the built_in function-call counts, 905 in all, are:
-= -- 98
-> -- 16
-< -- 4
-+ -- 4
-- -- 4
-* -- 56
-:= -- 136
-add.period$ -- 7
-call.type$ -- 2
-change.case$ -- 10
-chr.to.int$ -- 2
-cite$ -- 2
-duplicate$ -- 44
-empty$ -- 76
-format.name$ -- 8
-if$ -- 198
+            571 strings with 4705 characters,
+and the built_in function-call counts, 382 in all, are:
+= -- 38
+> -- 8
+< -- 1
++ -- 2
+- -- 2
+* -- 29
+:= -- 68
+add.period$ -- 3
+call.type$ -- 1
+change.case$ -- 5
+chr.to.int$ -- 1
+cite$ -- 1
+duplicate$ -- 15
+empty$ -- 31
+format.name$ -- 4
+if$ -- 74
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 2
-newline$ -- 13
-num.names$ -- 6
-pop$ -- 10
+missing$ -- 1
+newline$ -- 8
+num.names$ -- 3
+pop$ -- 3
 preamble$ -- 1
-purify$ -- 12
+purify$ -- 6
 quote$ -- 0
-skip$ -- 38
+skip$ -- 12
 stack$ -- 0
-substring$ -- 76
-swap$ -- 15
-text.length$ -- 4
-text.prefix$ -- 2
+substring$ -- 32
+swap$ -- 1
+text.length$ -- 1
+text.prefix$ -- 1
 top$ -- 0
-type$ -- 16
+type$ -- 8
 warning$ -- 0
-while$ -- 9
-width$ -- 3
-write$ -- 30
+while$ -- 4
+width$ -- 2
+write$ -- 15
