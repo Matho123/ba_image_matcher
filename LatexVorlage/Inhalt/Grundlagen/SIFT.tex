@@ -1,0 +1,42 @@
+\subsection{SIFT: Scale-Invariant Feature Transform}
+\label{sec:SIFT}
+
+\paragraph{1. Suche nach Extrempunkten}
+
+SIFT sucht nach Extrempunkten innerhalb von Bildern. Extrempunkte sind dabei Punkte, an denen lokale Maxima oder Minima in der Helligkeit auftreten. Also helle Punkte innerhalb von dunklen Bereichen und dunkle Punkte innerhalb von hellen Bereichen. 
+
+Um Extrempunkte zu finden wird der "Difference of Gaussian" genutzt. Zuerst wird eine bestimmte Anzahl an Bildern, durch das Weichzeichnen des Originalbilds mit dem Gauschen Weichzeichner, erstellt. 
+Der Grad der Unschärfe steigt dabei bei jedem Bild um einen konstanten Faktor. Ein Satz dieser weichgezeichneten Bilder wird dabei als Oktave bezeichnet. 
+Für jedes paar an aneinander grenzenden weichgezeichneten Bildern, wird die Differenz berechnet. Diese Differenz wird als "Difference of Gaussian" bezeichnet. 
+Bei der Implementation von SIFT werden pro Oktave meist fünf weichgezeichnete Bilder verwendet, aus denen vier "Difference of Gaussian" Bilder entstehen. \cite[S. 94]{sift2004}
+
+Jeder Pixel der mittleren "Difference of Gaussian" Bilder wird mit seinen acht Nachbarn innerhalb desselben Bildes und seinen je neun Nachbarn im DOG darüber und darunter verglichen. 
+Ein Pixel ist dann ein Schlüsselpunkt, wenn sein Helligkeitswert größer oder kleiner als der Wert all seiner Nachbarn ist. \cite[S. 95]{sift2004}
+
+Diese Extrempunktsuche wird dabei für mehrere Oktaven durchgeführt. Dabei wird für jede Oktave das Originalbild um den Faktor 2 herunter skaliert. 
+Das ist notwendig, da manche Extrempunkte nur bei bestimmten Auflösungen auffindbar sind. \cite[S. 94f]{sift2004}
+Durch die Sammlung von Schlüsselpunkten auf verschiedenen Auflösungen, sind diese bei Bildern in verschiedenen Auflösungen vergleichbar. Der Aufbau von "Difference of Gaussian" Bilder innerhalb von mehreren Oktaven wird als scale-space (dt. Bildpyramide) bezeichnet.
+
+\paragraph{2. Akkurate Ortsbestimmung der Schlüsselpunkte} 
+
+Die Positionen der Schlüsselpunkte, die auf niedrigen Auflösungen gefunden wurden, entspricht gegebenenfalls nicht genau der Position in der Originalauflösung. 
+Deshalb wird die Taylorreihe verwendet, um die tatsächliche Position zu interpolieren. \cite[S. 97f]{sift2004}
+
+Außerdem werden Schlüsselpunkte an Rändern und Schlüsselpunkte mit niedrigem Kontrast zu ihrer Umgebung herausgefiltert. Das ist nötig, da solche Schlüsselpunkte Deskriptoren hervorbringen, die nicht zuverlässig verglichen werden können. \cite[98f]{sift2004}
+
+\paragraph{3. Bestimmung der Schlüsselpunkt Ausrichtung}
+\label{sec:SchluesselpunktOrienierung}
+
+Um Schlüsselpunkte und die aus ihnen resultierenden Deskriptoren robust gegenüber Bildrotationen zu machen, wird jedem Schlüsselpunkt eine Ausrichtung zugewiesen. 
+Damit diese Ausrichtung konsistent ist, wird diese anhand der lokalen Bildeigenschaften um den Schlüsselpunkt herum bestimmt. \cite[S. 99]{sift2004}
+
+Um das zu erreichen, wird ein 360 Grad umfassendes Histogramm mit 36 bins aufgebaut. Anhand der Skalierung des Schlüsselpunkts wird ein weichgezeichnetes Bild mit passender Skalierung gewählt. 
+Innerhalb dieses Bildes werden Abtastpunkte um den Schlüsselpunkt herum genommen. Für jeden Abtastpunkt wird die Orientierung und Stärke des Gradienten bestimmt. 
+Der Gradient beschreibt dabei die Änderung der Pixelhelligkeit innerhalb eines Bildes. 
+Sowohl Stärke als auch Orientierung des Gradienten sind für alle Ebenen der Bildpyramide vorberechnet worden. \cite[S. 99]{sift2004}
+
+Jede Gradient-Orientierung wird in das Histogramm eingetragen und anhand der Gradient-Stärke gewichtet. Da das Histogramm 36 bins hat, werden Orientierungen in 10-Grad-Schritten zusammengefasst. Aus dem Histogramm wird die Orientierung des globalen Maximums, sowie die Orientierungen aller lokalen Maxima die mindestens 80 Prozent des globalen Maximums betragen, entnommen. Für jede entnommene Orientierung wird ein Schlüsselpunkt erstellt. Dadurch kann es mehrere Schlüsselpunkte mit der gleicher Position und Skalierung aber mit unterschiedlichen Orientierungen geben. \cite[S. 100]{sift2004}
+
+\paragraph{4. Deskriptoren erstellen} 
+
+In dem Bereich um den Schlüsselpunkt werden wie im Schritt 3 (Abschnitt ~\ref{sec:SchluesselpunktOrienierung}) für jeden Abtastpunkt die Gradienten-Stärke und -Orientierung bestimmt. Der Bereich wird dabei in 4x4 große Unterbereiche aufgeteilt, für die ein Histogramm erstellt wird. Dabei werden für das Histogramm nur 8 bins verwendet, in denen Gradienten-Stärken mit ähnlicher Orientierung aufsummiert werden. Aus diesen Werten wird ein Deskriptor erstellt. Üblicherweise werden Abtastbereiche mit einer Größe von 16x16 verwendet. Daraus ergeben sich insgesamt 16 Unterbereiche der Größe 4x4 mit je 8 Orientierungs-bins. Ein typischer Deskriptor ist ein Vektor mit 16 * 8 = 128 Werten. \cite[S. 101]{sift2004}

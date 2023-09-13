@@ -1,0 +1,45 @@
+\section{Test-Metriken}
+\label{sec:TestMetriken}
+Das Bilderkennungssystem soll die Bilder in zwei Klassen einordnet: Duplikate und Unikate. 
+Da es in diesem Fall bei der Klassifizierung nur zwei mögliche Klassen gibt, kann man das Bilderkennungssystem als binären Klassifikator bezeichnen. 
+
+Die Performance von binären Klassifikatoren kann durch die Werte einer Wahrheitsmatrix quantifiziert werden. 
+Die Wahrheitsmatrix gibt dabei an, wie viele richtige und falsche Entscheidungen das System bei der Klassifikation getroffen hat. \cite[S. 170]{classification}
+\begin{table}[h]
+\begin{tabular}[h]{ l | l | l}
+&richtig&falsch \\
+System Klass.:&&\\
+\hline
+Duplikat&Anzahl richtige Duplikate (TP) &Anzahl falsche Duplikate (FP) \\
+\hline
+Unikat&Anzahl falsche Unikate (FN) &Anzahl richtige Unikate (TN)
+\end{tabular}
+\caption{Wahrheitsmatrix für Duplikaten-Suche}
+\label{Wahrheitsmatrix für Duplikaten-Suche}
+\end{table}
+
+Aus den Werten der Wahrheitsmatrix lassen sich weitere Metriken ableiten, die für die Bewertung eines binären Klassifikators nützlich sein können. Interessant für diese Arbeit sind Recall, Spezifizität und Balancierte-Genauigkeit.
+
+Der Recall, oder auch true positive rate, gibt das Verhältnis zwischen den Duplikaten, die das System korrekt klassifiziert hat, und allen Duplikaten, die sich in dem Suchdatensatz befinden, an. \cite[S. 172]{classification}
+
+$$Recall = \frac{ TP }{ TP + FN }$$
+
+Die Spezifizität, oder auch true negative rate, gibt das Verhältnis zwischen den Unikaten, die das System korrekt klassifiziert hat, und allen Unikaten, die sich im Suchdatensatz befinden an. \cite[S. 172]{classification}
+
+$$Specificity = \frac{ TN }{ FP + TN }$$
+
+Die Accuracy (dt. Genauigkeit), gibt das Verhältnis zwischen den Bildern, die das System korrekt klassifiziert hat, und allen Bildern im Suchdatensatz an.
+Sie spiegelt die Fähigkeit des Systems Bilder richtig zu Klassifizieren wieder. \cite[S. 171]{classification}
+
+$$Accuracy = \frac{ TP + TN }{ TP + TN + FP + FN } = \frac{ Recall * P + Specificity * N }{ P + N }$$
+
+Allerdings ist die Genauigkeit kein zuverlässiger Wert, wenn man mit unausgeglichenen Datensätzen arbeitet. 
+Ein Datensatz gilt dann als unausgeglichen, wenn einer Klassifikation mehr Elemente angehören, als der anderen Klassifikation. \cite[S. 171]{classification}
+In den Testdatensätzen, die für diese Arbeit verwendet werden, befinden sich mehr Unikate als Duplikate.
+Dieses Ungleichgewicht kann die Genauigkeit stark beeinflussen. So kann zum Beispiel eine gute Spezifizität einen schlechten Recall ausgleichen, wenn der Datensatz zum größten Teil aus Unikaten besteht.
+
+Daher kommt bei unbalancierten Datensätzen die balanced-accuracy (dt. Balancierte-Genauigkeit) zum Einsatz. \cite[S. 175]{classification} 
+
+$$Balanced-Accuracy = \frac{ Recall + Specificity }{ 2 }$$
+
+Da sie den Durchschnitt aus Recall und Spezifizität bildet, werden Unterschiede zwischen den beiden Werten ausgeglichen. Dadurch ist die Balancierte-Genauigkeit robust gegenüber unausgeglichenen Datensätzen.

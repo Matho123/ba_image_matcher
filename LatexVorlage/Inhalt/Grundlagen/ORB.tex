@@ -1,0 +1,10 @@
+\subsection{ORB: Oriented FAST and Rotated BRIEF}
+\label{sec:ORB}
+ORB basiert auf dem FAST-Algorithmus für die Schlüsselpunktsuche und dem BRIEF-Algorithmus für die Generierung von Deskriptoren
+
+\paragraph{Schüsselpunktsuche mit FAST}
+
+Der FAST-Algorithmus sucht nach Eckpunkten in einem Bild. Dazu wird um jeden Pixel im Bild ein Kreis mit 16 Randpixeln gezogen. Der betrachtete Kandidat-Pixel ist genau dann ein Eckpunkt, wenn eine bestimmte Anzahl an aneinander grenzenden Randpixel heller oder dunkler sind als der Kandidat-Pixel plus oder minus einem bestimmten Schwellenwert. \cite[S. 4]{fast2006}
+
+Bei der Implementation in ORB müssen 9 der 16 Randpunkte heller oder dunkler als der Kandidat-Pixel sein, damit der Pixel sich als Randpunkt qualifiziert. 
+Zudem wird mit der "Harris corner measure" jeden gefunden Randpunkt ein Wert zugeteilt, der  \cite[S. 2565]{orb2011}
