@@ -1,0 +1,52 @@
+\section{Match-Suche mit Deskriptoren}
+\label{sec:Matching}
+
+Im Abschnitt  ~\ref{sec:m-based} wurden die Merkmalbasierten-Algorithmen erklärt, mit denen Deskriptoren für Merkmale in einem Bild generiert werden können.
+In diesem Abschnitt soll es darum gehen, wie diese Deskriptoren genutzt werden können, um die Merkmale aus zwei Bildern zu vergleichen und Übereinstimmungen zu finden. Übereinstimmungen werden auch als Match bezeichnet.
+
+\subsection{Deskriptoren Vergleichen}
+\label{sec:DeskriptorenVergleichen}
+
+Um zwei Deskriptoren zu vergleichen, wird die Distanz zwischen den beiden berechnet. 
+Die Distanz beschreibt in diesem Fall wie ähnlich sich Deskriptoren sind. 
+Je kleiner die Distanz desto ähnlicher die Deskriptoren.
+Abhängig davon welche Art Deskriptor verglichen wird, wird ein anderer Distanzmaßstab verwendet.
+
+\paragraph{Hamming-Distanz}
+Die Hamming-Distanz kann verwendet werden, um Bitfolgen zu vergleichen. 
+Dazu werden beide Bitfolgen Stelle für Stelle verglichen. 
+Für jede Stelle, die nicht übereinstimmt, steigt die Distanz um 1.
+
+$$distance(desc1, desc2) := \vert \{ i \in \{1,..., 256\} \mid desc1_{i} \neq desc2_{i}\} \vert$$
+
+Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB-Algorithmus errechnet werden. Bei diesen handelt es sich um Bitfolgen mit 256 Stellen. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
+
+\paragraph{Euklidische-Distanz}
+Bei Deskriptoren, die aus dem SIFT-Algorithmus resultieren, wird die Euklidische Distanz genutzt. Die Deskriptoren sind hierbei eine Folge von Gradient-Werten. 
+Stelle für Stelle wird die Euklidische Distanz für alle Gradient-Werte der Deskriptoren berechnet und aufsummiert. 
+
+$$distance(desc1, desc2) := \sum_{ i = 1 }^{ 128 }{ \sqrt{ (desc1[i] - desc2[i])^2 } }$$
+
+SIFT-Deskriptoren bestehen in der Regel aus 128 Gradient-Werten.
+
+\subsection{Brute-Force Matcher}
+\label{sec:BFM}
+Um Übereinstimmungen von Merkmalen in zwei Bildern zu finden, werden alle Deskriptoren des ersten Bilds mit allen Deskriptoren des zweiten Bilds verglichen. \cite{matching}
+
+Der Vorteil dieser simplen Herangehensweise ist, dass garantiert die besten Übereinstimmungen gefunden werden. 
+Allerdings ist diese Strategie mit $\mathcal{O}(n^2)$ auch sehr ineffizient, wodurch sie gerade bei Datensets mit einer großen Menge an Deskriptoren ins Gewicht fällt. 
+
+\subsection{Filterung der Matching-Ergebnisse}
+\label{sec:RatioTest}
+Für jeden Deskriptor aus dem ersten Bild wird der  erst- und zweitbeste Match aus dem zweiten Bild gespeichert. Ein Match besteht dabei aus den beiden Deskriptoren, die verglichen werden, und die resultierende Distanz (Siehe Abschnit ~\ref{sec:DeskriptorenVergleichen}). Daraus ergibt sich eine 2xN Matrix, wobei N die Anzahl der Deskriptoren im ersten Bild darstellt.
+
+Es können Deskriptoren vorkommen, für die keine zuverlässiger Match gefunden werden kann. Das kann unter anderen passieren, wenn Schlüsselpunkte an Rändern von Objekten oder wirren Bereichen im Bild gefunden werden. 
+Da mit solchen Deskriptoren keine gute Aussage über die Ähnlichkeit von zwei Bildern getroffen werden kann, müssen diese herausgefiltert werden.
+
+Dazu schlägt Lowe den sogenannten "ratio test" vor. 
+Dabei wird die Distanz des erst- und zweitbesten Matchs verglichen. Wenn das Verhältnis zwischen den beiden Distanzen kleiner als 0.8 ist, wird der erstbeste Match behalten. 
+Ansonsten wird der Match verworfen.
+Dieses Vorgehen basiert auf der Annahme, dass die Distanz beim erstbesten Match deutlich niedriger als die Distanz beim zweitbesten Match sein muss, damit der erstbeste Match als zuverlässig gilt. 
+Sind die Distanzen zu ähnlich, kann kein eindeutiger Match für den Deskriptor gefunden werden. \cite[S.104]{sift2004}
+
+

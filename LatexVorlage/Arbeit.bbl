@@ -11,6 +11,12 @@ David~G Lowe.
 \newblock Distinctive image features from scale-invariant keypoints.
 \newblock {\em International journal of computer vision}, 60:91--110, 2004.
 
+\bibitem[mat]{matching}
+Opencv feature matching dokumentation.
+
+\bibitem[pHa]{pHash}
+Blockeintrag phash.
+
 \bibitem[RD06]{fast2006}
 Edward Rosten and Tom Drummond.
 \newblock Machine learning for high-speed corner detection.

@@ -1,13 +1,17 @@
 \subsection{SIFT: Scale-Invariant Feature Transform}
 \label{sec:SIFT}
 
+Ziel des SIFT-Algorithmus ist es Merkmale in einem Bild zu finden und mit Deskriptoren zu beschreiben, die Robust gegenüber Rotation, Verschiebung und Skalierung sind. Auch der Einfluss durch Bildrauschen und Verzerrung soll möglichst gering sein.
+Dabei durchläuft der Algorithmus 4 Schritte. Schritt 1 bis 3 umfassen die Suche und Beschreibung der Schlüsselpunkte, während Schritt 4 sich mit Erstellung der Deskriptoren befasst.  \cite[S. 2]{sift1999} 
+
 \paragraph{1. Suche nach Extrempunkten}
+\label{sec:Extrempunktsuche}
 
 SIFT sucht nach Extrempunkten innerhalb von Bildern. Extrempunkte sind dabei Punkte, an denen lokale Maxima oder Minima in der Helligkeit auftreten. Also helle Punkte innerhalb von dunklen Bereichen und dunkle Punkte innerhalb von hellen Bereichen. 
 
 Um Extrempunkte zu finden wird der "Difference of Gaussian" genutzt. Zuerst wird eine bestimmte Anzahl an Bildern, durch das Weichzeichnen des Originalbilds mit dem Gauschen Weichzeichner, erstellt. 
-Der Grad der Unschärfe steigt dabei bei jedem Bild um einen konstanten Faktor. Ein Satz dieser weichgezeichneten Bilder wird dabei als Oktave bezeichnet. 
-Für jedes paar an aneinander grenzenden weichgezeichneten Bildern, wird die Differenz berechnet. Diese Differenz wird als "Difference of Gaussian" bezeichnet. 
+Der Grad der Unschärfe steigt dabei bei jedem Bild um einen konstanten Faktor. Ein Satz dieser weichgezeichneten Bilder wird  als Oktave bezeichnet. 
+Für jedes paar an aneinander grenzenden weichgezeichneten Bildern, wird die Differenz berechnet. Bei dieser Differenz handelt es sich um den "Difference of Gaussian". Durch den "Difference of Gaussian" werden Rand- und Eckpunkte, sowie andere Details im Bild hervorgehoben.
 Bei der Implementation von SIFT werden pro Oktave meist fünf weichgezeichnete Bilder verwendet, aus denen vier "Difference of Gaussian" Bilder entstehen. \cite[S. 94]{sift2004}
 
 Jeder Pixel der mittleren "Difference of Gaussian" Bilder wird mit seinen acht Nachbarn innerhalb desselben Bildes und seinen je neun Nachbarn im DOG darüber und darunter verglichen. 

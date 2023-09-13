@@ -1,0 +1,29 @@
+\subsection{ORB: Oriented FAST and Rotated BRIEF}
+\label{sec:ORB}
+ORB basiert auf dem FAST-Algorithmus für die Schlüsselpunktsuche und dem BRIEF-Algorithmus für die Generierung von Deskriptoren
+
+\paragraph{Schüsselpunktsuche mit FAST}
+
+Der FAST-Algorithmus sucht nach Eckpunkten in einem Bild. Dazu wird um jeden Pixel im Bild ein Kreis mit 16 Randpixeln gezogen. Der betrachtete Kandidat-Pixel ist genau dann ein Eckpunkt, wenn eine bestimmte Anzahl an aneinander grenzenden Randpixel heller oder dunkler sind als der Kandidat-Pixel plus oder minus einem bestimmten Schwellenwert. \cite[S. 4]{fast2006}
+
+Bei der Implementation in ORB müssen 9 der 16 Randpunkte heller oder dunkler als der Kandidat-Pixel sein, damit dieser sich als Randpunkt qualifiziert. 
+Zudem wird die "Harris corner measure" genutzt um Randpunkte herauszufiltern. 
+Dazu wird jedem Schlüsselpunkt ein Wert zugeteilt, der aussagt, wie wahrscheinlich es ist, dass es sich bei dem Schlüsselpunkt um einen Eckpunkt handelt. Der Schwellenwert, um sich als Eckpunkt zu qualifizieren, wird niedrig genug gesetzt um eine bestimmte Mindestanzahl an Schlüsselpunkten zu erreichen. 
+Die Mindestanzahl an Schlüsselpunkten, kann dabei je nach Anwendungsfall variieren. Es muss genügend Schlüsselpunkte geben, um das Bild zu beschreiben. 
+Gleichzeitig möchte man aber Schlüsselpunkte vermeiden deren Deskriptoren nicht zuverlässig verglichen werden können. \cite[S. 2565]{orb2011}
+
+Die durch FAST gefundenen Schlüsselpunkte sind anders als bei SIFT noch nicht Robust gegenüber Rotations- und Auflösungsunterschieden. 
+Um Invarianz gegenüber Auflösungsunterschieden entgegenzuwirken, generiert ORB ähnlich wie SIFT (Abschnitt ~\ref{sec:Extrempunktsuche} mehrere niedriger aufgelöste Varianten des Originalbilds. 
+Für jede Auflösung wird die Schlüsselpunktsuche mit FAST und Randpunktfilterung mit "Harris corner measure" durchgeführt. 
+Um die Orientierung des Schlüsselpunkts zu ermitteln, wird in dessen Umgebung nach dem Pixel mit dem höchsten Helligkeitswert gesucht. Die Orientierung ergibt sich dann aus dem Vektor zwischen diesen beiden Punkten. \cite[S. 2565]{orb2011} 
+
+\paragraph{Erstellen der Deskriptoren mit BRIEF} Der BRIEF-Algorithmus definiert um den Schlüsselpunkt einen Bereich P, der weichgezeichnet wird. 
+Aus diesem Bereich werden n Pixelpaare (x,y) genommen und einem Binärtest T unterzogen. Für jedes Pixelpaar werden die Helligkeitswerte P(x) und P(y) verglichen. 
+Je nachdem ob der Helligkeitswert P(x) größer als P(y) ist, ergibt der Binärtestt 0 oder 1. In der Implementation bei ORB werden 256 Pixelpaare genutzt.  
+Der Deskriptor ist eine Aneinanderreihung der Testergebnisse aller 256 Pixelpaare. Somit ergibt sich ein 256 Bit Deskriptor pro gefundenen Schlüsselpunkt. \cite[S. 2566]{orb2011}
+
+Damit die durch BRIEF erstellten Deskriptoren robust gegenüber Rotationen sind, nutzt ORB die Orientierung die für die Schlüsselpunkte ermittelt wurden. 
+Dazu wird eine Matrix S mit den Pixelpaaren für den Binärtest erstellt. 
+Gemäß der Orientierung O des Schlüsselpunkts wird eine Rotationsmatrix Ro. Matrix S wird mit der Rotationsmatrix Ro rotiert und ergibt So. 
+Der Deskriptor für den Schlüsselpunkt wird anhand der rotierten Pixelpaare aus So erstellt. \cite[S. 2566]{orb2011}
+ 
