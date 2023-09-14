@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  13 SEP 2023 17:55
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  14 SEP 2023 17:13
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1091,7 +1091,8 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 
 (Arbeit.aux (Deckblatt/Deckblatt.aux) (Inhalt/Abstrakt.aux)
-(Inhalt/Einleitung.aux) (Inhalt/Selbstaendigkeitserklaerung.aux))
+(Inhalt/Einleitung.aux) (Inhalt/Formel.aux)
+(Inhalt/Selbstaendigkeitserklaerung.aux))
 \openout1 = `Arbeit.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -1265,16 +1266,16 @@ File: t1cmss.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 
 
 
-] (Arbeit.toc)
+] (Arbeit.toc [2
+
+
+
+
+])
 \tf@toc=\write4
 \openout4 = `Arbeit.toc'.
 
- [2
-
-
-
-
-]
+ [3]
 \openout2 = `Inhalt/Einleitung.aux'.
 
  (Inhalt/Einleitung.tex
@@ -1313,27 +1314,34 @@ s cor-ner mea-su-re"durchgeführt.
 ) (Inhalt/Grundlagen/Matching.tex [6] [7]) (Inhalt/Grundlagen/Metriken.tex
 [8] [9]) [10]
 chapter 3.
-(Inhalt/Analyse/Baseline-Algorithmus.tex [11
+(Inhalt/Analyse/Duplikate.tex) (Inhalt/Analyse/Baseline-Algorithmus.tex
+[11
 
 
-]) [12]
+] [12]) (Inhalt/Analyse/Vorgehen.tex) [13]
+\openout2 = `Inhalt/Formel.aux'.
+
+ (Inhalt/Formel.tex
 chapter 4.
-[13
-
-
-]
-chapter 5.
 [14
+
+
+
+]) [15]
+chapter 5.
+[16
+
+
 
 
 ]
 chapter 6.
-[15
+[17
 
 
 ]
 chapter 7.
-[16
+[18
 
 
 ]
@@ -1373,7 +1381,8 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
 
 
 ] (Arbeit.aux (Deckblatt/Deckblatt.aux) (Inhalt/Abstrakt.aux)
-(Inhalt/Einleitung.aux) (Inhalt/Selbstaendigkeitserklaerung.aux))
+(Inhalt/Einleitung.aux) (Inhalt/Formel.aux)
+(Inhalt/Selbstaendigkeitserklaerung.aux))
  ***********
 LaTeX2e <2023-06-01> patch level 1
 L3 programming layer <2020/03/25>
@@ -1382,20 +1391,20 @@ Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32769 strings out of 475248
- 608984 string characters out of 5757813
- 1927801 words of memory out of 5000000
- 53610 multiletter control sequences out of 15000+600000
+ 32836 strings out of 475248
+ 610696 string characters out of 5757813
+ 1928801 words of memory out of 5000000
+ 53645 multiletter control sequences out of 15000+600000
  574538 words of font info for 75 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 113i,9n,123p,10925b,598s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 113i,9n,123p,10925b,725s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti
 1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
 0\ecrm1000.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
 /dpi600\eccc1000.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
 pen/ec/dpi600\ecsx1440.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour
-/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/
-ljfour/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\marti\AppData\Local\MiKTeX\fon
+/jknappen/ec/dpi600\ecsx1728.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/
+ljfour/jknappen/ec/dpi600\ecsl1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fon
 ts/pk/ljfour/jknappen/ec/dpi600\ecsx1200.pk> <C:\Users\marti\AppData\Local\MiKT
 eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1200.pk> <C:\Users\marti\AppData\Loca
 l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecsx2488.pk> <C:\Users\marti\AppDat
@@ -1407,10 +1416,11 @@ arti/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmex10.pfb><C
 s/cm/cmmi8.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/cm/cmr12.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/type
 1/public/amsfonts/cm/cmr8.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fon
-ts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on Arbeit.pdf (24 pages, 299060 bytes).
+ts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/marti/AppData/Local/Programs/M
+iKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on Arbeit.pdf (27 pages, 328551 bytes).
 PDF statistics:
- 798 PDF objects out of 1000 (max. 8388607)
- 84 named destinations out of 1000 (max. 500000)
- 190 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 877 PDF objects out of 1000 (max. 8388607)
+ 103 named destinations out of 1000 (max. 500000)
+ 222 words of extra memory for PDF output out of 10000 (max. 10000000)
 

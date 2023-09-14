@@ -19,10 +19,11 @@ Für jede Stelle, die nicht übereinstimmt, steigt die Distanz um 1.
 
 $$distance(desc1, desc2) := \vert \{ i \in \{1,..., 256\} \mid desc1_{i} \neq desc2_{i}\} \vert$$
 
-Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB-Algorithmus errechnet werden. Bei diesen handelt es sich um Bitfolgen mit 256 Stellen. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
+Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB-Algorithmus errechnet werden. \cite[S.  2569]{orb2011} 
+Bei diesen handelt es sich um Bitfolgen mit 256 Stellen. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
 
 \paragraph{Euklidische-Distanz}
-Bei Deskriptoren, die aus dem SIFT-Algorithmus resultieren, wird die Euklidische Distanz genutzt. Die Deskriptoren sind hierbei eine Folge von Gradient-Werten. 
+Bei Deskriptoren, die aus dem SIFT-Algorithmus resultieren, wird die Euklidische Distanz genutzt. \cite[S. 104]{sift2004} Die Deskriptoren sind hierbei eine Folge von Gradient-Werten. 
 Stelle für Stelle wird die Euklidische Distanz für alle Gradient-Werte der Deskriptoren berechnet und aufsummiert. 
 
 $$distance(desc1, desc2) := \sum_{ i = 1 }^{ 128 }{ \sqrt{ (desc1[i] - desc2[i])^2 } }$$

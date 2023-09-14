@@ -1,0 +1,29 @@
+\chapter{Formel zur Bestimmung der Bildähnlichkeit}
+\label{sec:Formel}
+In diesem Kapitel soll eine Formel definiert werden, mit der ein Ähnlichkeits-Score errechnet wird. 
+Mit diesem Score soll eine Aussage darüber getroffen werden, wie Ähnlich sich zwei Bilder sind.
+Als Eingabe erhält die Formel Matches, die durch den Brute-Force Matcher (Abschnitt ~\ref{sec:BFM}) gefunden und durch Lowes ratio test (Abschnitt ~\ref{sec:RatioTest}) gefiltert wurden.
+
+\section{Vorüberlegung}
+\label{FormelGedanken}
+Je niedriger die Distanz eines Matches desto ähnlicher sind sich die in dem Match verglichenen Deskriptoren. (Abschnitt ~\ref{sec:DeskriptorenVergleichen})
+Und je ähnlicher die Deskriptoren desto ähnlicher sind sich die verglichenen Bilder. 
+Daher sollte die durchschnittliche Distanz aller Matches Aufschluss darüber geben, wie ähnlich sich zwei Bilder sind.
+
+Die Werte des Ähnlichkeits-Score sollten außerdem auf einen festgelegten Bereich abgebildet werden.
+Dadurch ist der Ähnlichkeits-Score einer Bildpaarung gut mit dem Ähnlichkeits-Score einer anderen Bildpaarung vergleichbar.
+
+\section{Berechnung}
+$$sum_D = \sum\nolimits_{d \in D} \frac{d - min(D)}{max(D) - min(D)}$$
+
+Es werden alle Distanzen aller gefilterten Matches normalisiert und aufsummiert.
+Um die Werte auf den Bereich zwischen 0 und 1 abzubilden, wird die Min-Max-Normalisierung angewendet.
+Bei der Normalisierung sind Werte kleiner Null sind nicht möglich, da alle Distanzen mindestens 0 betragen.
+
+$$score = 1 - \frac{sum_D}{| D |} $$
+
+Die Summe der normalisierten Werte wird durch die Anzahl der gefilterten Matches geteilt, um einen normalisierten Durchschnittswert zu erhalten.
+Der Ähnlichkeits-Score ergibt sich aus der Differenz von 1 und dem normalisierten Durchschnittswert und liegt im Bereich zwischen 0 und 1. Je höher der Score desto ähnlicher sind sich die verglichenen Bilder. 
+Ein Score von 1 würde bedeuten, dass beide Bilder identisch sind.
+
+Der Mindest-Score, der erreicht werden muss, damit ein Bild als Duplikat gilt, soll im Verlauf der Tests ermittelt werden.

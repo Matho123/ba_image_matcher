@@ -1,22 +1,22 @@
 \section{Baseline-Algorithmus (pHash)}
 \label{sec:pHash}
-Spreadshirt nutzt momentan einen Perceptual-Hashing-Algorithmus (kurz pHash) um neu hochgeladene Bilder zu erkennen, die bereits verboten wurden. Die pHash Implementierung bei Spreadshirt stützt sich auf den Blockeintrag \cite{pHash} und lässt sich grob in drei Phasen unterteilen.
+Spreadshirt nutzt momentan einen Perceptual-Hashing-Algorithmus (kurz pHash) um neu hochgeladene Bilder zu erkennen, die bereits verboten wurden. Die Idee von pHash ist, dass für ähnliche Bilder ein ähnlicher pHash-Wert ermittelt wird. Die pHash Implementierung bei Spreadshirt stützt sich auf den Blockeintrag \cite{pHash} und lässt sich grob in drei Phasen unterteilen.
 
-\paragraph{Vorverarbeitungsphase}
+\paragraph{Phase 1: Vorverarbeitungsphase}
 Zuerst kommt das Bild in eine Vorverarbeitungsphase. Falls das Bild einen transparenten Hintergrund hat, wird es so zugeschnitten, dass der Bildrand direkt Rand des Motivs liegt. Danach wird das Bild auf eine Auflösung von 32x32 herunter skaliert und in ein Graustufenbild umgewandelt. 
 
-\paragraph{Umwandlung in den Frequenzraum} In dieser Phase wird das Bild vom Orts in den Frequenzraum überführt. 
+\paragraph{Phase 2: Umwandlung in den Frequenzraum} In dieser Phase wird das Bild vom Ortsraum in den Frequenzraum überführt. 
 Dazu wird die diskrete Kosinustransformation genutzt. 
 Es entsteht eine 32x32 DCT-Matrix bestehend aus Koeffizienten, mit denen, in Kombination mit der Kosinusfunktion, das Originalbild rekonstruiert werden kann. 
 
-Für pHash wird obere linke 8x8 Bereich der Matrix genutzt. Dieser Bereich enthält die Niederfrequenzkomponenten und wird als reduzierte DCT-Matrix bezeichnet.  
-Die Niederfrequenzkomponenten sind interessant für pHash, da diese die groben Strukturen und Muster des Bilds beschreiben. Zwei Bilder mit ähnlichen Strukturen und Mustern werden ähnliche Niederfrequenzkomponenten haben. 
+Für pHash wird der obere linke 8x8 Bereich der DCT-Matrix genutzt. Dieser Bereich enthält die Niederfrequenzkomponenten und wird als reduzierte DCT-Matrix bezeichnet.  
+Die Niederfrequenzkomponenten sind für pHash interessant, da diese die groben Strukturen und Muster des Bilds beschreiben. Zwei Bilder mit ähnlichen Strukturen und Mustern werden ähnliche Niederfrequenzkomponenten haben und damit zu ähnlichen Hash-Werten führen. 
 
-\paragraph{Hash-Berechnung}
-Für die Hash-Berechnung wird der Median in der reduzierten DCT-Matrix ermittelt. In der reduzierten DCT-Matrix der Größe 8x8 befinden sich insgesamt 64 Werte. Für jeden Wert wird geprüft, ob er über oder unter dem Median liegt. 
+\paragraph{Phase 3: Hash-Berechnung}
+Für die Hash-Berechnung wird der Median in der reduzierten DCT-Matrix ermittelt. Die reduzierte DCT-Matrix der Größe 8x8 beinhaltet insgesamt 64 Werte. Für jeden Wert wird geprüft, ob er über oder unter dem Median liegt. 
 Wenn der Wert größer ist, wird eine 1 und ansonsten eine 0 an den Hash-Wert angehängt. Damit ergibt sich ein 64-bit Hash-Wert für ein Bild.
 
 \paragraph{pHash-Werte vergleichen}
-Zum vergleichen von pHash-Werten, die Hamming-Distanz (Siehe Abschnitt ~\ref{sec:DeskriptorenVergleichen}) genutzt.
-Bei Spreadshirt gilt ein Bild als Duplikat, wenn beim Hash-Vergleich mit einem Bild aus der Datenbank eine Hamming-Distanz kleiner oder gleich 4 herauskommt.
+Zum vergleichen von pHash-Werten, wird die Hamming-Distanz (Siehe Abschnitt ~\ref{sec:DeskriptorenVergleichen}) genutzt.
+Bei Spreadshirt gilt ein Bild als Duplikat, wenn beim Hash-Vergleich mit einem Bild aus der Datenbank eine Hamming-Distanz kleiner oder gleich 4 ermittelt wird.
 
