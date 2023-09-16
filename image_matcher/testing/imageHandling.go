@@ -1,9 +1,11 @@
 package testing
 
 import (
-	"gocv.io/x/gocv"
+	"image"
 	"image-matcher/image_matcher/service"
 	_ "image-matcher/image_matcher/service"
+	_ "image/jpeg"
+	_ "image/png"
 	"io/fs"
 	"log"
 	"os"
@@ -58,13 +60,21 @@ func loadImage(filePath string) *service.RawImage {
 	if !isAllowedImageFile(filePath) {
 		return nil
 	}
-	image := gocv.IMRead(filePath, gocv.IMReadGrayScale)
 
-	if image.Empty() {
-		return nil
+	//image := gocv.IMRead(filePath, gocv.IMReadGrayScale)
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Error opening the image: ", err)
 	}
+	defer file.Close()
+
+	img, _, err := image.Decode(file)
+	if err != nil {
+		log.Fatal("Error decoding the image: ", err)
+	}
+
 	log.Println("successfully loaded: ", filePath)
-	return &service.RawImage{ExternalReference: filePath, Data: image}
+	return &service.RawImage{ExternalReference: filePath, Data: img}
 }
 
 func isAllowedImageFile(filePath string) bool {
