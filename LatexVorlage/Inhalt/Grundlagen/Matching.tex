@@ -12,6 +12,14 @@ Die Distanz beschreibt in diesem Fall wie ähnlich sich Deskriptoren sind.
 Je kleiner die Distanz desto ähnlicher die Deskriptoren.
 Abhängig davon welche Art Deskriptor verglichen wird, wird ein anderer Distanzmaßstab verwendet.
 
+\paragraph{Euklidische-Distanz}
+Bei Deskriptoren, die aus dem SIFT-Algorithmus resultieren, wird die Euklidische Distanz genutzt. \cite[S. 104]{sift2004} Die Deskriptoren sind hierbei eine Folge von Gradient-Werten. 
+Stelle für Stelle wird die Euklidische Distanz für alle Gradient-Werte der Deskriptoren berechnet und aufsummiert. 
+
+$$distance(desc1, desc2) := \sum_{ i = 1 }^{ 128 }{ \sqrt{ (desc1[i] - desc2[i])^2 } }$$
+
+SIFT-Deskriptoren bestehen in der Regel aus 128 Gradient-Werten.
+
 \paragraph{Hamming-Distanz}
 Die Hamming-Distanz kann verwendet werden, um Bitfolgen zu vergleichen. 
 Dazu werden beide Bitfolgen Stelle für Stelle verglichen. 
@@ -22,20 +30,23 @@ $$distance(desc1, desc2) := \vert \{ i \in \{1,..., 256\} \mid desc1_{i} \neq de
 Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB-Algorithmus errechnet werden. \cite[S.  2569]{orb2011} 
 Bei diesen handelt es sich um Bitfolgen mit 256 Stellen. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
 
-\paragraph{Euklidische-Distanz}
-Bei Deskriptoren, die aus dem SIFT-Algorithmus resultieren, wird die Euklidische Distanz genutzt. \cite[S. 104]{sift2004} Die Deskriptoren sind hierbei eine Folge von Gradient-Werten. 
-Stelle für Stelle wird die Euklidische Distanz für alle Gradient-Werte der Deskriptoren berechnet und aufsummiert. 
+Durch bitweises XOR kann die Hamming-Distanz deutlich effizienter berechnet werden, als die Euklidische Distanz. 
+Binär-Deskriptoren haben dadurch beim Vergleichen einen Geschwindigkeitsvorteil.
 
-$$distance(desc1, desc2) := \sum_{ i = 1 }^{ 128 }{ \sqrt{ (desc1[i] - desc2[i])^2 } }$$
+\subsection{Matching Strategien}
+\label{sec:MatchingStrategien}
 
-SIFT-Deskriptoren bestehen in der Regel aus 128 Gradient-Werten.
-
-\subsection{Brute-Force Matcher}
+\paragraph{Brute-Force Matcher}
 \label{sec:BFM}
-Um Übereinstimmungen von Merkmalen in zwei Bildern zu finden, werden alle Deskriptoren des ersten Bilds mit allen Deskriptoren des zweiten Bilds verglichen. \cite{matching}
+Um Übereinstimmungen von Merkmalen in zwei Bildern zu finden, werden alle Deskriptoren des ersten Bilds mit allen Deskriptoren des zweiten Bilds verglichen. \cite{opencv}
 
-Der Vorteil dieser simplen Herangehensweise ist, dass garantiert die besten Übereinstimmungen gefunden werden. 
+Der Vorteil dieser simplen Herangehensweise ist, dass garantiert die besten Matches gefunden werden. 
 Allerdings ist diese Strategie mit $\mathcal{O}(n^2)$ auch sehr ineffizient, wodurch sie gerade bei Datensets mit einer großen Menge an Deskriptoren ins Gewicht fällt. 
+
+\paragraph{FLANN-Based Matcher}
+FLANN ist eine Bibliothek für fast approximate nearest neighbor search. 
+Abhängig vom verwendeten Datensatz wählt die Bibliothek automatisch aus einer Reihe von Algorithmen, die für approximate nearest neighbor Suche optimiert sind, den besten aus. Für größere Datensets arbeitet FLANN schneller als der Brute-Force Matcher. Allerdings kann durch die approximate nearest neighbor search nicht garantiert werden, dass FLANN die besten Matches findet. \cite{opencv}
+
 
 \subsection{Filterung der Matching-Ergebnisse}
 \label{sec:RatioTest}

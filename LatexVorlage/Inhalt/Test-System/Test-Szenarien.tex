@@ -1,0 +1,32 @@
+\section{Test-Szenarien}
+\label{sec:TestSzenarien}
+Aus der Analyse hat sich ergeben, dass ein Bild auf unterschiedliche Weisen verändert werden und trotzdem als Duplikat gelten kann.
+Daher sollen Test-Szenarien definiert werden, in denen die Algorithmen getestet werden.
+Jedes Szenario bildet dabei eine Modifikation ab, die auf ein Bild angewendet werden kann, sodass es im Sinne der Arbeit immer noch als Duplikat gilt.
+
+In den folgenden Szenarien soll getestet werden:
+\begin{itemize}
+\item \textbf{1-zu-1-Kopien}
+Im Suchset sind pixelgenaue Kopien aus dem Datenbank-Set enthalten.
+Dieses Szenario stellt den Trivialfall dar und es wird hierbei eine Balancierte-Genauigkeit von 100\% und ein Ähnlichkeits-Score von 1 bei Duplikaten erwartet. 
+Eine niedrigere Balancierte-Genauigkeit oder ein niedrigerer Ähnlichkeits-Score lassen darauf schließen, dass der getestete Algorithmus nicht richtig implementiert und die Bildähnlichkeits-Formel fehlerhaft ist.
+\item \textbf{Geänderte Auflösung}
+\item \textbf{Verschobenes Motiv}
+\item \textbf{Rotiertes Motiv}
+\item \textbf{Gespiegeltes Motiv}
+\item \textbf{Andere Hintergrundfarbe}
+\item \textbf{Motiv in anderer Farbe}
+\item \textbf{Originalbild als teil eines größeren Bildes}
+\item \textbf{Misch-Szenario} 
+Alle anderen Szenarien kommen in diesem Szenario vor. 
+Ziel ist es eine realistische Anwendungssituation darzustellen. 
+Dazu werden auch Duplikate mit mehreren Modifikationen erstellt.
+Beispielsweise können Duplikate, die sowohl rotiert als auch eine niedriger Auflösung haben, vorkommen.
+\end{itemize}
+
+Für alle Szenarien werden die, in den Grundlagen definierten Metriken (Abschnitt \ref{sec:TestMetriken}), festgehalten. 
+Dadurch jedes Szenario kann einzeln ausgewertet werden und Aufschluss über die individuellen Stärken und Schwächen der getesteten Algorithmen liefern. 
+
+In den Tests der feature-based Algorithmen soll in jedem Szenario mit verschiedenen Mindestwerten für den Bildähnlichkeits-Score experimentiert werden. Ziel ist es für jeden Algorithmus einen Mindestwert zu finden, der für alle Szenarien eine möglichst gute Balancierte-Genauigkeit erreicht.
+
+Zudem werden im Misch-Szenario Laufzeit und Speicherkosten der einzelnen Algorithmen dokumentiert.

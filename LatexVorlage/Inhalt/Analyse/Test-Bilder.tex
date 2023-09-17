@@ -1,0 +1,17 @@
+\section{Test-Daten}
+\label{sec:TestDaten}
+
+Um die Algorithmen auf ihre Leistung im Anwendungsfall bei Spreadshirt testen zu können, sind Bilder notwendig, die repräsentativ für die Designs, die bei Spreadshirt hochgeladen werden, sind. 
+
+Für die Tests werden die Datensätze für jedes Szenario erstellt (siehe Abschnitt ~\ref{sec:TestSzenarien} und in zwei Subsets geteilt:
+
+\begin{itemize}
+\item \textbf{Datenbank-Set} 
+Bilder, die in der Datenbank registriert werden.
+
+\item \textbf{Such-Set}
+Suchbilder, die mit den Bildern aus der Datenbank verglichen werden sollen. 
+Das Set enthält dabei Duplikate aus dem Datenbank-Set, die entsprechend des Szenarios modifiziert sind.  
+Es sind auch Bilder enthalten, die keine Duplikate aus dem Datenbank-Set sind und auch nicht als solche erkannt werden sollen. 
+\end{itemize}
+

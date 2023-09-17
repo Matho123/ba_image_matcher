@@ -17,10 +17,19 @@ Um Invarianz gegenüber Auflösungsunterschieden entgegenzuwirken, generiert ORB ä
 Für jede Auflösung wird die Schlüsselpunktsuche mit FAST und Randpunktfilterung mit "Harris corner measure" durchgeführt. 
 Um die Orientierung des Schlüsselpunkts zu ermitteln, wird in dessen Umgebung nach dem Pixel mit dem höchsten Helligkeitswert gesucht. Die Orientierung ergibt sich dann aus dem Vektor zwischen diesen beiden Punkten. \cite[S. 2565]{orb2011} 
 
-\paragraph{Erstellen der Deskriptoren mit BRIEF} Der BRIEF-Algorithmus definiert um den Schlüsselpunkt einen Bereich P, der weichgezeichnet wird. 
-Aus diesem Bereich werden n Pixelpaare (x,y) genommen und einem Binärtest T unterzogen. Für jedes Pixelpaar werden die Helligkeitswerte P(x) und P(y) verglichen. 
-Je nachdem ob der Helligkeitswert P(x) größer als P(y) ist, ergibt der Binärtestt 0 oder 1. In der Implementation bei ORB werden 256 Pixelpaare genutzt.  
+\paragraph{Erstellen der Deskriptoren mit BRIEF} Der BRIEF-Algorithmus definiert um den Schlüsselpunkt einen Bereich p, der weichgezeichnet wird. 
+Aus diesem Bereich werden n Pixelpaare (x,y) genommen und einem Binärtest $\tau$ unterzogen. Für jedes Pixelpaar werden die Helligkeitswerte p(x) und p(y) verglichen. 
+Je nachdem ob der Helligkeitswert p(x) größer als p(y) ist, ergibt der Binärtestt 0 oder 1. In der Implementation bei ORB werden 256 Pixelpaare genutzt.  
 Der Deskriptor ist eine Aneinanderreihung der Testergebnisse aller 256 Pixelpaare. Somit ergibt sich ein 256 Bit Deskriptor pro gefundenen Schlüsselpunkt. \cite[S. 2566]{orb2011}
+
+$$\tau (p; x, y) = \left\{
+\begin{array}{ll}
+1 & :p(x) < p(y) \\
+0 & :p(x) \geq p(y) \\
+\end{array}
+\right. $$
+
+$$ $$
 
 Damit die durch BRIEF erstellten Deskriptoren robust gegenüber Rotationen sind, nutzt ORB die Orientierung die für die Schlüsselpunkte ermittelt wurden. 
 Dazu wird eine Matrix S mit den Pixelpaaren für den Binärtest erstellt. 

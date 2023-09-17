@@ -9,15 +9,17 @@ Reallocating 'name_of_file' (item size: 1) to 20 items.
 A level-1 auxiliary file: Inhalt/Abstrakt.aux
 Reallocating 'name_of_file' (item size: 1) to 22 items.
 A level-1 auxiliary file: Inhalt/Einleitung.aux
+Reallocating 'name_of_file' (item size: 1) to 18 items.
+A level-1 auxiliary file: Inhalt/Formel.aux
 Reallocating 'name_of_file' (item size: 1) to 20 items.
 Reallocating 'name_of_file' (item size: 1) to 39 items.
 A level-1 auxiliary file: Inhalt/Selbstaendigkeitserklaerung.aux
 Database file #1: Literatur/Literatur.bib
-Warning--to sort, need author or key in matching
+Warning--to sort, need author or key in opencv
 Warning--to sort, need author or key in pHash
 You've used 7 entries,
             2543 wiz_defined-function locations,
-            601 strings with 5459 characters,
+            602 strings with 5457 characters,
 and the built_in function-call counts, 2869 in all, are:
 = -- 305
 > -- 76
