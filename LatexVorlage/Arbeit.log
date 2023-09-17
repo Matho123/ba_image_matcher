@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  17 SEP 2023 20:33
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  17 SEP 2023 21:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1299,55 +1299,82 @@ chapter 2.
 
 
 
-] [4]
-Overfull \hbox (2.69006pt too wide) in paragraph at lines 42--43
+]
+<Abbildungen/keypointsift.png, id=112, 246.1697pt x 205.5178pt>
+File: Abbildungen/keypointsift.png Graphic file (type png)
+<use Abbildungen/keypointsift.png>
+Package pdftex.def Info: Abbildungen/keypointsift.png  used on input line 22.
+(pdftex.def)             Requested size: 147.70294pt x 123.31163pt.
+<Abbildungen/bildpyramidesift.png, id=116, 606.01407pt x 450.9347pt>
+File: Abbildungen/bildpyramidesift.png Graphic file (type png)
+<use Abbildungen/bildpyramidesift.png>
+Package pdftex.def Info: Abbildungen/bildpyramidesift.png  used on input line 3
+3.
+(pdftex.def)             Requested size: 303.00629pt x 225.4668pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4 <./Abbildungen/keypointsift.png>]
+Overfull \hbox (2.69006pt too wide) in paragraph at lines 56--57
 []\T1/cmr/m/n/12 Jede Gradient-Orientierung wird in das Hi-sto-gramm ein-ge-tra
 -gen und an-hand der Gradient-
  []
 
-) (Inhalt/Grundlagen/ORB.tex [5]
-Overfull \hbox (9.34114pt too wide) in paragraph at lines 15--19
+[5 <./Abbildungen/bildpyramidesift.png>]) (Inhalt/Grundlagen/ORB.tex
+<Abbildungen/fast.png, id=148, 261.97874pt x 260.47313pt>
+File: Abbildungen/fast.png Graphic file (type png)
+<use Abbildungen/fast.png>
+Package pdftex.def Info: Abbildungen/fast.png  used on input line 11.
+(pdftex.def)             Requested size: 183.38387pt x 182.32994pt.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+Overfull \hbox (9.34114pt too wide) in paragraph at lines 22--26
 \T1/cmr/m/n/12 sel-punkt-su-che mit FAST und Rand-punkt-fil-te-rung mit "Har-ri
 s cor-ner mea-su-re"durchgeführt.
  []
 
-[6]) (Inhalt/Grundlagen/BRIEF.tex) (Inhalt/Grundlagen/Matching.tex [7]
+[6] [7 <./Abbildungen/fast.png>]) (Inhalt/Grundlagen/BRIEF.tex)
+(Inhalt/Grundlagen/Matching.tex [8]
 Overfull \hbox (0.42941pt too wide) in paragraph at lines 47--49
 [] []\T1/cmss/bx/n/12 FLANN-Based Mat-cher[][] \T1/cmr/m/n/12 FLANN ist ei-ne B
 i-blio-thek für fast ap-pro-xi-ma-te nea-rest neigh-
  []
 
-[8]) (Inhalt/Grundlagen/Metriken.tex [9]) [10]
+[9]) (Inhalt/Grundlagen/Metriken.tex [10]) [11]
 chapter 3.
 (Inhalt/Analyse/Duplikate.tex) (Inhalt/Analyse/Baseline-Algorithmus.tex
-[11
+[12
 
 
-] [12]) (Inhalt/Analyse/Test-Bilder.tex) (Inhalt/Analyse/Vorgehen.tex
-[13]) [14]
+] [13]) (Inhalt/Analyse/Test-Bilder.tex) (Inhalt/Analyse/Vorgehen.tex
+[14]) [15]
 \openout2 = `Inhalt/Formel.aux'.
 
  (Inhalt/Formel.tex
 chapter 4.
-[15
+[16
 
 
 
-]) [16]
+]) [17]
 chapter 5.
-(Inhalt/Test-System/Test-Szenarien.tex [17
+(Inhalt/Test-System/Test-Szenarien.tex [18
 
 
 
 
-]) [18]
+]) [19]
 chapter 6.
-[19
+[20
 
 
 ]
 chapter 7.
-[20
+[21
 
 
 ]
@@ -1397,10 +1424,10 @@ Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32887 strings out of 475248
- 612148 string characters out of 5757813
+ 32927 strings out of 475248
+ 613395 string characters out of 5757813
  1929801 words of memory out of 5000000
- 53674 multiletter control sequences out of 15000+600000
+ 53710 multiletter control sequences out of 15000+600000
  575651 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,9n,123p,10925b,725s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1426,9 +1453,9 @@ type1/public/amsfonts/cm/cmr12.pfb><C:/Users/marti/AppData/Local/Programs/MiKTe
 X/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/marti/AppData/Local/Program
 s/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/marti/AppData/Loca
 l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Arbeit.pdf (29 pages, 358213 bytes).
+Output written on Arbeit.pdf (30 pages, 919262 bytes).
 PDF statistics:
- 970 PDF objects out of 1000 (max. 8388607)
- 112 named destinations out of 1000 (max. 500000)
- 246 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1026 PDF objects out of 1200 (max. 8388607)
+ 116 named destinations out of 1000 (max. 500000)
+ 261 words of extra memory for PDF output out of 10000 (max. 10000000)
 
