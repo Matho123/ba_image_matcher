@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  18 SEP 2023 19:25
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  18 SEP 2023 21:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1091,7 +1091,7 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
 
 (Arbeit.aux (Deckblatt/Deckblatt.aux) (Inhalt/Abstrakt.aux)
-(Inhalt/Einleitung.aux) (Inhalt/Formel.aux)
+(Inhalt/Einleitung.aux) (Inhalt/Formel.aux) (Inhalt/Schluss.aux)
 (Inhalt/Selbstaendigkeitserklaerung.aux))
 \openout1 = `Arbeit.aux'.
 
@@ -1408,27 +1408,33 @@ to-ren einen sehr ho-hen Speicher-
 
 
 ]) [25]
+\openout2 = `Inhalt/Schluss.aux'.
+
+ (Inhalt/Schluss.tex
 chapter 8.
-(Arbeit.bbl [1
+) [26
 
 
-]
+
+] (Arbeit.bbl
 chapter without number
-) [2
+) [1
+
+
 
 
 ] (Arbeit.lof)
 \tf@lof=\write5
 \openout5 = `Arbeit.lof'.
 
- [3
+ [2
 
 
 ] (Arbeit.lot)
 \tf@lot=\write6
 \openout6 = `Arbeit.lot'.
 
- [4
+ [3
 
 
 ]
@@ -1439,12 +1445,12 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
 
  []
 
-) [5
+) [4
 
 
 
 ] (Arbeit.aux (Deckblatt/Deckblatt.aux) (Inhalt/Abstrakt.aux)
-(Inhalt/Einleitung.aux) (Inhalt/Formel.aux)
+(Inhalt/Einleitung.aux) (Inhalt/Formel.aux) (Inhalt/Schluss.aux)
 (Inhalt/Selbstaendigkeitserklaerung.aux))
  ***********
 LaTeX2e <2023-06-01> patch level 1
@@ -1454,10 +1460,10 @@ Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32989 strings out of 475248
- 615159 string characters out of 5757813
+ 33014 strings out of 475248
+ 616055 string characters out of 5757813
  1929801 words of memory out of 5000000
- 53751 multiletter control sequences out of 15000+600000
+ 53769 multiletter control sequences out of 15000+600000
  578738 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,9n,123p,10925b,725s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -1484,7 +1490,7 @@ X/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/marti/AppData/Local/Progra
 ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/marti/AppData/Local
 /Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/marti/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Arbeit.pdf (34 pages, 1102018 bytes).
+Output written on Arbeit.pdf (34 pages, 1102026 bytes).
 PDF statistics:
  1100 PDF objects out of 1200 (max. 8388607)
  128 named destinations out of 1000 (max. 500000)

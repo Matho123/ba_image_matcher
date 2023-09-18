@@ -44,8 +44,8 @@
 \contentsline {chapter}{\numberline {6}Versuche und Auswertung}{23}{chapter.6}%
 \contentsline {chapter}{\numberline {7}Neues Bilderkennungs-System}{24}{chapter.7}%
 \contentsline {section}{\numberline {7.1}Vor\"uberlegung}{24}{section.7.1}%
-\contentsline {chapter}{\numberline {8}Schluss}{I}{chapter.8}%
-\contentsline {chapter}{\nonumberline Literaturverzeichnis}{II}{chapter*.45}%
-\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{III}{chapter*.46}%
-\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{IV}{chapter*.47}%
+\contentsline {chapter}{\numberline {8}Schluss}{26}{chapter.8}%
+\contentsline {chapter}{\nonumberline Literaturverzeichnis}{I}{chapter*.45}%
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{II}{chapter*.46}%
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{III}{chapter*.47}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 
