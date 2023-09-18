@@ -3,6 +3,7 @@
 ORB basiert auf dem FAST-Algorithmus für die Schlüsselpunktsuche und dem BRIEF-Algorithmus für die Generierung von Deskriptoren
 
 \paragraph{Schüsselpunktsuche mit FAST}
+\label{sec:FAST}
 
 Der FAST-Algorithmus sucht nach Eckpunkten in einem Bild. Dazu wird um jeden Pixel im Bild ein Kreis mit 16 Randpixeln gezogen. Der betrachtete Kandidat-Pixel ist genau dann ein Eckpunkt, wenn eine bestimmte Anzahl an aneinander grenzenden Randpixel heller oder dunkler sind als der Kandidat-Pixel plus oder minus einem bestimmten Schwellenwert. \cite[S. 4]{fast2006}
 
@@ -36,7 +37,7 @@ $$\tau (p; x, y) := \left\{
 \end{array}
 \right. $$
 
-$$f_n(p) := \sum\nolimits_{1 \leq i \leq n} 2^{i-1} \tau(p; x, y) $$
+$$f_n(p) := \sum_{1 \leq i \leq n} 2^{i-1} \tau(p; x_i, y_i) $$
 
 Damit die durch BRIEF erstellten Deskriptoren robust gegenüber Rotationen sind, nutzt ORB die Orientierung die für die Schlüsselpunkte ermittelt wurden. 
 Dazu wird eine Matrix $S$ mit den Pixelpaaren für den Binärtest erstellt. 

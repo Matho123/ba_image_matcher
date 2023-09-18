@@ -27,8 +27,8 @@ Für jede Stelle, die nicht übereinstimmt, steigt die Distanz um 1.
 
 $$distance(desc1, desc2) := \vert \{ i \in \{1,..., 256\} \mid desc1_{i} \neq desc2_{i}\} \vert$$
 
-Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB-Algorithmus errechnet werden. \cite[S.  2569]{orb2011} 
-Bei diesen handelt es sich um Bitfolgen mit 256 Stellen. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
+Die Hamming-Distanz eignet sich um Deskriptoren, die durch den ORB- oder BRISK-Algorithmus errechnet werden, zu vergleichen. \cite[S.  2569]{orb2011} 
+Bei diesen handelt es sich um Bitfolgen mit 256 Stellen bei ORB und 512 Stellen bei BRISK. Auch bei dem Vergleich von pHash-Werten kommt die Hamming-Distanz zum Einsatz. 
 
 Durch bitweises XOR kann die Hamming-Distanz deutlich effizienter berechnet werden, als die Euklidische Distanz. 
 Binär-Deskriptoren haben dadurch beim Vergleichen einen Geschwindigkeitsvorteil.
@@ -53,7 +53,7 @@ Abhängig vom verwendeten Datensatz wählt die Bibliothek automatisch aus einer Re
 Für jeden Deskriptor aus dem ersten Bild wird der  erst- und zweitbeste Match aus dem zweiten Bild gespeichert. Ein Match besteht dabei aus den beiden Deskriptoren, die verglichen werden, und die resultierende Distanz (Siehe Abschnit ~\ref{sec:DeskriptorenVergleichen}). Daraus ergibt sich eine 2xN Matrix, wobei N die Anzahl der Deskriptoren im ersten Bild darstellt.
 
 Es können Deskriptoren vorkommen, für die keine zuverlässiger Match gefunden werden kann. Das kann unter anderen passieren, wenn Schlüsselpunkte an Rändern von Objekten oder wirren Bereichen im Bild gefunden werden. 
-Da mit solchen Deskriptoren keine gute Aussage über die Ähnlichkeit von zwei Bildern getroffen werden kann, müssen diese herausgefiltert werden.
+Weil mit solchen Deskriptoren keine gute Aussage über die Ähnlichkeit von zwei Bildern getroffen werden kann, müssen diese herausgefiltert werden.
 
 Dazu schlägt Lowe den sogenannten "ratio test" vor. 
 Dabei wird die Distanz des erst- und zweitbesten Matchs verglichen. Wenn das Verhältnis zwischen den beiden Distanzen kleiner als 0.8 ist, wird der erstbeste Match behalten. 

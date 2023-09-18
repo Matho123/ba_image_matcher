@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  17 SEP 2023 21:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 23.5) (preloaded format=pdflatex 2023.9.13)  18 SEP 2023 19:25
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1300,12 +1300,12 @@ chapter 2.
 
 
 ]
-<Abbildungen/keypointsift.png, id=112, 246.1697pt x 205.5178pt>
+<Abbildungen/keypointsift.png, id=114, 246.1697pt x 205.5178pt>
 File: Abbildungen/keypointsift.png Graphic file (type png)
 <use Abbildungen/keypointsift.png>
 Package pdftex.def Info: Abbildungen/keypointsift.png  used on input line 22.
 (pdftex.def)             Requested size: 147.70294pt x 123.31163pt.
-<Abbildungen/bildpyramidesift.png, id=116, 606.01407pt x 450.9347pt>
+<Abbildungen/bildpyramidesift.png, id=119, 606.01407pt x 450.9347pt>
 File: Abbildungen/bildpyramidesift.png Graphic file (type png)
 <use Abbildungen/bildpyramidesift.png>
 Package pdftex.def Info: Abbildungen/bildpyramidesift.png  used on input line 3
@@ -1322,62 +1322,92 @@ Overfull \hbox (2.69006pt too wide) in paragraph at lines 56--57
  []
 
 [5 <./Abbildungen/bildpyramidesift.png>]) (Inhalt/Grundlagen/ORB.tex
-<Abbildungen/fast.png, id=148, 261.97874pt x 260.47313pt>
+<Abbildungen/fast.png, id=151, 261.97874pt x 260.47313pt>
 File: Abbildungen/fast.png Graphic file (type png)
 <use Abbildungen/fast.png>
-Package pdftex.def Info: Abbildungen/fast.png  used on input line 11.
+Package pdftex.def Info: Abbildungen/fast.png  used on input line 12.
 (pdftex.def)             Requested size: 183.38387pt x 182.32994pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Overfull \hbox (9.34114pt too wide) in paragraph at lines 22--26
+Overfull \hbox (9.34114pt too wide) in paragraph at lines 23--27
 \T1/cmr/m/n/12 sel-punkt-su-che mit FAST und Rand-punkt-fil-te-rung mit "Har-ri
 s cor-ner mea-su-re"durchgeführt.
  []
 
-[6] [7 <./Abbildungen/fast.png>]) (Inhalt/Grundlagen/BRIEF.tex)
-(Inhalt/Grundlagen/Matching.tex [8]
+[6] [7 <./Abbildungen/fast.png>]) (Inhalt/Grundlagen/BRISK.tex
+<Abbildungen/bildpyramidebrisk.png, id=185, 506.6428pt x 511.15968pt>
+File: Abbildungen/bildpyramidebrisk.png Graphic file (type png)
+<use Abbildungen/bildpyramidebrisk.png>
+Package pdftex.def Info: Abbildungen/bildpyramidebrisk.png  used on input line 
+12.
+(pdftex.def)             Requested size: 202.65353pt x 204.46024pt.
+ [8 <./Abbildungen/bildpyramidebrisk.png>]
+<Abbildungen/abtastmusterbrisk.png, id=202, 299.61937pt x 298.11375pt>
+File: Abbildungen/abtastmusterbrisk.png Graphic file (type png)
+<use Abbildungen/abtastmusterbrisk.png>
+Package pdftex.def Info: Abbildungen/abtastmusterbrisk.png  used on input line 
+41.
+(pdftex.def)             Requested size: 149.80931pt x 149.0565pt.
+ [9 <./Abbildungen/abtastmusterbrisk.png>])
+(Inhalt/Grundlagen/Matching.tex [10]
 Overfull \hbox (0.42941pt too wide) in paragraph at lines 47--49
 [] []\T1/cmss/bx/n/12 FLANN-Based Mat-cher[][] \T1/cmr/m/n/12 FLANN ist ei-ne B
 i-blio-thek für fast ap-pro-xi-ma-te nea-rest neigh-
  []
 
-[9]) (Inhalt/Grundlagen/Metriken.tex [10]) [11]
+[11]) (Inhalt/Grundlagen/Metriken.tex
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[12] [13]) [14]
 chapter 3.
 (Inhalt/Analyse/Duplikate.tex) (Inhalt/Analyse/Baseline-Algorithmus.tex
-[12
+[15
 
 
-] [13]) (Inhalt/Analyse/Test-Bilder.tex) (Inhalt/Analyse/Vorgehen.tex
-[14]) [15]
+] [16]) (Inhalt/Analyse/Test-Bilder.tex) (Inhalt/Analyse/Vorgehen.tex
+[17]) [18]
 \openout2 = `Inhalt/Formel.aux'.
 
  (Inhalt/Formel.tex
 chapter 4.
-[16
+
+Overfull \hbox (19.67412pt too wide) in paragraph at lines 23--27
+[]\T1/cmr/m/n/12 Ursprünglich war für die For-mel die her-kömm-li-che Min-Max-N
+ormalisierung mit $[]$
+ []
+
+[19
 
 
 
-]) [17]
+]) [20]
 chapter 5.
-(Inhalt/Test-System/Test-Szenarien.tex [18
+(Inhalt/Test-System/Test-Szenarien.tex [21
 
 
 
 
-]) [19]
+]) [22]
 chapter 6.
-[20
+[23
 
 
 ]
 chapter 7.
-[21
+(Inhalt/Bilderkennungs-System/Entwurf.tex
+Overfull \hbox (2.62614pt too wide) in paragraph at lines 3--5
+\T1/cmr/m/n/12 Die Aus-wer-tun-gen der Tests ha-ben ge-zeigt, das die De-skrip-
+to-ren einen sehr ho-hen Speicher-
+ []
+
+[24
 
 
-]
+]) [25]
 chapter 8.
 (Arbeit.bbl [1
 
@@ -1424,17 +1454,17 @@ Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32927 strings out of 475248
- 613395 string characters out of 5757813
+ 32989 strings out of 475248
+ 615159 string characters out of 5757813
  1929801 words of memory out of 5000000
- 53710 multiletter control sequences out of 15000+600000
- 575651 words of font info for 77 fonts, out of 8000000 for 9000
+ 53751 multiletter control sequences out of 15000+600000
+ 578738 words of font info for 81 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  113i,9n,123p,10925b,725s stack positions out of 10000i,1000n,20000p,200000b,200000s
- <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti
+ <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\tcrm
 1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi60
 0\ecbx1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec
-/dpi600\tcrm1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
+/dpi600\ecti1200.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknap
 pen/ec/dpi600\ecrm1000.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour
 /jknappen/ec/dpi600\eccc1000.pk> <C:\Users\marti\AppData\Local\MiKTeX\fonts/pk/
 ljfour/jknappen/ec/dpi600\ecsx1440.pk> <C:\Users\marti\AppData\Local\MiKTeX\fon
@@ -1448,14 +1478,15 @@ Users\marti\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1728.pk
 ><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/c
 mex10.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmmi12.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/type1/pu
-blic/amsfonts/cm/cmmi8.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/
-type1/public/amsfonts/cm/cmr12.pfb><C:/Users/marti/AppData/Local/Programs/MiKTe
-X/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/marti/AppData/Local/Program
-s/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/marti/AppData/Loca
-l/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
-Output written on Arbeit.pdf (30 pages, 919262 bytes).
+blic/amsfonts/cm/cmmi6.pfb><C:/Users/marti/AppData/Local/Programs/MiKTeX/fonts/
+type1/public/amsfonts/cm/cmmi8.pfb><C:/Users/marti/AppData/Local/Programs/MiKTe
+X/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Users/marti/AppData/Local/Progra
+ms/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Users/marti/AppData/Local
+/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/marti/AppD
+ata/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy8.pfb>
+Output written on Arbeit.pdf (34 pages, 1102018 bytes).
 PDF statistics:
- 1026 PDF objects out of 1200 (max. 8388607)
- 116 named destinations out of 1000 (max. 500000)
- 261 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1100 PDF objects out of 1200 (max. 8388607)
+ 128 named destinations out of 1000 (max. 500000)
+ 279 words of extra memory for PDF output out of 10000 (max. 10000000)
 
