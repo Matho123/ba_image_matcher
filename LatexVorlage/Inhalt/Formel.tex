@@ -14,13 +14,16 @@ Die Werte des Ähnlichkeits-Score sollten außerdem auf einen festgelegten Bereich
 Dadurch ist der Ähnlichkeits-Score einer Bildpaarung gut mit dem Ähnlichkeits-Score einer anderen Bildpaarung vergleichbar.
 
 \section{Berechnung}
-$$sum_D = \sum\nolimits_{d \in D} \frac{d - min(D)}{max(D) - min(D)}$$
+$$score = 1 - \frac{\sum_{d \in D} \frac{d}{max(D)}}{| D |} $$
 
 Es werden alle Distanzen aller gefilterten Matches normalisiert und aufsummiert.
-Um die Werte auf den Bereich zwischen 0 und 1 abzubilden, wird die Min-Max-Normalisierung angewendet.
+Um die Werte auf den Bereich zwischen 0 und 1 abzubilden, wird die Distanz durch die Maximaldistanz geteilt.
 Bei der Normalisierung sind Werte kleiner Null sind nicht möglich, da alle Distanzen mindestens 0 betragen.
 
-$$score = 1 - \frac{sum_D}{| D |} $$
+Ursprünglich war für die Formel die herkömmliche Min-Max-Normalisierung mit $\frac{d - min(D)}{max(D)-min(D)}$ vorgesehen. 
+Allerdings hat sich diese bei weiterer Überlegung als ungeeignet herausgestellt. 
+Für hohe Werte bei $min(D)$, die für große unterscheide in den verglichenen Bildern sprechen, kommen bei der Min-Max-Normalisierung niedrige Werte heraus, wenn $min(D)$ ausreichend nah an $max(D)$ liegt. 
+Dadurch kann es in solchen Fällen zu false-positives, also Bildern die fälschlicherweise als Duplikat erkannt werden, kommen. Durch das auslassen von $min(D)$ in der Formel werden die Distanz-Werte nicht durch ein hohes $min(D)$ beschnitten.
 
 Die Summe der normalisierten Werte wird durch die Anzahl der gefilterten Matches geteilt, um einen normalisierten Durchschnittswert zu erhalten.
 Der Ähnlichkeits-Score ergibt sich aus der Differenz von 1 und dem normalisierten Durchschnittswert und liegt im Bereich zwischen 0 und 1. Je höher der Score desto ähnlicher sind sich die verglichenen Bilder. 

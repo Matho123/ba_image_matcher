@@ -1,6 +1,11 @@
 \babel@toc {ngerman}{}\relax 
 \addvspace {10\p@ }
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Vergleich des Schl\"usselpunkt-Kandidats mit seinen 26 Nachbarpixeln aus \cite [S. 95]{sift2004}}}{4}{figure.caption.5}%
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Bildpyramide aus \cite [S. 95]{sift2004}}}{5}{figure.caption.6}%
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Randpixel um Kandidat-Pixel aus \cite [S. 4]{fast2006}}}{7}{figure.caption.15}%
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Interpolation der Schl\"usselpunktaufl\"osung in der Bildpyramide aus \cite [S. 2550]{brisk2011}}}{8}{figure.caption.20}%
+\contentsline {figure}{\numberline {2.5}{\ignorespaces Vordefiniertes Abtastmuster mit Abtastpunkten in blau und weichgezeichnete Bereiche in rot aus \cite [S. 2551]{brisk2011}}}{9}{figure.caption.23}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

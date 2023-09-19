@@ -1,5 +1,11 @@
 \begin{thebibliography}{RRKB11}
 
+\bibitem[LCS11]{brisk2011}
+Stefan Leutenegger, Margarita Chli, and Roland~Y. Siegwart.
+\newblock Brisk: Binary robust invariant scalable keypoints.
+\newblock In {\em 2011 International Conference on Computer Vision}, pages
+  2548--2555, 2011.
+
 \bibitem[Low99]{sift1999}
 David~G Lowe.
 \newblock Object recognition from local scale-invariant features.
@@ -11,8 +17,8 @@ David~G Lowe.
 \newblock Distinctive image features from scale-invariant keypoints.
 \newblock {\em International journal of computer vision}, 60:91--110, 2004.
 
-\bibitem[mat]{matching}
-Opencv feature matching dokumentation.
+\bibitem[ope]{opencv}
+Opencv dokumentation.
 
 \bibitem[pHa]{pHash}
 Blockeintrag phash.

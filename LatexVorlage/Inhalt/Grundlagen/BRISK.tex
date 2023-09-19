@@ -1,0 +1,61 @@
+\subsection{BRISK: Binary Robust Invariant Scalable Keypoints}
+\label{sec:BRISK}
+
+\paragraph{Schlüsselpunktsuche}
+Ähnlich wie in SIFT wird bei BRISK eine Bildpyramide mit Oktaven aufgebaut. 
+Auch hier wird die Auflösung jeder folgenden Oktave halbiert.
+Allerdings werden, anders als bei SIFT, keine weichgezeichneten Varianten zur Berechnung des DOG in den einzelnen Oktaven erstellt.  
+Stattdessen besteht jede Oktave aus einen einzelnen Bild und es werden Intra-Oktaven zwischen den Oktaven berechnet. Üblicherweise werden 4 Oktaven und 4 Intra-Oktaven genutzt. \cite[S.2549]{brisk2011}  
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=.4]{Abbildungen/bildpyramidebrisk}
+\caption{Interpolation der Schlüsselpunktauflösung in der Bildpyramide aus \cite[S. 2550]{brisk2011}}
+\label{fig:BildpyramideBRISK}
+\end{figure}
+
+Die erste Intra-Oktave wird erstellt, indem die Auflösung des Originalbilds um den Faktor 1.5 reduziert wird. 
+Die Auflösung der ersten Intra-Oktave beträgt dann also 2/3 der Auflösung des Originalbilds.
+Alle weiteren Intra-Oktaven leiten sich aus der ersten ab, indem die Auflösung für alle weiteren Intra-Oktaven halbiert wird.
+Ziel der Bildpyramide ist es, genau wie bei SIFT, durch Suchen auf verschiedenen Ebenen Schlüsselpunkte zu finden und Deskriptoren zu berechnen, die Robust gegenüber Änderungen in der Auflösung sind. \cite[S.2549f]{brisk2011}  
+
+BRISK nutzt AGAST für die Implementierung der Schlüsselpunktsuche. \cite[S. 2552]{brisk2011} 
+AGAST ist ein Algorithmus zum finden von Eckpunkten, der ähnlich wie FAST (siehe Abschnitt \ref{sec:FAST}) funktioniert.
+Für jede Oktave und Intra-Oktave wird AGAST angewendet um potenzielle Schlüsselpunkte zu finden.
+Danach wird für den Schlüsselpunktpixel, sowie allen 8 benachbarten Pixeln der \textit{saliency-score} berechnet.
+Dieser score gibt an für welchen maximalen Schwellenwert sich der Pixel noch als Eckpunkt qualifiziert.
+Der \textit{saliency-scores} muss für den Schlüsselpunkt-Kandidaten größer sein als der all seiner Nachbarn.
+Danach werden auch die scores in dem gleichen Bereich für die beiden (Intra-)Oktaven, die direkt an der aktuellen angrenzen, berechnet.
+Anhand der drei \textit{saliency-scores}, die in der Regel unterschiedliche Werte haben, wird eine Parabel gebaut. Das Ziel ist, mithilfe der Parabel, die Auflösungsebene zu interpolieren, in der der Schlüsselpunkt den höchsten \textit{saliency-score} erreicht. Diese Auflösungsebene, kann sich dabei zwischen den Oktaven befinden.
+Dadurch erhält man, die Position und die Skalierung, des Schlüsselpunkts. \cite[S. 2550]{brisk2011}
+
+\paragraph{Erstellen des Deskriptors}
+BRISK nutzt ein vordefiniertes Muster, um Positionen für Abtastpunkte zu definieren.
+Die Abtastpunkte sind in konzentrischen Kreisen um den Schlüsselpunkt herum positioniert.
+Auf die Bereiche um die Abtastpunkte herum wird der Gaußsche Weichzeichner angewendet.
+Außerdem wird das Muster an die Position und Skalierung des Schlüsselpunkts angepasst.
+Insgesamt werden 60 Abtastpunkte definiert, die miteinander gepaart werden.\cite[S. 2551]{brisk2011}
+
+\begin{figure}[h]
+\centering
+\includegraphics[scale=.5]{Abbildungen/abtastmusterbrisk}
+\caption{Vordefiniertes Abtastmuster mit Abtastpunkten in blau und weichgezeichnete Bereiche in rot aus \cite[S. 2551]{brisk2011}}
+\label{fig:abtastmuster}
+\end{figure}
+
+
+Abhängig von der Skalierung des Schlüsselpunkts werden Schwellenwert-Distanzen bestimmt, mit denen die Paare in Langdistanzpaare $L$ und Kurzdistanzpaare $S$ unterschiedenen werden. Um die Orientierung des Schlüsselpunkts zu ermitteln wird folgende Formel auf die Langdistanzpaare angewendet:
+
+$$\begin{pmatrix}
+	g_x \\
+	g_y \\
+\end{pmatrix}
+= \frac{1}{|L|} * \sum_{(p_i,p_j) \in L} \textbf{g}(p_i, p_j)$$
+
+Der Winkel ergibt sich dann aus $\alpha = arctan2(g_y,g_x)$.
+$\textbf{g}(p_i,p_j)$ ist dabei der Gradient der Helligkeitswerte zwischen der Abtastpunkten $p_i$ und $p_j$ einer Paarung. Es werden nur die Langdistanzpaarungen für die Berechnung der Orientierung verwendet, da davon ausgegangen wird, dass sich die Gradienten der Kurzdistanzpaarungen gegenseitig aufheben würden. \cite[S. 2551]{brisk2011}
+
+Damit der Deskriptor Robust gegenüber Rotationen ist, wird das Abtastmuster mit den Winkel $\alpha$ um den Schlüsselpunkt rotiert. 
+Um den Deskriptor zu erstellen werden für alle Kurdistanzpaarungen auf dem rotierten Abtastmuster die Helligkeitswerte der beiden Abtastpunkte miteinander verglichen.
+Je nachdem welcher Helligkeitswert größer ist, wird ein Bit in einer Bitfolge auf 0 oder 1 gesetzt. 
+Diese Bitfolge stellt den Deskriptor für BRISK dar. Insgesamt hat die Bitfolge 512 Stellen, woraus sich ein 512 Bit Deskriptor für jeden Schlüsselpunkt ergibt. \cite[S. 2551]{brisk2011}
