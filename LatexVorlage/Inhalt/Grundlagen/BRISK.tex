@@ -17,7 +17,7 @@ Stattdessen besteht jede Oktave aus einen einzelnen Bild und es werden Intra-Okt
 Die erste Intra-Oktave wird erstellt, indem die Auflösung des Originalbilds um den Faktor 1.5 reduziert wird. 
 Die Auflösung der ersten Intra-Oktave beträgt dann also 2/3 der Auflösung des Originalbilds.
 Alle weiteren Intra-Oktaven leiten sich aus der ersten ab, indem die Auflösung für alle weiteren Intra-Oktaven halbiert wird.
-Ziel der Bildpyramide ist es, genau wie bei SIFT, durch Suchen auf verschiedenen Ebenen Schlüsselpunkte zu finden und Deskriptoren zu berechnen, die Robust gegenüber Änderungen in der Auflösung sind. \cite[S.2549f]{brisk2011}  
+Ziel der Bildpyramide ist es, genau wie bei SIFT, durch Suchen auf verschiedenen Auflösungsebenen Schlüsselpunkte zu finden und Deskriptoren zu berechnen, die Robust gegenüber Änderungen in der Auflösung sind. \cite[S.2549f]{brisk2011}  
 
 BRISK nutzt AGAST für die Implementierung der Schlüsselpunktsuche. \cite[S. 2552]{brisk2011} 
 AGAST ist ein Algorithmus zum finden von Eckpunkten, der ähnlich wie FAST (siehe Abschnitt \ref{sec:FAST}) funktioniert.
@@ -25,7 +25,7 @@ Für jede Oktave und Intra-Oktave wird AGAST angewendet um potenzielle Schlüsselp
 Danach wird für den Schlüsselpunktpixel, sowie allen 8 benachbarten Pixeln der \textit{saliency-score} berechnet.
 Dieser score gibt an für welchen maximalen Schwellenwert sich der Pixel noch als Eckpunkt qualifiziert.
 Der \textit{saliency-scores} muss für den Schlüsselpunkt-Kandidaten größer sein als der all seiner Nachbarn.
-Danach werden auch die scores in dem gleichen Bereich für die beiden (Intra-)Oktaven, die direkt an der aktuellen angrenzen, berechnet.
+Danach werden auch die scores in dem gleichen Bereich für die beiden angrenzenden (Intra-)Oktaven berechnet.
 Anhand der drei \textit{saliency-scores}, die in der Regel unterschiedliche Werte haben, wird eine Parabel gebaut. Das Ziel ist, mithilfe der Parabel, die Auflösungsebene zu interpolieren, in der der Schlüsselpunkt den höchsten \textit{saliency-score} erreicht. Diese Auflösungsebene, kann sich dabei zwischen den Oktaven befinden.
 Dadurch erhält man, die Position und die Skalierung, des Schlüsselpunkts. \cite[S. 2550]{brisk2011}
 
@@ -52,8 +52,7 @@ $$\begin{pmatrix}
 \end{pmatrix}
 = \frac{1}{|L|} * \sum_{(p_i,p_j) \in L} \textbf{g}(p_i, p_j)$$
 
-Der Winkel ergibt sich dann aus $\alpha = arctan2(g_y,g_x)$.
-$\textbf{g}(p_i,p_j)$ ist dabei der Gradient der Helligkeitswerte zwischen der Abtastpunkten $p_i$ und $p_j$ einer Paarung. Es werden nur die Langdistanzpaarungen für die Berechnung der Orientierung verwendet, da davon ausgegangen wird, dass sich die Gradienten der Kurzdistanzpaarungen gegenseitig aufheben würden. \cite[S. 2551]{brisk2011}
+$\textbf{g}(p_i,p_j)$ ist dabei der Gradient der Helligkeitswerte zwischen der Abtastpunkten $p_i$ und $p_j$ einer Paarung. Der Winkel ergibt sich dann aus $\alpha = arctan2(g_y,g_x)$. Es werden nur die Langdistanzpaarungen für die Berechnung der Orientierung verwendet, da davon ausgegangen wird, dass sich die Gradienten der Kurzdistanzpaarungen gegenseitig aufheben würden. \cite[S. 2551]{brisk2011}
 
 Damit der Deskriptor Robust gegenüber Rotationen ist, wird das Abtastmuster mit den Winkel $\alpha$ um den Schlüsselpunkt rotiert. 
 Um den Deskriptor zu erstellen werden für alle Kurdistanzpaarungen auf dem rotierten Abtastmuster die Helligkeitswerte der beiden Abtastpunkte miteinander verglichen.

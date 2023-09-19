@@ -25,8 +25,9 @@ Beispielsweise können Duplikate, die sowohl rotiert als auch eine niedriger Aufl
 \end{itemize}
 
 Für alle Szenarien werden die, in den Grundlagen definierten Metriken (Abschnitt \ref{sec:TestMetriken}), festgehalten. 
-Dadurch jedes Szenario kann einzeln ausgewertet werden und Aufschluss über die individuellen Stärken und Schwächen der getesteten Algorithmen liefern. 
+Dadurch kann jedes Szenario einzeln ausgewertet werden und Aufschluss über die individuellen Stärken und Schwächen der getesteten Algorithmen geben. 
 
 In den Tests der feature-based Algorithmen soll in jedem Szenario mit verschiedenen Mindestwerten für den Bildähnlichkeits-Score experimentiert werden. Ziel ist es für jeden Algorithmus einen Mindestwert zu finden, der für alle Szenarien eine möglichst gute Balancierte-Genauigkeit erreicht.
 
-Zudem werden im Misch-Szenario Laufzeit und Speicherkosten der einzelnen Algorithmen dokumentiert.
+Zudem werden im Misch-Szenario Laufzeit und Speicherkosten der einzelnen Algorithmen dokumentiert. Da nur in diesem Szenario, die Geschwindigkeit eine Rolle spielt, werden hier der Brute-Force und FLANN-Based Matcher verglichen. 
+Da es bei allen anderen Szenarien um die Genauigkeit geht, wird dort nur der Brute-Force Matcher eingesetzt.

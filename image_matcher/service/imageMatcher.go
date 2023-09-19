@@ -57,7 +57,6 @@ func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalT
 func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 	var filteredMatches []gocv.DMatch
 	var maxDist = 0.0
-	var minDist = 0.0
 
 	//ratio test according to D. Lowe
 	for _, matchPair := range matches {
@@ -73,9 +72,6 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 			if firstBestMatchDistance > maxDist {
 				maxDist = firstBestMatchDistance
 			}
-			if firstBestMatchDistance < minDist || minDist == 0 {
-				minDist = firstBestMatchDistance
-			}
 		}
 	}
 
@@ -85,13 +81,15 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 	}
 
 	//similarity score calculation
-	var normalizedDistanceSum = 0.0
+	averageNormalizedDistance := 0.0
 	if maxDist > 0 {
+		distanceSum := 0.0
 		for _, match := range filteredMatches {
-			normalizedDistanceSum += (match.Distance - minDist) / (maxDist - minDist)
+			distanceSum += match.Distance
 		}
+		normalizedDistanceSum := distanceSum / maxDist
+		averageNormalizedDistance = normalizedDistanceSum / float64(len(filteredMatches))
 	}
-	averageNormalizedDistance := normalizedDistanceSum / float64(len(filteredMatches))
 	similarityScore := 1.0 - averageNormalizedDistance
 
 	log.Println("similarity score: ", similarityScore)

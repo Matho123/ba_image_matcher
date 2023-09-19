@@ -9,7 +9,7 @@ Dabei durchläuft der Algorithmus 4 Schritte. Schritt 1 bis 3 umfassen die Suche 
 
 SIFT sucht nach Extrempunkten innerhalb von Bildern. Extrempunkte sind dabei Punkte, an denen lokale Maxima oder Minima in der Helligkeit auftreten. Also helle Punkte innerhalb von dunklen Bereichen und dunkle Punkte innerhalb von hellen Bereichen. 
 
-Um Extrempunkte zu finden wird der Difference of Gaussian (kurz DOG) genutzt. Zuerst wird eine bestimmte Anzahl an Bildern, durch das Weichzeichnen des Originalbilds mit dem Gauschen Weichzeichner, erstellt. 
+Um Extrempunkte zu finden wird der Difference of Gaussian (kurz DOG) genutzt. Zuerst wird eine bestimmte Anzahl an Bildern, durch das Weichzeichnen des Originalbilds mit dem Gaußschen Weichzeichner, erstellt. 
 Der Grad der Unschärfe steigt dabei bei jedem Bild um einen konstanten Faktor. Ein Satz dieser weichgezeichneten Bilder wird  als Oktave bezeichnet. 
 Für jedes paar an aneinander grenzenden weichgezeichneten Bildern, wird die Differenz berechnet. Bei dieser Differenz handelt es sich um den DOG. Durch den DOG werden Rand- und Eckpunkte, sowie andere Details im Bild hervorgehoben.
 Bei der Implementation von SIFT werden pro Oktave meist fünf weichgezeichnete Bilder verwendet, aus denen vier DOG Bilder entstehen. \cite[S. 94]{sift2004}

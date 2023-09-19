@@ -5,6 +5,7 @@ import (
 	"gocv.io/x/gocv"
 	"image"
 	"image-matcher/image_matcher/client"
+	"image-matcher/image_matcher/image-transformation"
 	"image/color"
 	"log"
 )
@@ -28,7 +29,6 @@ func AnalyzeAndSave(rawImages []*RawImage, analyzer string) error {
 	}
 
 	databaseConnection, err := openDatabaseConnection()
-
 	if err != nil {
 		return err
 	}
@@ -52,7 +52,6 @@ func AnalyzeAndSave(rawImages []*RawImage, analyzer string) error {
 	return nil
 }
 
-// MatchAgainstDatabase TODO: add option to also register Image in the database if no match is found
 func MatchAgainstDatabase(rawQueryImage RawImage, analyzer string, matcher string) (string, error) {
 	imageAnalyzer, imageMatcher, err := getAnalyzerAndMatcher(analyzer, matcher)
 	if err != nil {
@@ -100,7 +99,11 @@ func AnalyzeAndMatchTwoImages(
 	matcher string,
 	debug bool,
 ) (bool, error) {
-	var imagesAreMatch bool = false
+	var imagesAreMatch = false
+	image_transformation.ResizeImage(&image1.Data, image1.Data.Bounds().Dx()/2, image1.Data.Bounds().Dy()/2)
+	image_transformation.RotateImage(&image1.Data, 45.0)
+	image_transformation.MirrorImage(&image1.Data, true)
+	image_transformation.ChangeBackgroundColor(&image1.Data, color.RGBA{R: 255, A: 255})
 	if analyzer == "phash" {
 		hash1 := client.GetPHashValue(image1.Data)
 		hash2 := client.GetPHashValue(image2.Data)

@@ -1,7 +1,7 @@
 \section{Match-Suche mit Deskriptoren}
 \label{sec:Matching}
 
-Im Abschnitt  ~\ref{sec:m-based} wurden die Merkmalbasierten-Algorithmen erklärt, mit denen Deskriptoren für Merkmale in einem Bild generiert werden können.
+Im Abschnitt  ~\ref{sec:m-based} wurden die feature-based Algorithmen erklärt, mit denen Deskriptoren für Merkmale in einem Bild generiert werden können.
 In diesem Abschnitt soll es darum gehen, wie diese Deskriptoren genutzt werden können, um die Merkmale aus zwei Bildern zu vergleichen und Übereinstimmungen zu finden. Übereinstimmungen werden auch als Match bezeichnet.
 
 \subsection{Deskriptoren Vergleichen}
@@ -45,7 +45,10 @@ Allerdings ist diese Strategie mit $\mathcal{O}(n^2)$ auch sehr ineffizient, wod
 
 \paragraph{FLANN-Based Matcher}
 FLANN ist eine Bibliothek für fast approximate nearest neighbor search. 
-Abhängig vom verwendeten Datensatz wählt die Bibliothek automatisch aus einer Reihe von Algorithmen, die für approximate nearest neighbor Suche optimiert sind, den besten aus. Für größere Datensets arbeitet FLANN schneller als der Brute-Force Matcher. Allerdings kann durch die approximate nearest neighbor search nicht garantiert werden, dass FLANN die besten Matches findet. \cite{opencv}
+Abhängig vom verwendeten Datensatz wählt die Bibliothek automatisch aus einer Reihe von Algorithmen, die für approximate nearest neighbor Suche optimiert sind, den besten aus.
+FLANN kann für den schnellen Vergleich von Deskriptoren eingesetzt werden.
+
+Für größere Datensets arbeitet FLANN schneller als der Brute-Force Matcher. Allerdings kann durch die approximate nearest neighbor search nicht garantiert werden, dass FLANN die besten Matches findet. \cite{opencv}
 
 
 \subsection{Filterung der Matching-Ergebnisse}

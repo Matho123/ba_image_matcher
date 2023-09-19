@@ -43,9 +43,8 @@ func GetPHashValue(image image.Image) uint64 {
 	if err != nil {
 		log.Fatal("Error while converting hash to uint: ", err)
 	}
-	binaryHash := strconv.FormatUint(uIntHash, 2)
-	println(hashDTO.Hash)
-	println(binaryHash)
+	//println(hashDTO.Hash)
+	//println(strconv.FormatUint(uIntHash, 2))
 
 	return uIntHash
 }
