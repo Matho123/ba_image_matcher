@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  21 SEP 2023 18:10
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  22 SEP 2023 15:11
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1198,19 +1198,13 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.31 
+l.32 
       [1
 
 
 
 
-]
-Overfull \hbox (24.25818pt too wide) in paragraph at lines 36--38
-\T1/cmr/m/n/12 Du-pli-ka-te zu-ver-läs-si-ger er-ken-nen kön-nen, als die mo-me
-n-tan ein-ge-setz-te pHash-Implementation.
- []
-
-) [2]
+]) [2]
 chapter 2.
 (./Inhalt/Grundlagen/Merkmalbasierte-Algorithmen.tex)
 (./Inhalt/Grundlagen/SIFT.tex [3
@@ -1219,13 +1213,13 @@ chapter 2.
 
 
 ]
-<Abbildungen/keypointsift.png, id=117, 246.1697pt x 205.5178pt>
+<Abbildungen/keypointsift.png, id=116, 246.1697pt x 205.5178pt>
 File: Abbildungen/keypointsift.png Graphic file (type png)
 <use Abbildungen/keypointsift.png>
 Package pdftex.def Info: Abbildungen/keypointsift.png  used on input line 22.
 (pdftex.def)             Requested size: 147.70294pt x 123.31163pt.
  [4 <./Abbildungen/keypointsift.png>]
-<Abbildungen/bildpyramidesift.png, id=135, 606.01407pt x 450.9347pt>
+<Abbildungen/bildpyramidesift.png, id=134, 606.01407pt x 450.9347pt>
 File: Abbildungen/bildpyramidesift.png Graphic file (type png)
 <use Abbildungen/bildpyramidesift.png>
 Package pdftex.def Info: Abbildungen/bildpyramidesift.png  used on input line 3
@@ -1238,7 +1232,7 @@ Overfull \hbox (2.69006pt too wide) in paragraph at lines 56--57
  []
 
 ) (./Inhalt/Grundlagen/ORB.tex
-<Abbildungen/fast.png, id=156, 261.97874pt x 260.47313pt>
+<Abbildungen/fast.png, id=155, 261.97874pt x 260.47313pt>
 File: Abbildungen/fast.png Graphic file (type png)
 <use Abbildungen/fast.png>
 Package pdftex.def Info: Abbildungen/fast.png  used on input line 12.
@@ -1248,7 +1242,7 @@ Package pdftex.def Info: Abbildungen/fast.png  used on input line 12.
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [6] [7 <./Abbildungen/fast.png>]) (./Inhalt/Grundlagen/BRISK.tex
-<Abbildungen/bildpyramidebrisk.png, id=185, 506.6428pt x 511.15968pt>
+<Abbildungen/bildpyramidebrisk.png, id=184, 506.6428pt x 511.15968pt>
 File: Abbildungen/bildpyramidebrisk.png Graphic file (type png)
 <use Abbildungen/bildpyramidebrisk.png>
 Package pdftex.def Info: Abbildungen/bildpyramidebrisk.png  used on input line 
@@ -1259,7 +1253,7 @@ Package pdftex.def Info: Abbildungen/bildpyramidebrisk.png  used on input line
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [8]
-<Abbildungen/abtastmusterbrisk.png, id=205, 299.61937pt x 298.11375pt>
+<Abbildungen/abtastmusterbrisk.png, id=204, 299.61937pt x 298.11375pt>
 File: Abbildungen/abtastmusterbrisk.png Graphic file (type png)
 <use Abbildungen/abtastmusterbrisk.png>
 Package pdftex.def Info: Abbildungen/abtastmusterbrisk.png  used on input line 
@@ -1366,19 +1360,19 @@ Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32836 strings out of 480153
- 607848 string characters out of 5892727
+ 32833 strings out of 480153
+ 607800 string characters out of 5892727
  1230101 words of memory out of 5000000
- 50037 multiletter control sequences out of 15000+600000
+ 50034 multiletter control sequences out of 15000+600000
  489928 words of font info for 73 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  113i,9n,123p,10623b,606s stack positions out of 5000i,500n,10000p,200000b,80000s
- </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600p
+ </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600p
+k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecbx1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecti1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecrm1000.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/eccc1000.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1440.600p
-k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1728.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsl1200.600p
 k> </home/mtmn/.texlive2021/texmf-var/fonts/pk/ljfour/jknappen/ec/ecsx1200.600p
@@ -1394,9 +1388,9 @@ f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmsy8.pfb>
-Output written on Arbeit.pdf (34 pages, 1027689 bytes).
+Output written on Arbeit.pdf (34 pages, 1025584 bytes).
 PDF statistics:
- 1116 PDF objects out of 1200 (max. 8388607)
+ 1110 PDF objects out of 1200 (max. 8388607)
  508 compressed objects within 6 object streams
  128 named destinations out of 1000 (max. 500000)
  279 words of extra memory for PDF output out of 10000 (max. 10000000)

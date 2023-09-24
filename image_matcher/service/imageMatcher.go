@@ -5,12 +5,7 @@ import (
 	"log"
 )
 
-// TODO: needs to be tested
-const SimilarityThreshold = 0.7
-
 const DistanceRatioThreshold = 0.8
-
-const HammingDistanceThreshold = 4
 
 var imageMatcherMapping = map[string]ImageMatcher{
 	"bfm":   BruteForceMatcher{},
@@ -54,7 +49,7 @@ func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalT
 }
 
 // TODO: refine with testing
-func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
+func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (bool, []gocv.DMatch) {
 	var filteredMatches []gocv.DMatch
 	var maxDist = 0.0
 
@@ -94,11 +89,11 @@ func determineSimilarity(matches [][]gocv.DMatch) (bool, []gocv.DMatch) {
 
 	log.Println("similarity score: ", similarityScore)
 
-	return similarityScore > SimilarityThreshold, filteredMatches
+	return similarityScore > similarityThreshold, filteredMatches
 }
 
-func hashesAreMatch(hash1 uint64, hash2 uint64) bool {
+func hashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int) bool {
 	hammingDistance := calculateHammingDistance(hash1, hash2)
 	log.Println("hamming distance: ", hammingDistance)
-	return hammingDistance <= 4
+	return hammingDistance <= maxDistance
 }

@@ -8,14 +8,34 @@ import (
 	"log"
 )
 
-type ImageEntity struct {
+type DatabaseSetImage struct {
+	externalReference string
+	siftDescriptor    []byte
+	orbDescriptor     []byte
+	briskDescriptor   []byte
+	pHash             uint64
+}
+
+type DescriptorImage struct {
+	externalReference string
+	descriptor        []byte
+}
+
+type PHashImage struct {
+	externalReference string
+	hash              uint64
+}
+
+type SearchSetImage struct {
 	id                int
 	externalReference string
-	descriptorData    []byte
+	originalReference string
+	scenario          string
+	notes             string
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
-	databaseConnection, err := sql.Open("mysql", "root:root@/images")
+	databaseConnection, err := sql.Open("mysql", "root:root@/DuplicateTest")
 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("couldn't connect to database %s", err.Error()))
@@ -27,60 +47,155 @@ func openDatabaseConnection() (*sql.DB, error) {
 	return databaseConnection, nil
 }
 
-func insertImageIntoDatabase(databaseConnection *sql.DB, processedImageDTO ProcessedImage) error {
-	externalReference := processedImageDTO.externalReference
-	descriptorData := processedImageDTO.descriptorData
+func insertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage DatabaseSetImage) error {
+	externalReference := databaseSetImage.externalReference
+	siftDescriptor := databaseSetImage.siftDescriptor
+	orbDescriptor := databaseSetImage.orbDescriptor
+	briskDescriptor := databaseSetImage.briskDescriptor
+	pHash := databaseSetImage.pHash
 
 	_, err := databaseConnection.Exec(
-		"INSERT INTO image (external_reference, descriptor_data) VALUES (?, ?)",
+		"INSERT INTO database_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor , p_hash) VALUES (?, ?, ?, ?, ?)",
 		externalReference,
-		descriptorData,
+		siftDescriptor,
+		orbDescriptor,
+		briskDescriptor,
+		pHash,
 	)
 
 	if err != nil {
 		return errors.New(fmt.Sprintf("couldn't insert %s into database %s", externalReference, err.Error()))
 	}
-	log.Println(fmt.Sprintf("Inserted %s into Database", externalReference))
+	log.Println(fmt.Sprintf("Inserted %s into Database Set", externalReference))
 	return nil
 }
 
-func retrieveImageChunkFromDatabase(databaseConnection *sql.DB, offset int, limit int) ([]ImageEntity, error) {
+func retrieveFeatureImageChunk(
+	databaseConnection *sql.DB,
+	descriptorType string,
+	offset int,
+	limit int) ([]DescriptorImage, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT id, external_reference, descriptor_data"+
-			" FROM image"+
-			" LIMIT ? OFFSET ?",
+		"SELECT external_reference, ? FROM database_image LIMIT ? OFFSET ?",
+		descriptorType,
 		limit,
 		offset,
 	)
 
 	if err != nil {
-		return nil, errors.New(fmt.Sprintf("couldn't retreive images from database: %s", err.Error()))
+		return nil, errors.New(fmt.Sprintf("couldn't retreive database set images from database: %s", err.Error()))
 	}
 	defer imageRows.Close()
 
-	var imageEntityChunk []ImageEntity
+	var imageEntityChunk []DescriptorImage
 
 	for imageRows.Next() {
-		var id int
-		var externalReference string
-		var descriptorData []byte
+		var image DescriptorImage
 
-		err := imageRows.Scan(&id, &externalReference, &descriptorData)
-
-		if err != nil {
-			return nil, err
-		}
-
-		imageEntityChunk = append(
-			imageEntityChunk,
-			ImageEntity{
-				id:                id,
-				externalReference: externalReference,
-				descriptorData:    descriptorData,
-			},
+		var err = imageRows.Scan(
+			&image.externalReference,
+			&image.descriptor,
 		)
 
-		log.Println(fmt.Sprintf("Retrieved %s from Database", externalReference))
+		if err != nil {
+			continue
+		}
+
+		imageEntityChunk = append(imageEntityChunk, image)
+
+		log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+	}
+	return imageEntityChunk, nil
+}
+
+func retrievePHashImageChunk(
+	databaseConnection *sql.DB,
+	offset int,
+	limit int) ([]PHashImage, error) {
+	imageRows, err := databaseConnection.Query(
+		"SELECT external_reference, p_hash FROM database_image LIMIT ? OFFSET ?",
+		limit,
+		offset,
+	)
+
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("couldn't retreive database set images from database: %s", err.Error()))
+	}
+	defer imageRows.Close()
+
+	var imageEntityChunk []PHashImage
+
+	for imageRows.Next() {
+		var image PHashImage
+
+		var err = imageRows.Scan(
+			&image.externalReference,
+			&image.hash,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		imageEntityChunk = append(imageEntityChunk, image)
+
+		log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+	}
+	return imageEntityChunk, nil
+}
+
+func insertImageIntoSearchSet(databaseConnection *sql.DB, searchSetImage SearchSetImage) error {
+	externalReference := searchSetImage.externalReference
+	originalReference := searchSetImage.originalReference
+	scenario := searchSetImage.scenario
+	notes := searchSetImage.notes
+
+	_, err := databaseConnection.Exec(
+		"INSERT INTO search_image (external_reference, original_reference, scenario, notes) VALUES (?, ?, ?, ?)",
+		externalReference,
+		originalReference,
+		scenario,
+		notes,
+	)
+
+	if err != nil {
+		return errors.New(fmt.Sprintf("couldn't insert %s into search set %s", externalReference, err.Error()))
+	}
+	log.Println(fmt.Sprintf("Inserted %s into search set", externalReference))
+	return nil
+}
+
+func retrieveChunkFromSearchSet(
+	databaseConnection *sql.DB,
+	scenario string,
+	offset int,
+	limit int) ([]SearchSetImage, error) {
+	imageRows, err := databaseConnection.Query(
+		"SELECT * FROM search_image WHERE scenario = ? LIMIT ? OFFSET ?",
+		scenario,
+		limit,
+		offset,
+	)
+
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("couldn't retreive search set images from database: %s", err.Error()))
+	}
+	defer imageRows.Close()
+
+	var imageEntityChunk []SearchSetImage
+
+	for imageRows.Next() {
+		var image SearchSetImage
+
+		err := imageRows.Scan(&image.id, &image.externalReference, &image.originalReference, &image.scenario, &image.notes)
+
+		if err != nil {
+			continue
+		}
+
+		imageEntityChunk = append(imageEntityChunk, image)
+
+		log.Println(fmt.Sprintf("Retrieved %s from search set", image.externalReference))
 	}
 	return imageEntityChunk, nil
 }

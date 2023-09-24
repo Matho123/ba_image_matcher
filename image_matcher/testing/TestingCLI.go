@@ -7,6 +7,10 @@ import (
 	"log"
 )
 
+// TODO: needs to be tested
+const SimilarityThreshold = 0.7
+const HammingDistanceThreshold = 4
+
 var CommandMapping = map[string]func([]string){
 	"register": registerImages,
 	"compare":  compareTwoImages,
@@ -15,16 +19,15 @@ var CommandMapping = map[string]func([]string){
 }
 
 func registerImages(arguments []string) {
-	if len(arguments) < 2 {
+	if len(arguments) < 1 {
 		log.Fatal("not enough arguments!")
 	}
 
 	imagePath := arguments[0]
-	imageAnalyzer := arguments[1]
 
 	images := loadImagesFromPath(imagePath)
 
-	err := service.AnalyzeAndSave(images, imageAnalyzer)
+	err := service.AnalyzeAndSave(images)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -44,10 +47,30 @@ func compareTwoImages(arguments []string) {
 	image1 := loadImage(imagePath1)
 	image2 := loadImage(imagePath2)
 
-	isMatch, err := service.AnalyzeAndMatchTwoImages(*image1, *image2, imageAnalyzer, imageMatcher, debug)
+	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
+		*image1,
+		*image2,
+		imageAnalyzer,
+		imageMatcher,
+		SimilarityThreshold, debug)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	log.Println(fmt.Sprintf(
+		"Keypoints extracted: %d for image1 and %d for image2",
+		len(kp1),
+		len(kp2),
+	))
+
+	log.Println(fmt.Sprintf(
+		"Time taken for extraction: %s",
+		extractionTime,
+	))
+	log.Println(fmt.Sprintf(
+		"Time taken for matching %s",
+		matchingTime,
+	))
 
 	if isMatch {
 		log.Println(fmt.Sprintf("%s and %s are a match", image1.ExternalReference, image2.ExternalReference))
@@ -62,18 +85,20 @@ func matchToDatabase(arguments []string) {
 	}
 
 	imagePath := arguments[0]
-	imageAnanlyzer := arguments[1]
+	imageAnalyzer := arguments[1]
 	imageMatcher := arguments[2]
 
 	image := loadImage(imagePath)
 
-	matchReference, err := service.MatchAgainstDatabase(*image, imageAnanlyzer, imageMatcher)
+	matchReferences, err := service.MatchAgainstDatabaseFeatureBased(*image, imageAnalyzer, imageMatcher, SimilarityThreshold)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if matchReference != "" {
-		log.Println("image matched to ", matchReference)
+	if len(matchReferences) > 0 {
+		for _, match := range matchReferences {
+			log.Println(fmt.Sprintf("image matched to %s", match))
+		}
 	} else {
 		log.Println("image did not match")
 	}

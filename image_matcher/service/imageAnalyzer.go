@@ -8,7 +8,7 @@ import (
 var imageAnalyzerMapping = map[string]FeatureImageAnalyzer{
 	"orb":   ORBImageAnalyzer{},
 	"sift":  SiftImageAnalyzer{},
-	"akaze": AKAZEImageAnalyzer{},
+	"brisk": BRISKImageAnalyzer{},
 }
 
 type FeatureImageAnalyzer interface {
@@ -33,13 +33,13 @@ func (ORBImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat
 	return orb.DetectAndCompute(*image, gocv.NewMat())
 }
 
-type AKAZEImageAnalyzer struct{}
+type BRISKImageAnalyzer struct{}
 
-func (AKAZEImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
-	akaze := gocv.NewAKAZE()
-	defer akaze.Close()
+func (BRISKImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+	brisk := gocv.NewBRISK()
+	defer brisk.Close()
 
-	return akaze.DetectAndCompute(*image, gocv.NewMat())
+	return brisk.DetectAndCompute(*image, gocv.NewMat())
 }
 
 type PHash struct{}

@@ -7,14 +7,15 @@
 Die Spread Group bietet Nutzern über ihre Plattformen die Möglichkeit personalisierte Produkte zu kaufen. 
 Dabei können Nutzer auch eigene Designs hochladen, um diese beispielsweise auf selbst erstellten Produkten zu verkaufen. 
 Täglich werden tausende solcher selbst erstellter Designs hochgeladen.
-Dabei muss seitens der Spread Group sichergestellt werden, dass die hochgeladenen Designs nicht verfassungsfeindlich sind und auch nicht gegen das Urheberrecht oder die firmeninternen Nutzerrichtlinien verstoßen. 
+Dabei muss seitens der Spread Group sichergestellt werden, dass die hochgeladenen Designs nicht gegen das Gesetz oder die unternehmensinternen Richtlinien verstoßen. 
 Die manuelle Überprüfung von so vielen Designs ist sehr aufwändig und häufig kommt es vor, dass die gleichen Designs mehrmals hochgeladen werden. 
-Eine automatische Sperrung, von bereits verbotenen Designs, die erneut hochgeladen werden, kann den Überprüfungsprozess entlasten.
-Daher ist ein System notwendig, dass bei neu hochgeladenen Designs Duplikate in der Datenbank der verbotenen Designs erkennen kann.
+Eine automatische Sperrung, von bereits abgelehnten Designs, die erneut hochgeladen werden, kann den Überprüfungsprozess entlasten.
+Daher ist ein System notwendig, dass bei neu hochgeladenen Designs Duplikate in der Datenbank der abgelehnten Designs erkennen kann.
 
 \section{Aufgabenstellung}
 \label{sec:Aufgabenstellung}
-Ziel dieser Bachelorarbeit ist die Entwicklung eines Systems, dass in der Lage ist, bei neuen Bildern zu erkennen, ob diese in einer Datenbank mit bereits gespeicherten Bildern auftauchen. 
+Ziel dieser Bachelorarbeit ist die Entwicklung eines Systems zur Identifikation von Duplikaten in einer Datenbank. 
+Das System soll dazu in der Lage sein, neue Bilder mit Bildern in der Datenbank zu vergleichen und festzustellen, ob diese identisch oder ähnlich sind. 
 Ein neues Bild soll auch dann als Duplikat erkannt werden, wenn der Bildinhalt im Vergleich zum Original transformiert, also rotiert, skaliert, verschoben oder gespiegelt wurde. 
 Fälle in denen das Bild anders gefärbt ist oder als Teil eines größeren Bildes auftaucht, sollen ebenfalls berücksichtigt werden.
 
@@ -33,7 +34,7 @@ Die verwendeten Metriken werden in den Grundlagen \ref{sec:TestMetriken} erklärt
 Am wichtigsten ist dabei ein hoher Recall, sodass möglichst viele Duplikate durch das System abgefangen werden. 
 Da automatisch gesperrte Designs nochmal manuell geprüft werden, fällt eine niedrigere Spezifizität bei der Auswertung nicht so sehr ins Gewicht. Laufzeit- und Speicherkosten sollen ebenfalls innerhalb der Arbeit abgeschätzt werden. 
 
-Um für die Verwendung in der SpreadGroup in Frage zu kommen, muss das neue System Duplikate zuverlässiger erkennen können, als die momentan eingesetzte pHash-Implementation. 
+Um für die Verwendung in Frage zu kommen, muss das neue System Duplikate zuverlässiger erkennen können, als die momentan eingesetzte pHash-Implementation. 
 Dafür wird ein höherer Recall angestrebt. Um sicherzustellen, dass Spezifizität nicht zu sehr absinkt, wird auf eine höhere oder zumindest gleichbleibende Balancierte-Genauigkeit abgezielt.
 
 
