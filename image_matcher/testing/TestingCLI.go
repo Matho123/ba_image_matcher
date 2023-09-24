@@ -27,7 +27,7 @@ func registerImages(arguments []string) {
 
 	images := loadImagesFromPath(imagePath)
 
-	err := service.AnalyzeAndSave(images)
+	err := service.AnalyzeAndSaveDatabaseImage(images)
 	if err != nil {
 		log.Fatal(err)
 	}

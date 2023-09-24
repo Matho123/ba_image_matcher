@@ -6,50 +6,123 @@ import (
 	"image/color"
 	"image/jpeg"
 	"log"
+	"math/rand"
 	"os"
 )
 
-func ResizeImage(img *image.Image, width int, height int) image.Image {
-	scaled := imaging.Resize(*img, width, height, imaging.Lanczos)
-	saveImageToDisk("resized", scaled)
-	return scaled
+func ResizeImage(img *image.Image) (image.Image, uint8) {
+	scalingFactors := []int{2, 4, 10}
+	randomIndex := rand.Intn(len(scalingFactors))
+	scalingFactor := scalingFactors[randomIndex]
+
+	newWidth := (*img).Bounds().Dx() / scalingFactor
+	newHeight := (*img).Bounds().Dy() / scalingFactor
+
+	scaled := imaging.Resize(*img, newWidth, newHeight, imaging.Lanczos)
+	return scaled, uint8(scalingFactor)
 }
 
-func RotateImage(img *image.Image, rotationAngle float64) image.Image {
-	rotatedImage := imaging.Rotate(*img, rotationAngle, color.Transparent)
-	saveImageToDisk("rotated", rotatedImage)
-	return rotatedImage
+func RotateImage(img *image.Image) (image.Image, int) {
+	angle := rand.Intn(360)
+
+	rotatedImage := imaging.Rotate(*img, float64(angle), color.Transparent)
+
+	return rotatedImage, angle
 }
 
-func MirrorImage(img *image.Image, horizontal bool) image.Image {
+func MirrorImage(img *image.Image) (image.Image, string) {
+	horizontal := rand.Intn(2) == 0
 	var mirroredImage image.Image
+	var axis string
+
 	if horizontal {
 		mirroredImage = imaging.FlipH(*img)
+		axis = "Y-Axis"
 	} else {
 		mirroredImage = imaging.FlipV(*img)
+		axis = "X-Axis"
 	}
-	saveImageToDisk("mirrored", mirroredImage)
-	return mirroredImage
+
+	return mirroredImage, axis
 }
 
-func ChangeBackgroundColor(img *image.Image, color color.Color) image.Image {
-	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, color)
+func ChangeBackgroundColor(img *image.Image) (image.Image, color.Color) {
+	r := uint8(rand.Intn(255))
+	g := uint8(rand.Intn(255))
+	b := uint8(rand.Intn(255))
+	newBackground := color.RGBA{R: r, G: g, B: b, A: 255}
+
+	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, newBackground)
 	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
-	saveImageToDisk("background", newImage)
-	return newImage
+
+	return newImage, newBackground
 }
 
-func saveImageToDisk(name string, image image.Image) {
+func MoveMotive(img *image.Image) (image.Image, int) {
+	croppedImage := cropImage(img)
+	originalWidth := (*img).Bounds().Dx()
+	originalHeight := (*img).Bounds().Dy()
+
+	croppedWidth := croppedImage.Bounds().Dx()
+	croppedHeight := croppedImage.Bounds().Dy()
+
+	maxX := (originalWidth - croppedWidth) / 2
+	maxY := (originalHeight - croppedHeight) / 2
+
+	movedX := rand.Intn(maxX)
+	movedY := rand.Intn(maxY)
+
+	newImage := imaging.New(originalWidth, originalHeight, color.Transparent)
+
+	newImage = imaging.Paste(newImage, croppedImage, image.Point{X: movedX, Y: movedY})
+
+	return newImage, movedX + movedY
+}
+
+func IntegrateInOtherImage(img *image.Image) {
+
+}
+
+func cropImage(img *image.Image) image.Image {
+	var minX, minY, maxX, maxY int
+
+	for y := 0; y < (*img).Bounds().Dy(); y++ {
+		for x := 0; x < (*img).Bounds().Dx(); x++ {
+			_, _, _, alpha := (*img).At(x, y).RGBA()
+			if alpha == 0 {
+				continue
+			}
+			if x < minX || minX == 0 {
+				minX = x
+			}
+			if x > maxX {
+				maxX = x
+			}
+			if y < minY || minY == 0 {
+				minY = y
+			}
+			if y > maxY {
+				maxY = y
+			}
+		}
+	}
+
+	croppedImage := imaging.Crop(*img, image.Rect(minX, minY, maxX, minY))
+
+	return croppedImage
+}
+
+func SaveImageToDisk(name string, image image.Image) {
 	outputFile, err := os.Create("images/" + name + ".jpg")
 	if err != nil {
-		log.Fatalln("Error while creating outputfile for image: ", err)
+		log.Println("Error while creating outputfile for image: ", err)
 		return
 	}
 	defer outputFile.Close()
 
 	err = jpeg.Encode(outputFile, image, nil)
 	if err != nil {
-		log.Fatalln("Error while saving image to disk: ", err)
+		log.Println("Error while saving image to disk: ", err)
 		return
 	}
 }

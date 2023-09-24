@@ -23,8 +23,8 @@ var descriptorMapping = map[FeatureImageAnalyzer]string{
 
 const MaxChunkSize = 50
 
-func AnalyzeAndSave(rawImages []*RawImage) error {
-	databaseConnection, err := OpenDatabaseConnection()
+func AnalyzeAndSaveDatabaseImage(rawImages []*RawImage) error {
+	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return err
 	}
@@ -68,7 +68,7 @@ func MatchAgainstDatabaseFeatureBased(
 	}
 	defer imageMatcher.close()
 
-	databaseConnection, err := OpenDatabaseConnection()
+	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return []string{}, err, 0, 0
 	}
@@ -91,7 +91,8 @@ func MatchAgainstDatabaseFeatureBased(
 			databaseConnection,
 			descriptorMapping[imageAnalyzer],
 			offset,
-			MaxChunkSize+1)
+			MaxChunkSize+1,
+		)
 		if err != nil {
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
@@ -117,7 +118,7 @@ func MatchAgainstDatabaseFeatureBased(
 }
 
 func MatchImageAgainstDatabasePHash(searchImage RawImage, maxHammingDistance int) ([]string, error, time.Duration, time.Duration) {
-	databaseConnection, err := OpenDatabaseConnection()
+	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return []string{}, err, 0, 0
 	}
