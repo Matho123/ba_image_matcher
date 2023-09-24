@@ -8,34 +8,32 @@ import (
 const DistanceRatioThreshold = 0.8
 
 var imageMatcherMapping = map[string]ImageMatcher{
-	"bfm":   BruteForceMatcher{},
-	"flann": FLANNMatcher{},
+	"bfm":   BruteForceMatcher{gocv.NewBFMatcher()},
+	"flann": FLANNMatcher{gocv.NewFlannBasedMatcher()},
 }
 
 type ImageMatcher interface {
 	findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch
 }
 
-type BruteForceMatcher struct{}
-
-func (BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
-	bruteForceMatcher := gocv.NewBFMatcher()
-	defer bruteForceMatcher.Close()
-
-	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
-
-	return bruteForceMatcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+type BruteForceMatcher struct {
+	matcher gocv.BFMatcher
 }
 
-type FLANNMatcher struct{}
-
-func (FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
-	flannBasedMatcher := gocv.NewFlannBasedMatcher()
-	defer flannBasedMatcher.Close()
-
+func (bfm BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
 	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
 
-	return flannBasedMatcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+	return bfm.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+}
+
+type FLANNMatcher struct {
+	matcher gocv.FlannBasedMatcher
+}
+
+func (flann FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
+	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
+
+	return flann.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
 func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalType gocv.MatType) (*gocv.Mat, *gocv.Mat) {

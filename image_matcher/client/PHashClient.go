@@ -11,7 +11,7 @@ import (
 	"strconv"
 )
 
-func GetPHashValue(image image.Image) uint64 {
+func GetPHashValue(image image.Image) (uint64, float64) {
 	imageByteBuffer := new(bytes.Buffer)
 	err := jpeg.Encode(imageByteBuffer, image, nil)
 	if err != nil {
@@ -46,9 +46,11 @@ func GetPHashValue(image image.Image) uint64 {
 	//println(hashDTO.Hash)
 	//println(strconv.FormatUint(uIntHash, 2))
 
-	return uIntHash
+	return uIntHash, hashDTO.Runtime
 }
 
 type PHash struct {
 	Hash string `json:"hash"`
+	//runtime in seconds
+	Runtime float64 `json:"runtime"`
 }

@@ -90,7 +90,22 @@ func matchToDatabase(arguments []string) {
 
 	image := loadImage(imagePath)
 
-	matchReferences, err := service.MatchAgainstDatabaseFeatureBased(*image, imageAnalyzer, imageMatcher, SimilarityThreshold)
+	matchReferences, err, extractionTime, matchingTime := service.MatchAgainstDatabaseFeatureBased(
+		*image,
+		imageAnalyzer,
+		imageMatcher,
+		SimilarityThreshold,
+	)
+
+	log.Println(fmt.Sprintf(
+		"Time taken for extraction: %s",
+		extractionTime,
+	))
+	log.Println(fmt.Sprintf(
+		"Time taken for matching %s",
+		matchingTime,
+	))
+
 	if err != nil {
 		log.Fatal(err)
 	}

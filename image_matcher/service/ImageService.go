@@ -36,7 +36,7 @@ func AnalyzeAndSave(rawImages []*RawImage) error {
 		_, siftDesc := extractKeypointsAndDescriptors(&imageMat, SiftImageAnalyzer{})
 		_, orbDesc := extractKeypointsAndDescriptors(&imageMat, ORBImageAnalyzer{})
 		_, briskDesc := extractKeypointsAndDescriptors(&imageMat, BRISKImageAnalyzer{})
-		pHash := client.GetPHashValue(rawImage.Data)
+		pHash, _ := client.GetPHashValue(rawImage.Data)
 
 		err := insertImageIntoDatabaseSet(
 			databaseConnection,
@@ -95,17 +95,17 @@ func MatchAgainstDatabaseFeatureBased(
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
 
-		matchingStart := time.Now()
 		for _, databaseImage := range databaseImages {
 			databaseImageDescriptor := convertByteArrayToMat(databaseImage.descriptor)
+			matchingStart := time.Now()
 			matches := imageMatcher.findMatches(searchImageDescriptor, databaseImageDescriptor)
+			matchingTime += time.Since(matchingStart)
 
 			isMatch, _ := determineSimilarity(matches, similarityThreshold)
 			if isMatch {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
 		}
-		matchingTime += time.Since(matchingStart)
 
 		if len(databaseImages) < MaxChunkSize+1 {
 			break
@@ -122,12 +122,9 @@ func MatchImageAgainstDatabasePHash(searchImage RawImage, maxHammingDistance int
 	}
 	defer databaseConnection.Close()
 
-	var extractionTime time.Duration
 	var matchingTime time.Duration
 
-	extractionStart := time.Now()
-	searchImageHash := client.GetPHashValue(searchImage.Data)
-	extractionTime = time.Since(extractionStart)
+	searchImageHash, extractionTime := client.GetPHashValue(searchImage.Data)
 
 	var matchedImages []string
 
@@ -150,7 +147,7 @@ func MatchImageAgainstDatabasePHash(searchImage RawImage, maxHammingDistance int
 		}
 		offset += MaxChunkSize
 	}
-	return matchedImages, nil, extractionTime, matchingTime
+	return matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), matchingTime
 }
 
 func AnalyzeAndMatchTwoImages(
@@ -175,10 +172,9 @@ func AnalyzeAndMatchTwoImages(
 	var imageDescriptors2 gocv.Mat
 
 	if analyzer == "phash" {
-		startTimeExtraction := time.Now()
-		hash1 := client.GetPHashValue(image1.Data)
-		hash2 := client.GetPHashValue(image2.Data)
-		extractionTime = time.Since(startTimeExtraction)
+		hash1, extractionTime1 := client.GetPHashValue(image1.Data)
+		hash2, extractionTime2 := client.GetPHashValue(image2.Data)
+		extractionTime = time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
 
 		startTimeMatching := time.Now()
 		imagesAreMatch = hashesAreMatch(hash1, hash2, 4)
