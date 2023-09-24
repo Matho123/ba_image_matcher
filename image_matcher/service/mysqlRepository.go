@@ -34,7 +34,7 @@ type SearchSetImage struct {
 	notes             string
 }
 
-func openDatabaseConnection() (*sql.DB, error) {
+func OpenDatabaseConnection() (*sql.DB, error) {
 	databaseConnection, err := sql.Open("mysql", "root:root@/DuplicateTest")
 
 	if err != nil {
@@ -144,7 +144,7 @@ func retrievePHashImageChunk(
 	return imageEntityChunk, nil
 }
 
-func insertImageIntoSearchSet(databaseConnection *sql.DB, searchSetImage SearchSetImage) error {
+func InsertImageIntoSearchSet(databaseConnection *sql.DB, searchSetImage SearchSetImage) error {
 	externalReference := searchSetImage.externalReference
 	originalReference := searchSetImage.originalReference
 	scenario := searchSetImage.scenario
@@ -165,7 +165,7 @@ func insertImageIntoSearchSet(databaseConnection *sql.DB, searchSetImage SearchS
 	return nil
 }
 
-func retrieveChunkFromSearchSet(
+func RetrieveChunkFromSearchSet(
 	databaseConnection *sql.DB,
 	scenario string,
 	offset int,

@@ -2,3 +2,4 @@ image_matcher/image_matcher
 image-matcher.iml
 .idea
 /images/
+/debug/

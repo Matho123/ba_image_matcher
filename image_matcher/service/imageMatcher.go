@@ -14,6 +14,7 @@ var imageMatcherMapping = map[string]ImageMatcher{
 
 type ImageMatcher interface {
 	findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch
+	close()
 }
 
 type BruteForceMatcher struct {
@@ -26,6 +27,10 @@ func (bfm BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescrip
 	return bfm.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
+func (bfm BruteForceMatcher) close() {
+	bfm.matcher.Close()
+}
+
 type FLANNMatcher struct {
 	matcher gocv.FlannBasedMatcher
 }
@@ -34,6 +39,10 @@ func (flann FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor
 	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
 
 	return flann.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+}
+
+func (flann FLANNMatcher) close() {
+	flann.matcher.Close()
 }
 
 func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalType gocv.MatType) (*gocv.Mat, *gocv.Mat) {
@@ -87,7 +96,7 @@ func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 
 	log.Println("similarity score: ", similarityScore)
 
-	return similarityScore > similarityThreshold, filteredMatches
+	return similarityScore >= similarityThreshold, filteredMatches
 }
 
 func hashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int) bool {

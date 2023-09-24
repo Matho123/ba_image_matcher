@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-// TODO: needs to be tested
+// SimilarityThreshold TODO: needs to be tested
 const SimilarityThreshold = 0.7
 const HammingDistanceThreshold = 4
 

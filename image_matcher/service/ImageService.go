@@ -24,7 +24,7 @@ var descriptorMapping = map[FeatureImageAnalyzer]string{
 const MaxChunkSize = 50
 
 func AnalyzeAndSave(rawImages []*RawImage) error {
-	databaseConnection, err := openDatabaseConnection()
+	databaseConnection, err := OpenDatabaseConnection()
 	if err != nil {
 		return err
 	}
@@ -66,8 +66,9 @@ func MatchAgainstDatabaseFeatureBased(
 	if err != nil {
 		return []string{}, err, 0, 0
 	}
+	defer imageMatcher.close()
 
-	databaseConnection, err := openDatabaseConnection()
+	databaseConnection, err := OpenDatabaseConnection()
 	if err != nil {
 		return []string{}, err, 0, 0
 	}
@@ -116,7 +117,7 @@ func MatchAgainstDatabaseFeatureBased(
 }
 
 func MatchImageAgainstDatabasePHash(searchImage RawImage, maxHammingDistance int) ([]string, error, time.Duration, time.Duration) {
-	databaseConnection, err := openDatabaseConnection()
+	databaseConnection, err := OpenDatabaseConnection()
 	if err != nil {
 		return []string{}, err, 0, 0
 	}
@@ -184,6 +185,7 @@ func AnalyzeAndMatchTwoImages(
 		if err != nil {
 			return false, nil, nil, 0, 0, err
 		}
+		defer imageMatcher.close()
 
 		image1Mat := convertImageToMat(&image1.Data)
 		image2Mat := convertImageToMat(&image2.Data)
