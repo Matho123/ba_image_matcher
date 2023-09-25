@@ -35,10 +35,10 @@ func MirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
 
 	if horizontal {
 		mirroredImage = imaging.FlipH(*img)
-		axis = "Y-Axis"
+		axis = "Y"
 	} else {
 		mirroredImage = imaging.FlipV(*img)
-		axis = "X-Axis"
+		axis = "X"
 	}
 
 	return mirroredImage, axis

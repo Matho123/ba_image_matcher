@@ -86,18 +86,19 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 		break
 	case "moved":
 		moved, distance := image_transformation.MoveMotive(&originalImage.Data)
-		variations = []*ImageVariation{{moved, string(rune(distance))}}
+		variations = []*ImageVariation{{moved, fmt.Sprintf("%.0f", distance)}}
 		break
 	case "background":
 		changed, bg := image_transformation.ChangeBackgroundColor(&originalImage.Data)
 		r, g, b, _ := bg.RGBA()
-		variations = []*ImageVariation{{changed, fmt.Sprintf("%d, %d, %d", r, g, b)}}
+		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
+		variations = []*ImageVariation{{changed, fmt.Sprintf("%d, %d, %d", r8, g8, b8)}}
 		break
 	case "motive":
 		break
 	case "part":
 		newImage, distance := image_transformation.IntegrateInOtherImage(&originalImage.Data)
-		variations = []*ImageVariation{{img: newImage, notes: string(rune(distance))}}
+		variations = []*ImageVariation{{img: newImage, notes: fmt.Sprintf("%.0f", distance)}}
 		break
 	default:
 		variations = []*ImageVariation{{img: originalImage.Data, notes: ""}}
@@ -105,14 +106,14 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 	}
 
 	for _, variation := range variations {
-		externalReference = externalReference + "-" + variation.notes
+		imageReference := externalReference + "-" + variation.notes
 
 		image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation.img)
 
 		err = insertImageIntoSearchSet(
 			databaseConnection,
 			ModifiedImage{
-				externalReference: externalReference,
+				externalReference: imageReference,
 				originalReference: originalImage.ExternalReference,
 				scenario:          scenario,
 				notes:             variation.notes,
@@ -133,7 +134,7 @@ func generateScaledVariations(img *image.Image) []*ImageVariation {
 			variations,
 			&ImageVariation{
 				img:   scaled,
-				notes: string(rune(scalingFactor)),
+				notes: strconv.Itoa(scalingFactor),
 			},
 		)
 	}
@@ -148,7 +149,7 @@ func generateRotatedVariations(img *image.Image) []*ImageVariation {
 			variations,
 			&ImageVariation{
 				img:   rotated,
-				notes: string(rune(angle)),
+				notes: fmt.Sprintf("%.0f", angle),
 			},
 		)
 	}
