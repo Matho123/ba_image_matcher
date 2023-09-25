@@ -108,7 +108,7 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 	for _, variation := range variations {
 		imageReference := externalReference + "-" + variation.notes
 
-		image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation.img)
+		image_transformation.SaveImageToDisk(scenario+"/"+imageReference, variation.img)
 
 		err = insertImageIntoSearchSet(
 			databaseConnection,
@@ -174,7 +174,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 
 		scaled := image_transformation.ResizeImage(&originalImage.Data, scalingFactor)
 		variation = scaled
-		notes = strconv.Itoa(int(scalingFactor))
+		notes = strconv.Itoa(scalingFactor)
 		break
 	case "rotated":
 		randomIndex := rand.Intn(len(rotationAngles))
@@ -182,7 +182,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 
 		rotated := image_transformation.RotateImage(&originalImage.Data, angle)
 		variation = rotated
-		notes = string(rune(angle))
+		notes = fmt.Sprintf("%.0f", angle)
 		break
 	case "mirrored":
 		horizontal := rand.Intn(2) == 0
@@ -194,7 +194,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 	case "moved":
 		moved, distance := image_transformation.MoveMotive(&originalImage.Data)
 		variation = moved
-		notes = string(rune(distance))
+		notes = fmt.Sprintf("%.0f", distance)
 		break
 	case "background":
 		changed, bg := image_transformation.ChangeBackgroundColor(&originalImage.Data)
@@ -207,7 +207,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 	case "part":
 		newImage, distance := image_transformation.IntegrateInOtherImage(&originalImage.Data)
 		variation = newImage
-		notes = string(rune(distance))
+		notes = fmt.Sprintf("%.0f", distance)
 		break
 	default:
 		variation = originalImage.Data
@@ -217,4 +217,17 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 	externalReference = externalReference + "-" + notes
 
 	image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation)
+
+	err = insertImageIntoSearchSet(
+		databaseConnection,
+		ModifiedImage{
+			externalReference: externalReference,
+			originalReference: "",
+			scenario:          scenario,
+			notes:             notes,
+		},
+	)
+	if err != nil {
+		log.Println("failed to insert ", externalReference, err)
+	}
 }
