@@ -77,7 +77,7 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 		mirroredHorizontal, axisHorizontal := image_transformation.MirrorImage(&originalImage.Data, true)
 		horizontalVariation := ImageVariation{mirroredHorizontal, axisHorizontal}
 
-		mirroredVertical, axisVertical := image_transformation.MirrorImage(&originalImage.Data, true)
+		mirroredVertical, axisVertical := image_transformation.MirrorImage(&originalImage.Data, false)
 		verticalVariation := ImageVariation{mirroredVertical, axisVertical}
 		variations = []*ImageVariation{
 			&horizontalVariation,

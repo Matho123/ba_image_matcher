@@ -20,26 +20,26 @@ func populateDatabase([]string) {
 			log.Println("Error while analysing and saving db images: ", err)
 		}
 
-		for index2, rawImage := range rawImages {
-			if (index1 == 10 || index1 == 130 || index1 == 420 || index1 == 730) && index2%2 == 0 {
+		for _, rawImage := range rawImages {
+			if index1 == 10 || index1 == 130 || index1 == 420 || index1 == 730 {
 				service.InsertSearchImage(*rawImage, "identical")
 			}
-			if (index1 == 70 || index1 == 130 || index1 == 420 || index1 == 750) && index2%3 == 0 {
+			if index1 == 70 || index1 == 130 || index1 == 420 || index1 == 750 {
 				service.InsertSearchImage(*rawImage, "scaled")
 			}
-			if (index1 == 10 || index1 == 180 || index1 == 750) && index2%3 == 0 {
+			if index1 == 10 || index1 == 180 || index1 == 750 {
 				service.InsertSearchImage(*rawImage, "rotated")
 			}
-			if (index1 == 70 || index1 == 180 || index1 == 540 || index1 == 730) && index2%2 == 0 {
+			if index1 == 70 || index1 == 180 || index1 == 540 || index1 == 730 {
 				service.InsertSearchImage(*rawImage, "mirrored")
 			}
-			if (index1 == 50 || index1 == 280 || index1 == 540 || index1 == 780) && index2%2 == 0 {
+			if index1 == 50 || index1 == 280 || index1 == 540 || index1 == 780 {
 				service.InsertSearchImage(*rawImage, "background")
 			}
-			if (index1 == 10 || index1 == 300 || index1 == 670 || index1 == 780) && index2%2 == 0 {
+			if index1 == 10 || index1 == 300 || index1 == 670 || index1 == 780 {
 				service.InsertSearchImage(*rawImage, "moved")
 			}
-			if (index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710) && index2%2 == 0 {
+			if index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710 {
 				service.InsertSearchImage(*rawImage, "part")
 			}
 		}
