@@ -1,61 +1,56 @@
-This is BibTeX, Version 0.99d
+This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Arbeit.aux
-Reallocating 'name_of_file' (item size: 1) to 6 items.
 The style file: alpha.bst
-Reallocating 'name_of_file' (item size: 1) to 24 items.
 A level-1 auxiliary file: Deckblatt/Deckblatt.aux
-Reallocating 'name_of_file' (item size: 1) to 20 items.
 A level-1 auxiliary file: Inhalt/Abstrakt.aux
-Reallocating 'name_of_file' (item size: 1) to 22 items.
 A level-1 auxiliary file: Inhalt/Einleitung.aux
-Reallocating 'name_of_file' (item size: 1) to 18 items.
 A level-1 auxiliary file: Inhalt/Formel.aux
-Reallocating 'name_of_file' (item size: 1) to 20 items.
-Reallocating 'name_of_file' (item size: 1) to 39 items.
+A level-1 auxiliary file: Inhalt/Schluss.aux
 A level-1 auxiliary file: Inhalt/Selbstaendigkeitserklaerung.aux
 Database file #1: Literatur/Literatur.bib
 Warning--to sort, need author or key in opencv
 Warning--to sort, need author or key in pHash
-You've used 8 entries,
+Warning--to sort, need author or key in go
+You've used 9 entries,
             2543 wiz_defined-function locations,
-            607 strings with 5635 characters,
-and the built_in function-call counts, 3469 in all, are:
-= -- 366
-> -- 101
+            610 strings with 5671 characters,
+and the built_in function-call counts, 3667 in all, are:
+= -- 384
+> -- 102
 < -- 8
 + -- 33
 - -- 33
-* -- 218
-:= -- 489
-add.period$ -- 23
-call.type$ -- 8
-change.case$ -- 44
-chr.to.int$ -- 8
-cite$ -- 12
-duplicate$ -- 161
-empty$ -- 298
+* -- 228
+:= -- 508
+add.period$ -- 24
+call.type$ -- 9
+change.case$ -- 48
+chr.to.int$ -- 9
+cite$ -- 15
+duplicate$ -- 171
+empty$ -- 325
 format.name$ -- 42
-if$ -- 775
+if$ -- 822
 int.to.chr$ -- 1
 int.to.str$ -- 0
 missing$ -- 6
-newline$ -- 39
+newline$ -- 42
 num.names$ -- 18
-pop$ -- 60
+pop$ -- 70
 preamble$ -- 1
-purify$ -- 52
+purify$ -- 57
 quote$ -- 0
-skip$ -- 150
+skip$ -- 162
 stack$ -- 0
-substring$ -- 253
-swap$ -- 55
+substring$ -- 261
+swap$ -- 56
 text.length$ -- 8
 text.prefix$ -- 3
 top$ -- 0
-type$ -- 64
-warning$ -- 2
+type$ -- 72
+warning$ -- 3
 while$ -- 30
-width$ -- 10
-write$ -- 98
-(There were 2 warnings)
+width$ -- 11
+write$ -- 105
+(There were 3 warnings)

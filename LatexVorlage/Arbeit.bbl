@@ -1,5 +1,8 @@
 \begin{thebibliography}{RRKB11}
 
+\bibitem[go]{go}
+Go dokumentation.
+
 \bibitem[LCS11]{brisk2011}
 Stefan Leutenegger, Margarita Chli, and Roland~Y. Siegwart.
 \newblock Brisk: Binary robust invariant scalable keypoints.
