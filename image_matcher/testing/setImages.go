@@ -8,10 +8,11 @@ import (
 func populateDatabase([]string) {
 	paths := getFilePathsFromDirectory("images/originals")
 
+	log.Println(len(paths))
 	var chunkSize = 10
 
-	for index := chunkSize; index < 800; index += chunkSize {
-		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index - 1)])
+	for index := chunkSize; index <= 800; index += chunkSize {
+		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		//register db set images
 		err := service.AnalyzeAndSaveDatabaseImage(rawImages)
@@ -23,18 +24,17 @@ func populateDatabase([]string) {
 	}
 
 	//create uniques for search sets
-
-	for index := 800 + chunkSize; index < len(paths[800:]); index += chunkSize {
-		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index - 1)])
+	for index := 800 + chunkSize; index <= 800+len(paths[800:]); index += chunkSize {
+		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		for _, rawImage := range rawImages {
-			service.InsertSearchImage(*rawImage, "identical", false)
-			service.InsertSearchImage(*rawImage, "scaled", false)
-			service.InsertSearchImage(*rawImage, "rotated", false)
-			service.InsertSearchImage(*rawImage, "mirrored", false)
-			service.InsertSearchImage(*rawImage, "background", false)
-			service.InsertSearchImage(*rawImage, "moved", false)
-			service.InsertSearchImage(*rawImage, "part", false)
+			service.GenerateUnique(*rawImage, "identical")
+			service.GenerateUnique(*rawImage, "scaled")
+			service.GenerateUnique(*rawImage, "rotated")
+			service.GenerateUnique(*rawImage, "mirrored")
+			service.GenerateUnique(*rawImage, "background")
+			service.GenerateUnique(*rawImage, "moved")
+			service.GenerateUnique(*rawImage, "part")
 		}
 
 		rawImages = nil
@@ -43,30 +43,27 @@ func populateDatabase([]string) {
 	paths = nil
 }
 
-func insertData(rawImages []*service.RawImage) {
+func pop([]string) {
+	paths := getFilePathsFromDirectory("images/originals")
 
-	//create duplicates for searchset
-	for index, rawImage := range rawImages[0:800] {
-		if index >= 0 && index < 200 {
-			service.InsertSearchImage(*rawImage, "identical", true)
+	log.Println(len(paths[800:]))
+	var chunkSize = 10
+
+	for index := 800 + chunkSize; index <= 800+len(paths[800:]); index += chunkSize {
+		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index)])
+
+		for _, rawImage := range rawImages {
+			service.GenerateUnique(*rawImage, "identical")
+			service.GenerateUnique(*rawImage, "scaled")
+			service.GenerateUnique(*rawImage, "rotated")
+			service.GenerateUnique(*rawImage, "mirrored")
+			service.GenerateUnique(*rawImage, "background")
+			service.GenerateUnique(*rawImage, "moved")
+			service.GenerateUnique(*rawImage, "part")
 		}
-		if index >= 100 && index < 300 {
-			service.InsertSearchImage(*rawImage, "scaled", true)
-		}
-		if index >= 200 && index < 400 {
-			service.InsertSearchImage(*rawImage, "rotated", true)
-		}
-		if index >= 300 && index < 500 {
-			service.InsertSearchImage(*rawImage, "mirrored", true)
-		}
-		if index >= 400 && index < 600 {
-			service.InsertSearchImage(*rawImage, "background", true)
-		}
-		if index >= 500 && index < 700 {
-			service.InsertSearchImage(*rawImage, "moved", true)
-		}
-		if index >= 600 && index < 800 {
-			service.InsertSearchImage(*rawImage, "part", true)
-		}
+
+		rawImages = nil
 	}
+
+	paths = nil
 }

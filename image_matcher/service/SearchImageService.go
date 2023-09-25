@@ -5,6 +5,7 @@ import (
 	"image"
 	"image-matcher/image_matcher/image_transformation"
 	"log"
+	"math/rand"
 	"strconv"
 )
 
@@ -14,6 +15,15 @@ type ModifiedImage struct {
 	scenario          string
 	notes             string
 }
+
+type ImageVariation struct {
+	img   image.Image
+	notes string
+}
+
+var scalingFactors = []int{2, 4, 10}
+
+var rotationAngles = []float64{5, 10, 45, 90, 180}
 
 func GetSearchImages(scenario string) ([]SearchSetImage, error) {
 	databaseConnection, err := openDatabaseConnection()
@@ -46,7 +56,106 @@ func GetSearchImages(scenario string) ([]SearchSetImage, error) {
 	return searchSetImages, nil
 }
 
-func InsertSearchImage(originalImage RawImage, scenario string, hasOriginal bool) {
+func InsertSearchImage(originalImage RawImage, scenario string) {
+	databaseConnection, err := openDatabaseConnection()
+	if err != nil {
+		log.Println("Failed to open db for searchImages: ", err)
+	}
+	defer databaseConnection.Close()
+
+	var externalReference = fmt.Sprintf("%s-%s", originalImage.ExternalReference, scenario)
+	var variations []*ImageVariation
+
+	switch scenario {
+	case "scaled":
+		variations = generateScaledVariations(&originalImage.Data)
+		break
+	case "rotated":
+		variations = generateRotatedVariations(&originalImage.Data)
+		break
+	case "mirrored":
+		mirroredHorizontal, axisHorizontal := image_transformation.MirrorImage(&originalImage.Data, true)
+		horizontalVariation := ImageVariation{mirroredHorizontal, axisHorizontal}
+
+		mirroredVertical, axisVertical := image_transformation.MirrorImage(&originalImage.Data, true)
+		verticalVariation := ImageVariation{mirroredVertical, axisVertical}
+		variations = []*ImageVariation{
+			&horizontalVariation,
+			&verticalVariation,
+		}
+		break
+	case "moved":
+		moved, distance := image_transformation.MoveMotive(&originalImage.Data)
+		variations = []*ImageVariation{{moved, string(rune(distance))}}
+		break
+	case "background":
+		changed, bg := image_transformation.ChangeBackgroundColor(&originalImage.Data)
+		r, g, b, _ := bg.RGBA()
+		variations = []*ImageVariation{{changed, fmt.Sprintf("%d, %d, %d", r, g, b)}}
+		break
+	case "motive":
+		break
+	case "part":
+		newImage, distance := image_transformation.IntegrateInOtherImage(&originalImage.Data)
+		variations = []*ImageVariation{{img: newImage, notes: string(rune(distance))}}
+		break
+	default:
+		variations = []*ImageVariation{{img: originalImage.Data, notes: ""}}
+		break
+	}
+
+	for _, variation := range variations {
+		externalReference = externalReference + "-" + variation.notes
+
+		image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation.img)
+
+		err = insertImageIntoSearchSet(
+			databaseConnection,
+			ModifiedImage{
+				externalReference: externalReference,
+				originalReference: originalImage.ExternalReference,
+				scenario:          scenario,
+				notes:             variation.notes,
+			},
+		)
+		if err != nil {
+			log.Println("failed to insert ", externalReference, err)
+		}
+	}
+
+}
+
+func generateScaledVariations(img *image.Image) []*ImageVariation {
+	var variations []*ImageVariation
+	for _, scalingFactor := range scalingFactors {
+		scaled := image_transformation.ResizeImage(img, scalingFactor)
+		variations = append(
+			variations,
+			&ImageVariation{
+				img:   scaled,
+				notes: string(rune(scalingFactor)),
+			},
+		)
+	}
+	return variations
+}
+
+func generateRotatedVariations(img *image.Image) []*ImageVariation {
+	var variations []*ImageVariation
+	for _, angle := range rotationAngles {
+		rotated := image_transformation.RotateImage(img, angle)
+		variations = append(
+			variations,
+			&ImageVariation{
+				img:   rotated,
+				notes: string(rune(angle)),
+			},
+		)
+	}
+	return variations
+}
+
+func GenerateUnique(originalImage RawImage, scenario string) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
@@ -59,17 +168,25 @@ func InsertSearchImage(originalImage RawImage, scenario string, hasOriginal bool
 
 	switch scenario {
 	case "scaled":
-		scaled, scalingFactor := image_transformation.ResizeImage(&originalImage.Data)
+		randomIndex := rand.Intn(len(scalingFactors))
+		scalingFactor := scalingFactors[randomIndex]
+
+		scaled := image_transformation.ResizeImage(&originalImage.Data, scalingFactor)
 		variation = scaled
 		notes = strconv.Itoa(int(scalingFactor))
 		break
 	case "rotated":
-		rotated, angle := image_transformation.RotateImage(&originalImage.Data)
+		randomIndex := rand.Intn(len(rotationAngles))
+		angle := rotationAngles[randomIndex]
+
+		rotated := image_transformation.RotateImage(&originalImage.Data, angle)
 		variation = rotated
 		notes = string(rune(angle))
 		break
 	case "mirrored":
-		mirrored, axis := image_transformation.MirrorImage(&originalImage.Data)
+		horizontal := rand.Intn(2) == 0
+
+		mirrored, axis := image_transformation.MirrorImage(&originalImage.Data, horizontal)
 		variation = mirrored
 		notes = axis
 		break
@@ -96,23 +213,7 @@ func InsertSearchImage(originalImage RawImage, scenario string, hasOriginal bool
 		break
 	}
 
+	externalReference = externalReference + "-" + notes
+
 	image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation)
-
-	originalReference := ""
-	if hasOriginal {
-		originalReference = originalImage.ExternalReference
-	}
-
-	err = insertImageIntoSearchSet(
-		databaseConnection,
-		ModifiedImage{
-			externalReference: externalReference,
-			originalReference: originalReference,
-			scenario:          scenario,
-			notes:             notes,
-		},
-	)
-	if err != nil {
-		println("failed to insert ", externalReference, err)
-	}
 }

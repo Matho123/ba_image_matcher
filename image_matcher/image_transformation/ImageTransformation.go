@@ -13,28 +13,23 @@ import (
 	"time"
 )
 
-func ResizeImage(img *image.Image) (image.Image, uint8) {
-	scalingFactors := []int{2, 4, 10}
-	randomIndex := rand.Intn(len(scalingFactors))
-	scalingFactor := scalingFactors[randomIndex]
+func ResizeImage(img *image.Image, scalingFactor int) image.Image {
 
 	newWidth := (*img).Bounds().Dx() / scalingFactor
 	newHeight := (*img).Bounds().Dy() / scalingFactor
 
 	scaled := imaging.Resize(*img, newWidth, newHeight, imaging.Lanczos)
-	return scaled, uint8(scalingFactor)
+	return scaled
 }
 
-func RotateImage(img *image.Image) (image.Image, int) {
-	angle := rand.Intn(360)
+func RotateImage(img *image.Image, angle float64) image.Image {
 	croppedImage := cropImage(img)
-	rotatedImage := imaging.Rotate(croppedImage, float64(angle), color.Transparent)
+	rotatedImage := imaging.Rotate(croppedImage, angle, color.Transparent)
 
-	return rotatedImage, angle
+	return rotatedImage
 }
 
-func MirrorImage(img *image.Image) (image.Image, string) {
-	horizontal := rand.Intn(2) == 0
+func MirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
 	var mirroredImage image.Image
 	var axis string
 
@@ -169,7 +164,8 @@ func loadImageFromDisk(filePath string) *image.Image {
 }
 
 func SaveImageToDisk(name string, image image.Image) {
-	outputFile, err := os.Create("images/variations/" + name + ".png")
+	newPath := "images/variations/" + name + ".png"
+	outputFile, err := os.Create(newPath)
 	if err != nil {
 		log.Println("Error while creating outputfile for image: ", err)
 		return
@@ -181,6 +177,7 @@ func SaveImageToDisk(name string, image image.Image) {
 		log.Println("Error while saving image "+name+" to disk: ", err)
 		return
 	}
+	log.Println("saved variation", newPath)
 }
 
 //func ChangeMotiveColor(img *image.Image) image.Image {
