@@ -15,8 +15,8 @@ import (
 
 var allowedImageExtensions = [...]string{".png", ".jpg"}
 
-func loadImagesFromPath(filePath string) []*service.RawImage {
-	fileInfo, err := os.Stat(filePath)
+func loadImagesFromPath(path string) []*service.RawImage {
+	fileInfo, err := os.Stat(path)
 
 	if err != nil {
 		log.Println(err)
@@ -24,45 +24,55 @@ func loadImagesFromPath(filePath string) []*service.RawImage {
 	}
 
 	if fileInfo.IsDir() {
-		return loadImagesFromDirectory(filePath)
+		paths := getFilePathsFromDirectory(path)
+		return loadImagesFromDirectory(paths)
 	} else {
-		return []*service.RawImage{loadImage(filePath)}
+		return []*service.RawImage{loadImage(path)}
 	}
 
 }
 
-func loadImagesFromDirectory(directoryPath string) []*service.RawImage {
-	var rawImageDtos []*service.RawImage
+func getFilePathsFromDirectory(directoryPath string) []string {
+	var filePaths []string
 
 	err := filepath.Walk(directoryPath, func(filePath string, fileInfo fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-		var rawImageDto *service.RawImage
 
 		if !fileInfo.IsDir() {
-			rawImageDto = loadImage(filePath)
+			filePaths = append(filePaths, filePath)
 		}
 
-		if rawImageDto != nil {
-			rawImageDtos = append(rawImageDtos, rawImageDto)
-		}
 		return nil
 	})
 
 	if err != nil {
 		log.Println(err)
 	}
+	return filePaths
+}
+
+func loadImagesFromDirectory(filePaths []string) []*service.RawImage {
+	var rawImageDtos []*service.RawImage
+
+	for _, path := range filePaths {
+		rawImageDto := loadImage(path)
+		if rawImageDto != nil {
+			rawImageDtos = append(rawImageDtos, rawImageDto)
+		}
+	}
+
 	return rawImageDtos
 }
 
-func loadImage(filePath string) *service.RawImage {
-	if !isAllowedImageFile(filePath) {
+func loadImage(path string) *service.RawImage {
+	if !isAllowedImageFile(path) {
 		return nil
 	}
 
 	//image := gocv.IMRead(filePath, gocv.IMReadGrayScale)
-	file, err := os.Open(filePath)
+	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal("Error opening the image: ", err)
 	}
@@ -73,8 +83,12 @@ func loadImage(filePath string) *service.RawImage {
 		log.Fatal("Error decoding the image: ", err)
 	}
 
-	log.Println("successfully loaded: ", filePath)
-	return &service.RawImage{ExternalReference: filePath, Data: img}
+	log.Println("successfully loaded: ", path)
+
+	filenameWithExt := filepath.Base(path)
+	filenameWithoutExt := strings.TrimSuffix(filenameWithExt, filepath.Ext(filenameWithExt))
+
+	return &service.RawImage{ExternalReference: filenameWithoutExt, Data: img}
 }
 
 func isAllowedImageFile(filePath string) bool {

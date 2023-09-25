@@ -46,10 +46,10 @@ func GetSearchImages(scenario string) ([]SearchSetImage, error) {
 	return searchSetImages, nil
 }
 
-func InsertSearchImage(originalImage RawImage, scenario string) error {
+func InsertSearchImage(originalImage RawImage, scenario string, hasOriginal bool) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
-		return err
+		log.Println("Failed to open db for searchImages: ", err)
 	}
 	defer databaseConnection.Close()
 
@@ -95,18 +95,21 @@ func InsertSearchImage(originalImage RawImage, scenario string) error {
 
 	image_transformation.SaveImageToDisk(scenario+"/"+externalReference, variation)
 
+	originalReference := ""
+	if hasOriginal {
+		originalReference = originalImage.ExternalReference
+	}
+
 	err = insertImageIntoSearchSet(
 		databaseConnection,
 		ModifiedImage{
 			externalReference: externalReference,
-			originalReference: originalImage.ExternalReference,
+			originalReference: originalReference,
 			scenario:          scenario,
 			notes:             notes,
 		},
 	)
 	if err != nil {
-		return err
+		println("failed to insert ", externalReference, err)
 	}
-
-	return nil
 }

@@ -1,8 +1,12 @@
 package service
 
 import (
+	"github.com/disintegration/imaging"
 	"gocv.io/x/gocv"
 	"image"
+	"image/color"
+	"log"
+	"time"
 )
 
 var imageAnalyzerMapping = map[string]FeatureImageAnalyzer{
@@ -48,12 +52,82 @@ func (PHash) getHash(image image.Image) uint64 {
 	return calculateHash(image)
 }
 
-func extractKeypointsAndDescriptors(imageMatPointer *gocv.Mat, imageAnalyzer FeatureImageAnalyzer) ([]gocv.KeyPoint, []byte) {
-	keypoints, descriptorMatPointer := imageAnalyzer.analyzeImage(imageMatPointer)
-	defer imageMatPointer.Close()
+func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer FeatureImageAnalyzer) (
+	[]gocv.KeyPoint,
+	gocv.Mat,
+	time.Duration,
+) {
+	blackBgMat := convertImageToMat(img, color.RGBA{A: 255})
+	whiteBgMat := convertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 
-	descriptorByteArray := convertImageMatToByteArray(descriptorMatPointer)
-	defer descriptorMatPointer.Close()
+	var finalKeypoints []gocv.KeyPoint
+	var finalExtractionTime time.Duration
+	var finalDescriptorByteArray gocv.Mat
 
-	return keypoints, descriptorByteArray
+	startTime1 := time.Now()
+	keypoints1, descriptorMat1 := imageAnalyzer.analyzeImage(&blackBgMat)
+	extractionTime1 := time.Since(startTime1)
+
+	startTime2 := time.Now()
+	keypoints2, descriptorMat2 := imageAnalyzer.analyzeImage(&whiteBgMat)
+	extractionTime2 := time.Since(startTime2)
+
+	if len(keypoints1) > len(keypoints2) {
+		finalKeypoints = keypoints1
+		finalDescriptorByteArray = descriptorMat1
+		finalExtractionTime = extractionTime1
+	} else {
+		finalKeypoints = keypoints2
+		finalDescriptorByteArray = descriptorMat2
+		finalExtractionTime = extractionTime2
+	}
+
+	return finalKeypoints, finalDescriptorByteArray, finalExtractionTime
 }
+
+func convertImageToMat(img *image.Image, c color.Color) gocv.Mat {
+	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, c)
+	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
+
+	mat1, err := gocv.ImageToMatRGBA(newImage)
+	//mat2, err := gocv.ImageToMatRGBA(*img)
+
+	//gocv.IMWrite("debug/mat1.png", mat1)
+	//gocv.IMWrite("debug/mat2.png", mat2)
+
+	if err != nil {
+		log.Println("Error converting image to Mat: ", err)
+	}
+	//grayImage := convertImageToGrayWithAlpha(&mat2)
+	gocv.CvtColor(mat1, &mat1, gocv.ColorRGBAToGray)
+
+	gocv.IMWrite("debug/mat3.png", mat1)
+	//gocv.IMWrite("debug/mat4.png", grayImage)
+
+	return mat1
+}
+
+//func convertImageToGrayWithAlpha(img *gocv.Mat) gocv.Mat {
+//	// Create a new Mat for the grayscale image with alpha channel preserved
+//	grayWithAlpha := gocv.NewMatWithSize(img.Rows(), img.Cols(), gocv.MatTypeCV8UC4)
+//
+//	// Split the RGBA image into separate color and alpha channels
+//	channels := gocv.Split(*img)
+//
+//	// Create a blank single-channel image for the grayscale data
+//	gray := gocv.NewMatWithSize(img.Rows(), img.Cols(), gocv.MatTypeCV8UC1)
+//
+//	// Convert the original image to grayscale (you can choose a different method)
+//	gocv.CvtColor(*img, &gray, gocv.ColorRGBAToGray)
+//
+//	// Merge the grayscale data with the alpha channel into a four-channel image
+//	gocv.Merge([]gocv.Mat{gray, gray, gray, channels[3]}, &grayWithAlpha)
+//
+//	// Release resources
+//	for _, ch := range channels {
+//		ch.Close()
+//	}
+//	gray.Close()
+//
+//	return grayWithAlpha
+//}

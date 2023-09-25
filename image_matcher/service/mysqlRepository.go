@@ -35,7 +35,7 @@ type SearchSetImage struct {
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
-	databaseConnection, err := sql.Open("mysql", "root:root@/DuplicateTest")
+	databaseConnection, err := sql.Open("mysql", "root:root@/duplicates")
 
 	if err != nil {
 		return nil, errors.New(fmt.Sprintf("couldn't connect to database %s", err.Error()))

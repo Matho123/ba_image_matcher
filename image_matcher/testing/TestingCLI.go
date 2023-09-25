@@ -17,6 +17,7 @@ var CommandMapping = map[string]func([]string){
 	"match":    matchToDatabase,
 	"test":     test,
 	"download": downloadOriginalImages,
+	"populate": populateDatabase,
 }
 
 func registerImages(arguments []string) {
@@ -58,11 +59,13 @@ func compareTwoImages(arguments []string) {
 		log.Fatal(err)
 	}
 
-	log.Println(fmt.Sprintf(
-		"Keypoints extracted: %d for image1 and %d for image2",
-		len(kp1),
-		len(kp2),
-	))
+	if imageAnalyzer != "phash" {
+		log.Println(fmt.Sprintf(
+			"Keypoints extracted: %d for image1 and %d for image2",
+			len(kp1),
+			len(kp2),
+		))
+	}
 
 	log.Println(fmt.Sprintf(
 		"Time taken for extraction: %s",
