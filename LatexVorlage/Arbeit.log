@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  22 SEP 2023 15:11
+This is pdfTeX, Version 3.141592653-2.6-1.40.22 (TeX Live 2022/dev/Debian) (preloaded format=pdflatex 2023.9.11)  26 SEP 2023 01:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1000,8 +1000,11 @@ Package csquotes Info: Checking for multilingual support...
 Package csquotes Info: ... found 'babel' package.
  (./Arbeit.aux
 (./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux) (./Inhalt/Einleitung.aux)
-(./Inhalt/Formel.aux) (./Inhalt/Schluss.aux)
-(./Inhalt/Selbstaendigkeitserklaerung.aux))
+(./Inhalt/Formel.aux)
+
+LaTeX Warning: Label `sec:TestDaten' multiply defined.
+
+(./Inhalt/Schluss.aux) (./Inhalt/Selbstaendigkeitserklaerung.aux))
 \openout1 = `Arbeit.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
@@ -1213,13 +1216,13 @@ chapter 2.
 
 
 ]
-<Abbildungen/keypointsift.png, id=116, 246.1697pt x 205.5178pt>
+<Abbildungen/keypointsift.png, id=134, 246.1697pt x 205.5178pt>
 File: Abbildungen/keypointsift.png Graphic file (type png)
 <use Abbildungen/keypointsift.png>
 Package pdftex.def Info: Abbildungen/keypointsift.png  used on input line 22.
 (pdftex.def)             Requested size: 147.70294pt x 123.31163pt.
  [4 <./Abbildungen/keypointsift.png>]
-<Abbildungen/bildpyramidesift.png, id=134, 606.01407pt x 450.9347pt>
+<Abbildungen/bildpyramidesift.png, id=152, 606.01407pt x 450.9347pt>
 File: Abbildungen/bildpyramidesift.png Graphic file (type png)
 <use Abbildungen/bildpyramidesift.png>
 Package pdftex.def Info: Abbildungen/bildpyramidesift.png  used on input line 3
@@ -1232,7 +1235,7 @@ Overfull \hbox (2.69006pt too wide) in paragraph at lines 56--57
  []
 
 ) (./Inhalt/Grundlagen/ORB.tex
-<Abbildungen/fast.png, id=155, 261.97874pt x 260.47313pt>
+<Abbildungen/fast.png, id=174, 261.97874pt x 260.47313pt>
 File: Abbildungen/fast.png Graphic file (type png)
 <use Abbildungen/fast.png>
 Package pdftex.def Info: Abbildungen/fast.png  used on input line 12.
@@ -1242,7 +1245,7 @@ Package pdftex.def Info: Abbildungen/fast.png  used on input line 12.
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [6] [7 <./Abbildungen/fast.png>]) (./Inhalt/Grundlagen/BRISK.tex
-<Abbildungen/bildpyramidebrisk.png, id=184, 506.6428pt x 511.15968pt>
+<Abbildungen/bildpyramidebrisk.png, id=202, 506.6428pt x 511.15968pt>
 File: Abbildungen/bildpyramidebrisk.png Graphic file (type png)
 <use Abbildungen/bildpyramidebrisk.png>
 Package pdftex.def Info: Abbildungen/bildpyramidebrisk.png  used on input line 
@@ -1253,7 +1256,7 @@ Package pdftex.def Info: Abbildungen/bildpyramidebrisk.png  used on input line
 LaTeX Warning: `h' float specifier changed to `ht'.
 
 [8]
-<Abbildungen/abtastmusterbrisk.png, id=204, 299.61937pt x 298.11375pt>
+<Abbildungen/abtastmusterbrisk.png, id=222, 299.61937pt x 298.11375pt>
 File: Abbildungen/abtastmusterbrisk.png Graphic file (type png)
 <use Abbildungen/abtastmusterbrisk.png>
 Package pdftex.def Info: Abbildungen/abtastmusterbrisk.png  used on input line 
@@ -1300,22 +1303,27 @@ chapter 5.
 
 
 
-]) [22]
+])
+(./Inhalt/Test-System/Test-Daten.tex [22]) (./Inhalt/Test-System/TSEntwurf.tex)
+[23]
 chapter 6.
-[23
+(./Inhalt/Auswertung/EvaluationPhash.tex) (./Inhalt/Auswertung/EvaluationFb.tex
+) [24
 
 
 ]
 chapter 7.
-(./Inhalt/Bilderkennungs-System/Entwurf.tex [24
+(./Inhalt/Bilderkennungs-System/Gedanken.tex [25
 
 
-]) [25]
+])
+(./Inhalt/Bilderkennungs-System/BSEntwurf.tex)
+(./Inhalt/Bilderkennungs-System/Auswertung.tex) [26]
 \openout2 = `Inhalt/Schluss.aux'.
 
  (./Inhalt/Schluss.tex
 chapter 8.
-) [26
+) [27
 
 
 
@@ -1356,14 +1364,17 @@ Underfull \hbox (badness 10000) in paragraph at lines 9--10
 ] (./Arbeit.aux (./Deckblatt/Deckblatt.aux) (./Inhalt/Abstrakt.aux)
 (./Inhalt/Einleitung.aux) (./Inhalt/Formel.aux) (./Inhalt/Schluss.aux)
 (./Inhalt/Selbstaendigkeitserklaerung.aux))
+
+LaTeX Warning: There were multiply-defined labels.
+
 Package rerunfilecheck Info: File `Arbeit.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 32833 strings out of 480153
- 607800 string characters out of 5892727
- 1230101 words of memory out of 5000000
- 50034 multiletter control sequences out of 15000+600000
+ 32902 strings out of 480153
+ 609466 string characters out of 5892727
+ 1230100 words of memory out of 5000000
+ 50073 multiletter control sequences out of 15000+600000
  489928 words of font info for 73 fonts, out of 8000000 for 9000
  36 hyphenation exceptions out of 8191
  113i,9n,123p,10623b,606s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1388,10 +1399,10 @@ f-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
 blic/amsfonts/cm/cmsy8.pfb>
-Output written on Arbeit.pdf (34 pages, 1025584 bytes).
+Output written on Arbeit.pdf (35 pages, 1031674 bytes).
 PDF statistics:
- 1110 PDF objects out of 1200 (max. 8388607)
- 508 compressed objects within 6 object streams
- 128 named destinations out of 1000 (max. 500000)
- 279 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 1170 PDF objects out of 1200 (max. 8388607)
+ 560 compressed objects within 6 object streams
+ 139 named destinations out of 1000 (max. 500000)
+ 351 words of extra memory for PDF output out of 10000 (max. 10000000)
 

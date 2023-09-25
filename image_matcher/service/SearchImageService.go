@@ -200,7 +200,8 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 		changed, bg := image_transformation.ChangeBackgroundColor(&originalImage.Data)
 		variation = changed
 		r, g, b, _ := bg.RGBA()
-		notes = fmt.Sprintf("%d, %d, %d", r, g, b)
+		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
+		notes = fmt.Sprintf("%d, %d, %d", r8, g8, b8)
 		break
 	case "motive":
 		break

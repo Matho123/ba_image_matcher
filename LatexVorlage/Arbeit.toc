@@ -41,10 +41,19 @@
 \contentsline {section}{\numberline {4.2}Berechnung}{19}{section.4.2}%
 \contentsline {chapter}{\numberline {5}Test-System}{21}{chapter.5}%
 \contentsline {section}{\numberline {5.1}Test-Szenarien}{21}{section.5.1}%
-\contentsline {chapter}{\numberline {6}Versuche und Auswertung}{23}{chapter.6}%
-\contentsline {chapter}{\numberline {7}Neues Bilderkennungs-System}{24}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Vor\"uberlegung}{24}{section.7.1}%
-\contentsline {chapter}{\numberline {8}Schluss}{26}{chapter.8}%
+\contentsline {section}{\numberline {5.2}Erstellung der Suchbilder}{22}{section.5.2}%
+\contentsline {section}{\numberline {5.3}Entwurf und Umsetzung}{23}{section.5.3}%
+\contentsline {chapter}{\numberline {6}Versuche und Auswertung}{24}{chapter.6}%
+\contentsline {section}{\numberline {6.1}Evaluation des Baseline-Algorithmus}{24}{section.6.1}%
+\contentsline {section}{\numberline {6.2}Evaluation der feature-based Algorithmen}{24}{section.6.2}%
+\contentsline {chapter}{\numberline {7}Neues Bilderkennungs-System}{25}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Vor\"uberlegung}{25}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Entwurf und Umsetzung}{26}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Auswertung}{26}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Schluss}{27}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Fazit}{27}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Diskussion}{27}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Ausblick}{27}{section.8.3}%
 \contentsline {chapter}{\nonumberline Literaturverzeichnis}{I}{chapter*.45}%
 \contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{II}{chapter*.46}%
 \contentsline {chapter}{\nonumberline Tabellenverzeichnis}{III}{chapter*.47}%
