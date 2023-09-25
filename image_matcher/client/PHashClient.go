@@ -3,17 +3,20 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"github.com/disintegration/imaging"
 	"image"
-	"image/jpeg"
+	"image/color"
+	"image/png"
 	"io"
 	"log"
+	"math/rand"
 	"net/http"
 	"strconv"
 )
 
 func GetPHashValue(image image.Image) (uint64, float64) {
 	imageByteBuffer := new(bytes.Buffer)
-	err := jpeg.Encode(imageByteBuffer, image, nil)
+	err := png.Encode(imageByteBuffer, image)
 	if err != nil {
 		log.Fatal("couldn't create bytebuffer from image!")
 	}
@@ -47,6 +50,18 @@ func GetPHashValue(image image.Image) (uint64, float64) {
 	//println(strconv.FormatUint(uIntHash, 2))
 
 	return uIntHash, hashDTO.Runtime
+}
+
+func changeBackgroundColor(img *image.Image) (image.Image, color.Color) {
+	r := uint8(rand.Intn(255))
+	g := uint8(rand.Intn(255))
+	b := uint8(rand.Intn(255))
+	newBackground := color.RGBA{R: r, G: g, B: b, A: 255}
+
+	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, newBackground)
+	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
+
+	return newImage, newBackground
 }
 
 type PHash struct {

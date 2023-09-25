@@ -87,6 +87,9 @@ func InsertSearchImage(originalImage RawImage, scenario string, hasOriginal bool
 	case "motive":
 		break
 	case "part":
+		newImage, distance := image_transformation.IntegrateInOtherImage(&originalImage.Data)
+		variation = newImage
+		notes = string(rune(distance))
 		break
 	default:
 		variation = originalImage.Data
