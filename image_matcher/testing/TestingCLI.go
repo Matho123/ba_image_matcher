@@ -16,6 +16,7 @@ var CommandMapping = map[string]func([]string){
 	"compare":  compareTwoImages,
 	"match":    matchToDatabase,
 	"test":     test,
+	"download": downloadOriginalImages,
 }
 
 func registerImages(arguments []string) {

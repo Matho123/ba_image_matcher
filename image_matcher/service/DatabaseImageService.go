@@ -2,9 +2,11 @@ package service
 
 import (
 	"errors"
+	"github.com/disintegration/imaging"
 	"gocv.io/x/gocv"
 	"image"
 	"image-matcher/image_matcher/client"
+	"image-matcher/image_matcher/image_transformation"
 	"image/color"
 	"log"
 	"time"
@@ -161,10 +163,27 @@ func AnalyzeAndMatchTwoImages(
 	debug bool,
 ) (bool, []gocv.KeyPoint, []gocv.KeyPoint, time.Duration, time.Duration, error) {
 	var imagesAreMatch = false
-	//image_transformation.ResizeImage(&image1.Data, image1.Data.Bounds().Dx()/2, image1.Data.Bounds().Dy()/2)
-	//image_transformation.RotateImage(&image1.Data, 45.0)
-	//image_transformation.MirrorImage(&image1.Data, true)
-	//image_transformation.ChangeBackgroundColor(&image1.Data, color.RGBA{R: 255, A: 255})
+	var img image.Image
+	image_transformation.SaveImageToDisk("identical/test", image1.Data)
+
+	img, _ = image_transformation.ResizeImage(&image1.Data)
+	image_transformation.SaveImageToDisk("scaled/test", img)
+
+	img, _ = image_transformation.RotateImage(&image1.Data)
+	image_transformation.SaveImageToDisk("rotated/test", img)
+
+	img, _ = image_transformation.MirrorImage(&image1.Data)
+	image_transformation.SaveImageToDisk("mirrored/test", img)
+
+	img, _ = image_transformation.ChangeBackgroundColor(&image1.Data)
+	image_transformation.SaveImageToDisk("background/test", img)
+
+	img, _ = image_transformation.MoveMotive(&image1.Data)
+	image_transformation.SaveImageToDisk("moved/test", img)
+
+	img, _ = image_transformation.IntegrateInOtherImage(&image1.Data)
+	image_transformation.SaveImageToDisk("part/test", img)
+
 	var extractionTime time.Duration
 	var matchingTime time.Duration
 
@@ -262,11 +281,13 @@ func drawMatches(
 	gocv.IMWrite("debug/matches.png", outImage)
 }
 
-func convertImageToMat(image *image.Image) gocv.Mat {
-	mat, err := gocv.ImageToMatRGBA(*image)
+func convertImageToMat(img *image.Image) gocv.Mat {
+	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
+	mat, err := gocv.ImageToMatRGB(newImage)
 	if err != nil {
 		log.Fatalf("Error converting image to Mat: %v", err)
 	}
-	gocv.CvtColor(mat, &mat, gocv.ColorRGBAToGray)
+	gocv.CvtColor(mat, &mat, gocv.ColorRGBToGray)
 	return mat
 }

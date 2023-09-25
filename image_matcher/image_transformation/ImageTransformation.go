@@ -4,10 +4,13 @@ import (
 	"github.com/disintegration/imaging"
 	"image"
 	"image/color"
-	"image/jpeg"
+	"image/draw"
+	"image/png"
 	"log"
+	"math"
 	"math/rand"
 	"os"
+	"time"
 )
 
 func ResizeImage(img *image.Image) (image.Image, uint8) {
@@ -24,8 +27,8 @@ func ResizeImage(img *image.Image) (image.Image, uint8) {
 
 func RotateImage(img *image.Image) (image.Image, int) {
 	angle := rand.Intn(360)
-
-	rotatedImage := imaging.Rotate(*img, float64(angle), color.Transparent)
+	croppedImage := cropImage(img)
+	rotatedImage := imaging.Rotate(croppedImage, float64(angle), color.Transparent)
 
 	return rotatedImage, angle
 }
@@ -58,33 +61,72 @@ func ChangeBackgroundColor(img *image.Image) (image.Image, color.Color) {
 	return newImage, newBackground
 }
 
-func MoveMotive(img *image.Image) (image.Image, int) {
+func MoveMotive(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	originalWidth := (*img).Bounds().Dx()
-	originalHeight := (*img).Bounds().Dy()
+	newWidth := int(float64((*img).Bounds().Dx()) * 1.2)
+	newHeight := int(float64((*img).Bounds().Dy()) * 1.2)
 
-	croppedWidth := croppedImage.Bounds().Dx()
-	croppedHeight := croppedImage.Bounds().Dy()
+	newImage := imaging.New(newWidth, newHeight, color.Transparent)
 
-	maxX := (originalWidth - croppedWidth) / 2
-	maxY := (originalHeight - croppedHeight) / 2
+	movedImage, movedDistance := pasteImageRandomly(&croppedImage, newImage)
 
-	movedX := rand.Intn(maxX)
-	movedY := rand.Intn(maxY)
-
-	newImage := imaging.New(originalWidth, originalHeight, color.Transparent)
-
-	newImage = imaging.Paste(newImage, croppedImage, image.Point{X: movedX, Y: movedY})
-
-	return newImage, movedX + movedY
+	return movedImage, movedDistance
 }
 
-func IntegrateInOtherImage(img *image.Image) {
+func IntegrateInOtherImage(img *image.Image) (image.Image, float64) {
+	croppedImage := cropImage(img)
+	biggerImage := loadImageFromDisk("images/bigger-bg.png")
 
+	newImage, movedDistance := pasteImageRandomly(&croppedImage, *biggerImage)
+
+	return newImage, movedDistance
+}
+
+func pasteImageRandomly(pastedImage *image.Image, backgroundImage image.Image) (image.Image, float64) {
+	pastedImagedWidth := (*pastedImage).Bounds().Dx()
+	pastedImageHeight := (*pastedImage).Bounds().Dy()
+
+	backgroundWidth := backgroundImage.Bounds().Dx()
+	backgroundHeight := backgroundImage.Bounds().Dy()
+
+	maxX := (backgroundWidth - pastedImagedWidth) / 2
+	maxY := (backgroundHeight - pastedImageHeight) / 2
+
+	rand.Seed(time.Now().UnixNano())
+	movedX := rand.Intn(2*maxX+1) - maxX
+	movedY := rand.Intn(2*maxY+1) - maxY
+
+	bgImageCenterX, bgImageCenterY := backgroundWidth/2, backgroundHeight/2
+	pastedImageCenterX, pastedImageCenterY := pastedImagedWidth/2, pastedImageHeight/2
+
+	offsetX := bgImageCenterX - (pastedImageCenterX + movedX)
+	offsetY := bgImageCenterY - (pastedImageCenterY + movedY)
+
+	backgroundNRGBA := image.NewNRGBA(image.Rect(0, 0, backgroundWidth, backgroundHeight))
+	draw.Draw(backgroundNRGBA, image.Rect(0, 0, backgroundWidth, backgroundHeight), backgroundImage, image.Point{}, draw.Src)
+
+	foregroundNRGBA := image.NewNRGBA(image.Rect(0, 0, pastedImagedWidth, pastedImageHeight))
+	draw.Draw(foregroundNRGBA, image.Rect(0, 0, pastedImagedWidth, pastedImageHeight), *pastedImage, image.Point{}, draw.Src)
+
+	generatedImage := pasteImage(backgroundNRGBA, foregroundNRGBA, offsetX, offsetY)
+
+	movedDistance := math.Sqrt(
+		float64(offsetX*offsetX + offsetY*offsetY),
+	)
+
+	return generatedImage, movedDistance
+}
+
+func pasteImage(bgImage *image.NRGBA, fgImage *image.NRGBA, offsetX, offsetY int) image.Image {
+	dstRect := image.Rect(offsetX, offsetY, offsetX+fgImage.Bounds().Dx(), offsetY+fgImage.Bounds().Dy())
+	draw.Draw(bgImage, dstRect, fgImage, fgImage.Bounds().Min, draw.Over)
+
+	return bgImage
 }
 
 func cropImage(img *image.Image) image.Image {
-	var minX, minY, maxX, maxY int
+	var minX, minY = (*img).Bounds().Dx(), (*img).Bounds().Dy()
+	var maxX, maxY = 0, 0
 
 	for y := 0; y < (*img).Bounds().Dy(); y++ {
 		for x := 0; x < (*img).Bounds().Dx(); x++ {
@@ -107,22 +149,36 @@ func cropImage(img *image.Image) image.Image {
 		}
 	}
 
-	croppedImage := imaging.Crop(*img, image.Rect(minX, minY, maxX, minY))
+	croppedImage := imaging.Crop(*img, image.Rect(minX, minY, maxX, maxY))
 
 	return croppedImage
 }
 
+func loadImageFromDisk(filePath string) *image.Image {
+	file, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Error opening the image: ", err)
+	}
+	defer file.Close()
+
+	img, _, err := image.Decode(file)
+	if err != nil {
+		log.Fatal("Error decoding the image: ", err)
+	}
+	return &img
+}
+
 func SaveImageToDisk(name string, image image.Image) {
-	outputFile, err := os.Create("images/" + name + ".jpg")
+	outputFile, err := os.Create("images/variations/" + name + ".png")
 	if err != nil {
 		log.Println("Error while creating outputfile for image: ", err)
 		return
 	}
 	defer outputFile.Close()
 
-	err = jpeg.Encode(outputFile, image, nil)
+	err = png.Encode(outputFile, image)
 	if err != nil {
-		log.Println("Error while saving image to disk: ", err)
+		log.Println("Error while saving image "+name+" to disk: ", err)
 		return
 	}
 }
