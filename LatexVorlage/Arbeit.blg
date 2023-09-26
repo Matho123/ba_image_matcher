@@ -1,56 +1,63 @@
 This is BibTeX, Version 0.99d (TeX Live 2022/dev/Debian)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: Arbeit.aux
-The style file: alpha.bst
+The style file: alphadin.bst
 A level-1 auxiliary file: Deckblatt/Deckblatt.aux
 A level-1 auxiliary file: Inhalt/Abstrakt.aux
 A level-1 auxiliary file: Inhalt/Einleitung.aux
 A level-1 auxiliary file: Inhalt/Formel.aux
 A level-1 auxiliary file: Inhalt/Schluss.aux
 A level-1 auxiliary file: Inhalt/Selbstaendigkeitserklaerung.aux
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated wiz_functions (elt_size=4) to 6000 items from 3000.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
+Reallocated singl_function (elt_size=4) to 100 items from 50.
 Database file #1: Literatur/Literatur.bib
 Warning--to sort, need author or key in opencv
 Warning--to sort, need author or key in pHash
 Warning--to sort, need author or key in go
-You've used 9 entries,
-            2543 wiz_defined-function locations,
-            610 strings with 5671 characters,
-and the built_in function-call counts, 3667 in all, are:
-= -- 384
-> -- 102
-< -- 8
-+ -- 33
-- -- 33
-* -- 228
-:= -- 508
-add.period$ -- 24
-call.type$ -- 9
-change.case$ -- 48
-chr.to.int$ -- 9
-cite$ -- 15
-duplicate$ -- 171
-empty$ -- 325
-format.name$ -- 42
-if$ -- 822
+Warning--to sort, need author or key in gocv
+Warning--to sort, need author or key in mysql
+You've used 11 entries,
+            4793 wiz_defined-function locations,
+            951 strings with 7794 characters,
+and the built_in function-call counts, 5262 in all, are:
+= -- 577
+> -- 104
+< -- 105
++ -- 116
+- -- 36
+* -- 340
+:= -- 830
+add.period$ -- 11
+call.type$ -- 11
+change.case$ -- 45
+chr.to.int$ -- 11
+cite$ -- 21
+duplicate$ -- 170
+empty$ -- 429
+format.name$ -- 66
+if$ -- 1120
 int.to.chr$ -- 1
 int.to.str$ -- 0
-missing$ -- 6
-newline$ -- 42
+missing$ -- 46
+newline$ -- 60
 num.names$ -- 18
-pop$ -- 70
+pop$ -- 74
 preamble$ -- 1
-purify$ -- 57
+purify$ -- 67
 quote$ -- 0
-skip$ -- 162
+skip$ -- 262
 stack$ -- 0
-substring$ -- 261
-swap$ -- 56
-text.length$ -- 8
+substring$ -- 387
+swap$ -- 32
+text.length$ -- 22
 text.prefix$ -- 3
 top$ -- 0
-type$ -- 72
-warning$ -- 3
-while$ -- 30
-width$ -- 11
-write$ -- 105
-(There were 3 warnings)
+type$ -- 110
+warning$ -- 5
+while$ -- 38
+width$ -- 13
+write$ -- 131
+(There were 5 warnings)

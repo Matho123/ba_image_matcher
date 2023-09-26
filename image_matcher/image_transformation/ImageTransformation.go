@@ -58,8 +58,8 @@ func ChangeBackgroundColor(img *image.Image) (image.Image, color.Color) {
 
 func MoveMotive(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	newWidth := int(float64((*img).Bounds().Dx()) * 1.2)
-	newHeight := int(float64((*img).Bounds().Dy()) * 1.2)
+	newWidth := int(float64((*img).Bounds().Dx()) * 2)
+	newHeight := int(float64((*img).Bounds().Dy()) * 2)
 
 	newImage := imaging.New(newWidth, newHeight, color.Transparent)
 

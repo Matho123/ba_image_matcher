@@ -27,11 +27,11 @@ type PHashImage struct {
 }
 
 type SearchSetImage struct {
-	id                int
-	externalReference string
-	originalReference string
-	scenario          string
-	notes             string
+	Id                int
+	ExternalReference string
+	OriginalReference string
+	Scenario          string
+	Notes             string
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
@@ -187,7 +187,8 @@ func retrieveChunkFromSearchSet(
 	for imageRows.Next() {
 		var image SearchSetImage
 
-		err := imageRows.Scan(&image.id, &image.externalReference, &image.originalReference, &image.scenario, &image.notes)
+		err := imageRows.Scan(&image.Id, &image.ExternalReference, &image.OriginalReference, &image.Scenario,
+			&image.Notes)
 
 		if err != nil {
 			continue
@@ -195,7 +196,7 @@ func retrieveChunkFromSearchSet(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		log.Println(fmt.Sprintf("Retrieved %s from search set", image.externalReference))
+		log.Println(fmt.Sprintf("Retrieved %s from search set", image.ExternalReference))
 	}
 	return imageEntityChunk, nil
 }

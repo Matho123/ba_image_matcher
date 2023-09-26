@@ -157,25 +157,25 @@ func AnalyzeAndMatchTwoImages(
 ) (bool, []gocv.KeyPoint, []gocv.KeyPoint, time.Duration, time.Duration, error) {
 	var imagesAreMatch = false
 	//var img image.Image
-	//image_transformation.SaveImageToDisk("identical/test", image1.Data)
+	//image_transformation.SaveImageToDisk("debug/identical", image1.Data)
 	//
-	//img, _ = image_transformation.ResizeImage(&image1.Data)
-	//image_transformation.SaveImageToDisk("scaled/test", img)
+	//img = image_transformation.ResizeImage(&image1.Data, 2)
+	//image_transformation.SaveImageToDisk("debug/scaled", img)
 	//
-	//img, _ = image_transformation.RotateImage(&image1.Data)
-	//image_transformation.SaveImageToDisk("rotated/test", img)
+	//img = image_transformation.RotateImage(&image1.Data, 45)
+	//image_transformation.SaveImageToDisk("debug/rotated", img)
 	//
-	//img, _ = image_transformation.MirrorImage(&image1.Data)
-	//image_transformation.SaveImageToDisk("mirrored/test", img)
+	//img, _ = image_transformation.MirrorImage(&image1.Data, true)
+	//image_transformation.SaveImageToDisk("debug/mirrored", img)
 	//
 	//img, _ = image_transformation.ChangeBackgroundColor(&image1.Data)
-	//image_transformation.SaveImageToDisk("background/test", img)
+	//image_transformation.SaveImageToDisk("debug/background", img)
 	//
 	//img, _ = image_transformation.MoveMotive(&image1.Data)
-	//image_transformation.SaveImageToDisk("moved/test", img)
+	//image_transformation.SaveImageToDisk("debug/moved", img)
 	//
 	//img, _ = image_transformation.IntegrateInOtherImage(&image1.Data)
-	//image_transformation.SaveImageToDisk("part/test", img)
+	//image_transformation.SaveImageToDisk("debug/part", img)
 
 	var extractionTime time.Duration
 	var matchingTime time.Duration
@@ -246,6 +246,7 @@ func convertImageMatToByteArray(image gocv.Mat) []byte {
 		log.Println("unable to convert image to gocv.NativeByteBuffer! ", err)
 		return nil
 	}
+	image.ToBytes()
 	return nativeByteBuffer.GetBytes()
 }
 

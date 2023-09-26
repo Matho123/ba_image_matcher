@@ -5,6 +5,7 @@ import (
 	"gocv.io/x/gocv"
 	"image-matcher/image_matcher/service"
 	"log"
+	"time"
 )
 
 // SimilarityThreshold TODO: needs to be tested
@@ -19,6 +20,7 @@ var CommandMapping = map[string]func([]string){
 	"download": downloadOriginalImages,
 	"populate": populateDatabase,
 	"pop1":     pop,
+	"scenario": runScenario,
 }
 
 func registerImages(arguments []string) {
@@ -95,12 +97,22 @@ func matchToDatabase(arguments []string) {
 
 	image := loadImage(imagePath)
 
-	matchReferences, err, extractionTime, matchingTime := service.MatchAgainstDatabaseFeatureBased(
-		*image,
-		imageAnalyzer,
-		imageMatcher,
-		SimilarityThreshold,
-	)
+	var matchReferences []string
+	var err error
+	var extractionTime, matchingTime time.Duration
+	if imageAnalyzer == "phash" {
+		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
+			*image,
+			4,
+		)
+	} else {
+		matchReferences, err, extractionTime, matchingTime = service.MatchAgainstDatabaseFeatureBased(
+			*image,
+			imageAnalyzer,
+			imageMatcher,
+			SimilarityThreshold,
+		)
+	}
 
 	log.Println(fmt.Sprintf(
 		"Time taken for extraction: %s",

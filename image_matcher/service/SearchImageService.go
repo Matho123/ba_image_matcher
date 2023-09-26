@@ -25,10 +25,11 @@ var scalingFactors = []int{2, 4, 10}
 
 var rotationAngles = []float64{5, 10, 45, 90, 180}
 
-func GetSearchImages(scenario string) ([]SearchSetImage, error) {
+func GetSearchImages(scenario string) []SearchSetImage {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
-		return []SearchSetImage{}, err
+		log.Println("Error while retrieving chunk from search images: ", err)
+		return []SearchSetImage{}
 	}
 	defer databaseConnection.Close()
 
@@ -53,7 +54,7 @@ func GetSearchImages(scenario string) ([]SearchSetImage, error) {
 		}
 		offset += MaxChunkSize
 	}
-	return searchSetImages, nil
+	return searchSetImages
 }
 
 func InsertSearchImage(originalImage RawImage, scenario string) {
