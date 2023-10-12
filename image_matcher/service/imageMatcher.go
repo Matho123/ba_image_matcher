@@ -87,6 +87,7 @@ func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	if maxDist > 0 {
 		distanceSum := 0.0
 		for _, match := range filteredMatches {
+			println(match.Distance)
 			distanceSum += match.Distance
 		}
 		normalizedDistanceSum := distanceSum / maxDist
@@ -95,7 +96,7 @@ func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	similarityScore := 1.0 - averageNormalizedDistance
 
 	log.Println("similarity score: ", similarityScore)
-
+	log.Println(len(matches), len(filteredMatches))
 	return similarityScore >= similarityThreshold, filteredMatches
 }
 

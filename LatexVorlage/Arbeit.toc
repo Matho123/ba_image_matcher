@@ -17,7 +17,7 @@
 \contentsline {paragraph}{\nonumberline Schl\"usselpunktsuche}{8}{paragraph*.19}%
 \contentsline {paragraph}{\nonumberline Erstellen des Deskriptors}{9}{paragraph*.22}%
 \contentsline {section}{\numberline {2.2}Match-Suche mit Deskriptoren}{10}{section.2.2}%
-\contentsline {subsection}{\numberline {2.2.1}Deskriptoren Vergleichen}{11}{subsection.2.2.1}%
+\contentsline {subsection}{\numberline {2.2.1}Vergleich von Deskriptoren mittels Distanzbestimmung}{11}{subsection.2.2.1}%
 \contentsline {paragraph}{\nonumberline Euklidische-Distanz}{11}{paragraph*.25}%
 \contentsline {paragraph}{\nonumberline Hamming-Distanz}{11}{paragraph*.27}%
 \contentsline {subsection}{\numberline {2.2.2}Matching Strategien}{12}{subsection.2.2.2}%
@@ -56,6 +56,6 @@
 \contentsline {section}{\numberline {8.2}Diskussion}{29}{section.8.2}%
 \contentsline {section}{\numberline {8.3}Ausblick}{29}{section.8.3}%
 \contentsline {chapter}{\nonumberline Literaturverzeichnis}{I}{chapter*.46}%
-\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{II}{chapter*.47}%
-\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{III}{chapter*.48}%
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{III}{chapter*.47}%
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{IV}{chapter*.48}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

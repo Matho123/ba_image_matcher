@@ -17,7 +17,40 @@ type Design struct {
 	Id string `json:"id"`
 }
 
-// https://image.spreadshirtmedia.com/image-server/v1/designs/1011031431?width=1000
+func downloadOriginalImages([]string) {
+	designs := getDownloadableImageIds()
+
+	for _, design := range designs {
+		downloadImageFromUrl(design.Id)
+		time.Sleep(5 * time.Second)
+	}
+}
+
+func getDownloadableImageIds() []Design {
+	endpoint := "https://ff.spod.com/fulfillment/public/api/designs?locale=en_US&platform=NA&query=&safeSearch=ALL&offset=0&limit=1000"
+	response, err := http.Get(endpoint)
+	if err != nil {
+		fmt.Println("Error sending GET request:", err)
+		return nil
+	}
+	defer response.Body.Close()
+
+	responseData, err := io.ReadAll(response.Body)
+	if err != nil {
+		fmt.Println("Error reading response data:", err)
+		return nil
+	}
+
+	var imageList ImageList
+	err = json.Unmarshal(responseData, &imageList)
+	if err != nil {
+		fmt.Println("Error unmarshaling JSON: ", err)
+		return nil
+	}
+
+	return imageList.Designs
+}
+
 func downloadImageFromUrl(id string) {
 	imageUrl := fmt.Sprintf("https://image.spreadshirtmedia.com/image-server/v1/designs/%s?width=1000", id)
 
@@ -47,38 +80,4 @@ func downloadImageFromUrl(id string) {
 	}
 
 	fmt.Println("Image " + id + " downloaded successfully.")
-}
-
-func getDownloadableImageIds() []Design {
-	endpoint := "https://ff.spod.com/fulfillment/public/api/designs?locale=en_US&platform=NA&query=&safeSearch=ALL&offset=0&limit=1000"
-	response, err := http.Get(endpoint)
-	if err != nil {
-		fmt.Println("Error sending GET request:", err)
-		return nil
-	}
-	defer response.Body.Close()
-
-	responseData, err := io.ReadAll(response.Body)
-	if err != nil {
-		fmt.Println("Error reading response data:", err)
-		return nil
-	}
-
-	var imageList ImageList
-	err = json.Unmarshal(responseData, &imageList)
-	if err != nil {
-		fmt.Println("Error unmarshaling JSON: ", err)
-		return nil
-	}
-
-	return imageList.Designs
-}
-
-func downloadOriginalImages([]string) {
-	designs := getDownloadableImageIds()
-
-	for _, design := range designs {
-		downloadImageFromUrl(design.Id)
-		time.Sleep(5 * time.Second)
-	}
 }

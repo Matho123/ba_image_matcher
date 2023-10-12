@@ -1,11 +1,12 @@
 \section{Baseline-Algorithmus (pHash)}
 \label{sec:pHash}
-Spreadshirt nutzt momentan einen Perceptual-Hashing-Algorithmus (kurz pHash) um neu hochgeladene Bilder zu erkennen, die bereits verboten wurden. Die Idee von pHash ist, dass für ähnliche Bilder ein ähnlicher pHash-Wert ermittelt wird. Die pHash Implementierung bei Spreadshirt stützt sich auf den Blockeintrag \cite{pHash} und lässt sich grob in drei Phasen unterteilen.
+Spreadshirt nutzt momentan einen Perceptual-Hashing-Algorithmus (kurz pHash) um neu hochgeladene Bilder zu erkennen, die bereits abgelehnt wurden. Die Idee von pHash ist, dass für ähnliche Bilder ein ähnlicher pHash-Wert ermittelt wird. Die pHash Implementierung bei Spreadshirt stützt sich auf den Blockeintrag \cite{pHash} und lässt sich grob in drei Phasen unterteilen.
 
 \paragraph{Phase 1: Vorverarbeitungsphase}
-Zuerst kommt das Bild in eine Vorverarbeitungsphase. Falls das Bild einen transparenten Hintergrund hat, wird es so zugeschnitten, dass der Bildrand direkt Rand des Motivs liegt. Danach wird das Bild auf eine Auflösung von 32x32 herunter skaliert und in ein Graustufenbild umgewandelt. 
+Zuerst kommt das Bild in eine Vorverarbeitungsphase. Falls das Bild einen transparenten Hintergrund hat, wird es so zugeschnitten, dass der Bildrand direkt am Rand des Motivs liegt. Danach wird das Bild auf eine Auflösung von 32x32 herunter skaliert und in ein Graustufenbild umgewandelt. 
 
-\paragraph{Phase 2: Umwandlung in den Frequenzraum} In dieser Phase wird das Bild vom Ortsraum in den Frequenzraum überführt. 
+\paragraph{Phase 2: Umwandlung in den Frequenzraum} 
+In dieser Phase wird das Bild vom Ortsraum in den Frequenzraum überführt. 
 Dazu wird die diskrete Kosinustransformation (kurz DCT) genutzt. 
 Es entsteht eine 32x32 DCT-Matrix bestehend aus Koeffizienten, mit denen, in Kombination mit der Kosinusfunktion, das Originalbild rekonstruiert werden kann. 
 
@@ -18,5 +19,5 @@ Wenn der Wert größer ist, wird eine 1 und ansonsten eine 0 an den Hash-Wert ange
 
 \paragraph{pHash-Werte vergleichen}
 Zum vergleichen von pHash-Werten, wird die Hamming-Distanz (Siehe Abschnitt ~\ref{sec:DeskriptorenVergleichen}) genutzt.
-Bei Spreadshirt gilt ein Bild als Duplikat, wenn beim Hash-Vergleich mit einem Bild aus der Datenbank eine Hamming-Distanz kleiner oder gleich 4 ermittelt wird.
+In der Spread Group gilt ein Bild als Duplikat, wenn beim Hash-Vergleich mit einem Bild aus der Datenbank eine Hamming-Distanz kleiner oder gleich 4 ermittelt wird.
 

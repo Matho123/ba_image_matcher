@@ -18,7 +18,7 @@ $$score = 1 - \frac{\sum_{d \in D} \frac{d}{max(D)}}{| D |} $$
 
 Es werden alle Distanzen aller gefilterten Matches normalisiert und aufsummiert.
 Um die Werte auf den Bereich zwischen 0 und 1 abzubilden, wird die Distanz durch die Maximaldistanz geteilt.
-Bei der Normalisierung sind Werte kleiner Null sind nicht möglich, da alle Distanzen mindestens 0 betragen.
+Bei der Normalisierung sind Werte kleiner Null nicht möglich, da alle Distanzen mindestens 0 betragen.
 
 Ursprünglich war für die Formel die herkömmliche Min-Max-Normalisierung mit $\frac{d - min(D)}{max(D)-min(D)}$ vorgesehen. 
 Allerdings hat sich diese bei weiterer Überlegung als ungeeignet herausgestellt. 

@@ -274,7 +274,7 @@ func drawMatches(
 		keypoints2,
 		bestMatches,
 		&outImage,
-		color.RGBA{R: 255},
+		color.RGBA{R: 255, A: 100},
 		color.RGBA{R: 255},
 		[]byte{},
 		gocv.DrawMatchesFlag(0),

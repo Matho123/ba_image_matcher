@@ -2,7 +2,7 @@
 \label{sec:SIFT}
 
 Ziel des SIFT-Algorithmus ist es Merkmale in einem Bild zu finden und mit Deskriptoren zu beschreiben, die Robust gegenüber Rotation, Verschiebung und Skalierung sind. Auch der Einfluss durch Bildrauschen und Verzerrung soll möglichst gering sein.
-Dabei durchläuft der Algorithmus 4 Schritte. Schritt 1 bis 3 umfassen die Suche und Beschreibung der Schlüsselpunkte, während Schritt 4 sich mit Erstellung der Deskriptoren befasst.  \cite[S. 2]{sift1999} 
+Dabei durchläuft der Algorithmus 4 Schritte. Schritt 1 bis 3 umfassen die Suche und Beschreibung der Schlüsselpunkte, während Schritt 4 sich mit der Erstellung der Deskriptoren befasst.  \cite[S. 2]{sift1999} 
 
 \paragraph{1. Suche nach Extrempunkten}
 \label{sec:Extrempunktsuche}
@@ -26,7 +26,7 @@ Ein Pixel ist dann ein Schlüsselpunkt, wenn sein Helligkeitswert größer oder kle
 
 Diese Extrempunktsuche wird dabei für mehrere Oktaven durchgeführt. Dabei wird für jede Oktave das Originalbild um den Faktor 2 herunter skaliert. 
 Das ist notwendig, da manche Extrempunkte nur bei bestimmten Auflösungen auffindbar sind. \cite[S. 94f]{sift2004}
-Durch die Sammlung von Schlüsselpunkten auf verschiedenen Auflösungen, sind diese bei Bildern in verschiedenen Auflösungen vergleichbar. Der Aufbau von DOG-Bilder innerhalb von mehreren Oktaven wird als scale-space (dt. Bildpyramide) bezeichnet (Siehe Abbildung \ref{fig:bildpyramide}).
+Durch die Sammlung von Schlüsselpunkten auf verschiedenen Auflösungen, sind diese bei Bildern in verschiedenen Auflösungen vergleichbar. Der Aufbau von DOG-Bildern innerhalb von mehreren Oktaven wird als scale-space (dt. Bildpyramide) bezeichnet (Siehe Abbildung \ref{fig:bildpyramide}).
 
 \begin{figure}[h]
 \centering

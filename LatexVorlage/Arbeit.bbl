@@ -34,6 +34,13 @@
 \newblock {In: }\emph{International journal of computer vision} 60 (2004), S.
   91--110
 
+\bibitem[ML09]{flann2009}
+\textsc{Muja}, Marius ; \textsc{Lowe}, David~G.:
+\newblock Fast Approximate Nearest Neighbors with Automatic Algorithm
+  Configuration.
+\newblock {In: }\emph{International Conference on Computer Vision Theory and
+  Application VISSAPP'09)}, INSTICC Press, 2009, S. 331--340
+
 \bibitem[mys]{mysql}
 \emph{MySQL Dokumentation}.
 \newblock \url{https://dev.mysql.com/doc/}

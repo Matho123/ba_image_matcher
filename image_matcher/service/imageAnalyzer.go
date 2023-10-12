@@ -81,7 +81,6 @@ func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer FeatureImage
 		finalDescriptorByteArray = descriptorMat2
 		finalExtractionTime = extractionTime2
 	}
-
 	return finalKeypoints, finalDescriptorByteArray, finalExtractionTime
 }
 
@@ -90,19 +89,12 @@ func convertImageToMat(img *image.Image, c color.Color) gocv.Mat {
 	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
 
 	mat1, err := gocv.ImageToMatRGBA(newImage)
-	//mat2, err := gocv.ImageToMatRGBA(*img)
-
-	//gocv.IMWrite("debug/mat1.png", mat1)
-	//gocv.IMWrite("debug/mat2.png", mat2)
 
 	if err != nil {
 		log.Println("Error converting image to Mat: ", err)
 	}
-	//grayImage := convertImageToGrayWithAlpha(&mat2)
-	gocv.CvtColor(mat1, &mat1, gocv.ColorRGBAToGray)
 
-	gocv.IMWrite("debug/mat3.png", mat1)
-	//gocv.IMWrite("debug/mat4.png", grayImage)
+	gocv.CvtColor(mat1, &mat1, gocv.ColorRGBAToGray)
 
 	return mat1
 }

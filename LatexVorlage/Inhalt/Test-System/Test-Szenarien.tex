@@ -11,9 +11,9 @@ Im Suchset sind pixelgenaue Kopien aus dem Datenbank-Set enthalten.
 Dieses Szenario stellt den Trivialfall dar, bei eine Balancierte-Genauigkeit von 100\% und ein Ähnlichkeits-Score von 1 bei Duplikaten erwartet wird. 
 Eine niedrigere Balancierte-Genauigkeit oder ein niedrigerer Ähnlichkeits-Score lassen darauf schließen, dass der getestete Algorithmus nicht richtig implementiert und die Bildähnlichkeits-Formel fehlerhaft ist.
 \item \textbf{Geänderte Auflösung}
-Es werden für die duplizierten Bilder niedriger aufgelöste Varianten erstellt. Dabei werden die 3 Skalierungsfaktoren 2, 4, 10 und angewendet. Für jeden Skalierungsfaktor wird eine Variation erstellt, deren Seitenlängen um den Skalierungsfaktor gekürzt werden.
+Es werden niedriger aufgelöste Varianten erstellt. Dabei werden die 3 Skalierungsfaktoren 2, 4, 10 und angewendet. Für jeden Skalierungsfaktor wird eine Variation erstellt, deren Seitenlängen um den Skalierungsfaktor gekürzt werden.
 \item \textbf{Verschobenes Motiv}
-Das Motiv des Duplikats ist im Vergleich zum Original verschoben. 
+Das Motiv des Duplikats ist im Vergleich zum Original verschoben. Dazu wird das Bild um den Faktor 1.5 vergrößert. Die Dimensionen des Motivs bleiben dabei gleich.
 \item \textbf{Rotiertes Motiv}
 Die Duplikate sind in diesem Fall im Vergleich zum Original rotiert. Es werden die Rotationswinkel 5°, 10°, 45°, 90° und 180° verwendet. 
 Für jedes duplizierte Bild wird für jeden Winkel eine Variation erstellt.
