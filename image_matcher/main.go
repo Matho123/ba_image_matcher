@@ -1,7 +1,7 @@
 package main
 
 import (
-	"image-matcher/image_matcher/testing"
+	"image_matcher/testing"
 	"log"
 	"os"
 )

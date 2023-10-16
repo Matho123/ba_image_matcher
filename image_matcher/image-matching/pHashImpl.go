@@ -1,4 +1,4 @@
-package service
+package image_matching
 
 import (
 	"image"
@@ -25,11 +25,6 @@ func calculateHash(image image.Image) uint64 {
 	median := calculateMedian(lowFrequencyMatrix)
 
 	return computeHash(lowFrequencyMatrix, median)
-}
-
-func determineHashSimilarity(hash1, hash2 uint64) (bool, int) {
-	hammingDistance := calculateHammingDistance(hash1, hash2)
-	return hammingDistance <= MaxHammingDistance, hammingDistance
 }
 
 func preprocessImage(img image.Image, width, height int) image.Image {

@@ -1,4 +1,4 @@
-package service
+package image_matching
 
 import (
 	"gocv.io/x/gocv"
@@ -7,27 +7,27 @@ import (
 
 const DistanceRatioThreshold = 0.8
 
-var imageMatcherMapping = map[string]ImageMatcher{
+var ImageMatcherMapping = map[string]ImageMatcher{
 	"bfm":   BruteForceMatcher{gocv.NewBFMatcher()},
 	"flann": FLANNMatcher{gocv.NewFlannBasedMatcher()},
 }
 
 type ImageMatcher interface {
-	findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch
-	close()
+	FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch
+	Close()
 }
 
 type BruteForceMatcher struct {
 	matcher gocv.BFMatcher
 }
 
-func (bfm BruteForceMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
+func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
 	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
 
 	return bfm.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
-func (bfm BruteForceMatcher) close() {
+func (bfm BruteForceMatcher) Close() {
 	bfm.matcher.Close()
 }
 
@@ -35,13 +35,13 @@ type FLANNMatcher struct {
 	matcher gocv.FlannBasedMatcher
 }
 
-func (flann FLANNMatcher) findMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
+func (flann FLANNMatcher) FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
 	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
 
 	return flann.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
 }
 
-func (flann FLANNMatcher) close() {
+func (flann FLANNMatcher) Close() {
 	flann.matcher.Close()
 }
 
@@ -56,7 +56,7 @@ func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalT
 }
 
 // TODO: refine with testing
-func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (bool, []gocv.DMatch) {
+func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (bool, []gocv.DMatch) {
 	var filteredMatches []gocv.DMatch
 	var maxDist = 0.0
 
@@ -100,7 +100,7 @@ func determineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	return similarityScore >= similarityThreshold, filteredMatches
 }
 
-func hashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int) bool {
+func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int) bool {
 	hammingDistance := calculateHammingDistance(hash1, hash2)
 	log.Println("hamming distance: ", hammingDistance)
 	return hammingDistance <= maxDistance

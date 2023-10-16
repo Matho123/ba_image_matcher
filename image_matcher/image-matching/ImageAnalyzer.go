@@ -1,4 +1,4 @@
-package service
+package image_matching
 
 import (
 	"github.com/disintegration/imaging"
@@ -9,19 +9,19 @@ import (
 	"time"
 )
 
-var imageAnalyzerMapping = map[string]FeatureImageAnalyzer{
+var ImageAnalyzerMapping = map[string]FeatureImageAnalyzer{
 	"orb":   ORBImageAnalyzer{},
 	"sift":  SiftImageAnalyzer{},
 	"brisk": BRISKImageAnalyzer{},
 }
 
 type FeatureImageAnalyzer interface {
-	analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat)
+	AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat)
 }
 
 type SiftImageAnalyzer struct{}
 
-func (SiftImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+func (SiftImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
 	sift := gocv.NewSIFT()
 	defer sift.Close()
 
@@ -30,7 +30,7 @@ func (SiftImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Ma
 
 type ORBImageAnalyzer struct{}
 
-func (ORBImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+func (ORBImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
 	orb := gocv.NewORB()
 	defer orb.Close()
 
@@ -39,7 +39,7 @@ func (ORBImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat
 
 type BRISKImageAnalyzer struct{}
 
-func (BRISKImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
+func (BRISKImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat) {
 	brisk := gocv.NewBRISK()
 	defer brisk.Close()
 
@@ -48,7 +48,7 @@ func (BRISKImageAnalyzer) analyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.M
 
 type PHash struct{}
 
-func (PHash) getHash(image image.Image) uint64 {
+func (PHash) GetHash(image image.Image) uint64 {
 	return calculateHash(image)
 }
 
@@ -57,19 +57,19 @@ func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer FeatureImage
 	gocv.Mat,
 	time.Duration,
 ) {
-	blackBgMat := convertImageToMat(img, color.RGBA{A: 255})
-	whiteBgMat := convertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	blackBgMat := ConvertImageToMat(img, color.RGBA{A: 255})
+	whiteBgMat := ConvertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 
 	var finalKeypoints []gocv.KeyPoint
 	var finalExtractionTime time.Duration
 	var finalDescriptorByteArray gocv.Mat
 
 	startTime1 := time.Now()
-	keypoints1, descriptorMat1 := imageAnalyzer.analyzeImage(&blackBgMat)
+	keypoints1, descriptorMat1 := imageAnalyzer.AnalyzeImage(&blackBgMat)
 	extractionTime1 := time.Since(startTime1)
 
 	startTime2 := time.Now()
-	keypoints2, descriptorMat2 := imageAnalyzer.analyzeImage(&whiteBgMat)
+	keypoints2, descriptorMat2 := imageAnalyzer.AnalyzeImage(&whiteBgMat)
 	extractionTime2 := time.Since(startTime2)
 
 	if len(keypoints1) > len(keypoints2) {
@@ -84,7 +84,7 @@ func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer FeatureImage
 	return finalKeypoints, finalDescriptorByteArray, finalExtractionTime
 }
 
-func convertImageToMat(img *image.Image, c color.Color) gocv.Mat {
+func ConvertImageToMat(img *image.Image, c color.Color) gocv.Mat {
 	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, c)
 	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
 

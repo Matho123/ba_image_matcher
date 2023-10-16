@@ -1,18 +1,19 @@
 package testing
 
 import (
-	"image-matcher/image_matcher/service"
+	"image_matcher/file-handling"
+	"image_matcher/service"
 	"log"
 )
 
 func populateDatabase([]string) {
-	paths := getFilePathsFromDirectory("images/originals")
+	paths := file_handling.GetFilePathsFromDirectory("images/originals")
 
 	log.Println(len(paths))
 	var chunkSize = 10
 
 	for index1 := chunkSize; index1 <= 800; index1 += chunkSize {
-		rawImages := loadImagesFromDirectory(paths[(index1 - chunkSize):(index1)])
+		rawImages := file_handling.LoadImagesFromDirectory(paths[(index1 - chunkSize):(index1)])
 
 		//register db set images
 		err := service.AnalyzeAndSaveDatabaseImage(rawImages)
@@ -49,7 +50,7 @@ func populateDatabase([]string) {
 
 	//create uniques for search sets
 	for index := 800 + chunkSize; index <= 800+len(paths[800:]); index += chunkSize {
-		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index)])
+		rawImages := file_handling.LoadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		for _, rawImage := range rawImages {
 			service.GenerateUnique(*rawImage, "identical")
@@ -68,13 +69,13 @@ func populateDatabase([]string) {
 }
 
 func pop([]string) {
-	paths := getFilePathsFromDirectory("images/originals")
+	paths := file_handling.GetFilePathsFromDirectory("images/originals")
 
 	log.Println(len(paths[800:]))
 	var chunkSize = 10
 
 	for index := 800 + chunkSize; index <= 800+len(paths[800:]); index += chunkSize {
-		rawImages := loadImagesFromDirectory(paths[(index - chunkSize):(index)])
+		rawImages := file_handling.LoadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		for _, rawImage := range rawImages {
 			service.GenerateUnique(*rawImage, "identical")

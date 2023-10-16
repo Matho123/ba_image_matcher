@@ -1,10 +1,9 @@
-package testing
+package file_handling
 
 import (
 	"image"
-	"image-matcher/image_matcher/service"
-	_ "image-matcher/image_matcher/service"
 	_ "image/jpeg"
+	"image/png"
 	_ "image/png"
 	"io/fs"
 	"log"
@@ -13,26 +12,31 @@ import (
 	"strings"
 )
 
+type RawImage struct {
+	ExternalReference string
+	Data              image.Image
+}
+
 var allowedImageExtensions = [...]string{".png", ".jpg"}
 
-func loadImagesFromPath(path string) []*service.RawImage {
+func LoadImagesFromPath(path string) []*RawImage {
 	fileInfo, err := os.Stat(path)
 
 	if err != nil {
 		log.Println(err)
-		return []*service.RawImage{}
+		return []*RawImage{}
 	}
 
 	if fileInfo.IsDir() {
-		paths := getFilePathsFromDirectory(path)
-		return loadImagesFromDirectory(paths)
+		paths := GetFilePathsFromDirectory(path)
+		return LoadImagesFromDirectory(paths)
 	} else {
-		return []*service.RawImage{loadImage(path)}
+		return []*RawImage{LoadRawImage(path)}
 	}
 
 }
 
-func getFilePathsFromDirectory(directoryPath string) []string {
+func GetFilePathsFromDirectory(directoryPath string) []string {
 	var filePaths []string
 
 	err := filepath.Walk(directoryPath, func(filePath string, fileInfo fs.FileInfo, err error) error {
@@ -53,11 +57,11 @@ func getFilePathsFromDirectory(directoryPath string) []string {
 	return filePaths
 }
 
-func loadImagesFromDirectory(filePaths []string) []*service.RawImage {
-	var rawImageDtos []*service.RawImage
+func LoadImagesFromDirectory(filePaths []string) []*RawImage {
+	var rawImageDtos []*RawImage
 
 	for _, path := range filePaths {
-		rawImageDto := loadImage(path)
+		rawImageDto := LoadRawImage(path)
 		if rawImageDto != nil {
 			rawImageDtos = append(rawImageDtos, rawImageDto)
 		}
@@ -66,11 +70,20 @@ func loadImagesFromDirectory(filePaths []string) []*service.RawImage {
 	return rawImageDtos
 }
 
-func loadImage(path string) *service.RawImage {
+func LoadRawImage(path string) *RawImage {
 	if !isAllowedImageFile(path) {
 		return nil
 	}
 
+	img := LoadImageFromDisk(path)
+
+	filenameWithExt := filepath.Base(path)
+	filenameWithoutExt := strings.TrimSuffix(filenameWithExt, filepath.Ext(filenameWithExt))
+
+	return &RawImage{ExternalReference: filenameWithoutExt, Data: *img}
+}
+
+func LoadImageFromDisk(path string) *image.Image {
 	//image := gocv.IMRead(filePath, gocv.IMReadGrayScale)
 	file, err := os.Open(path)
 	if err != nil {
@@ -84,11 +97,24 @@ func loadImage(path string) *service.RawImage {
 	}
 
 	log.Println("successfully loaded: ", path)
+	return &img
+}
 
-	filenameWithExt := filepath.Base(path)
-	filenameWithoutExt := strings.TrimSuffix(filenameWithExt, filepath.Ext(filenameWithExt))
+func SaveImageToDisk(name string, image image.Image) {
+	newPath := "images/variations/" + name + ".png"
+	outputFile, err := os.Create(newPath)
+	if err != nil {
+		log.Println("Error while creating outputfile for image: ", err)
+		return
+	}
+	defer outputFile.Close()
 
-	return &service.RawImage{ExternalReference: filenameWithoutExt, Data: img}
+	err = png.Encode(outputFile, image)
+	if err != nil {
+		log.Println("Error while saving image "+name+" to disk: ", err)
+		return
+	}
+	log.Println("saved variation", newPath)
 }
 
 func isAllowedImageFile(filePath string) bool {

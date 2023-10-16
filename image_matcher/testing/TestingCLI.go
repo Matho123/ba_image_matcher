@@ -3,14 +3,15 @@ package testing
 import (
 	"fmt"
 	"gocv.io/x/gocv"
-	"image-matcher/image_matcher/service"
+	"image_matcher/client"
+	"image_matcher/file-handling"
+	"image_matcher/service"
 	"log"
 	"time"
 )
 
 // SimilarityThreshold TODO: needs to be tested
 const SimilarityThreshold = 0.7
-const HammingDistanceThreshold = 4
 
 var CommandMapping = map[string]func([]string){
 	"register": registerImages,
@@ -30,7 +31,7 @@ func registerImages(arguments []string) {
 
 	imagePath := arguments[0]
 
-	images := loadImagesFromPath(imagePath)
+	images := file_handling.LoadImagesFromPath(imagePath)
 
 	err := service.AnalyzeAndSaveDatabaseImage(images)
 	if err != nil {
@@ -49,8 +50,8 @@ func compareTwoImages(arguments []string) {
 	imageMatcher := arguments[3]
 	debug := len(arguments) > 4 && arguments[4] == "debug"
 
-	image1 := loadImage(imagePath1)
-	image2 := loadImage(imagePath2)
+	image1 := file_handling.LoadRawImage(imagePath1)
+	image2 := file_handling.LoadRawImage(imagePath2)
 
 	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
 		*image1,
@@ -95,7 +96,7 @@ func matchToDatabase(arguments []string) {
 	imageAnalyzer := arguments[1]
 	imageMatcher := arguments[2]
 
-	image := loadImage(imagePath)
+	image := file_handling.LoadRawImage(imagePath)
 
 	var matchReferences []string
 	var err error
@@ -133,6 +134,15 @@ func matchToDatabase(arguments []string) {
 		}
 	} else {
 		log.Println("image did not match")
+	}
+}
+
+func downloadOriginalImages([]string) {
+	designs := client.GetDownloadableImageIds()
+
+	for _, design := range designs {
+		client.DownloadImageFromUrl(design.Id)
+		time.Sleep(5 * time.Second)
 	}
 }
 

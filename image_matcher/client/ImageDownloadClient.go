@@ -1,4 +1,4 @@
-package testing
+package client
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"io"
 	"net/http"
 	"os"
-	"time"
 )
 
 type ImageList struct {
@@ -17,16 +16,7 @@ type Design struct {
 	Id string `json:"id"`
 }
 
-func downloadOriginalImages([]string) {
-	designs := getDownloadableImageIds()
-
-	for _, design := range designs {
-		downloadImageFromUrl(design.Id)
-		time.Sleep(5 * time.Second)
-	}
-}
-
-func getDownloadableImageIds() []Design {
+func GetDownloadableImageIds() []Design {
 	endpoint := "https://ff.spod.com/fulfillment/public/api/designs?locale=en_US&platform=NA&query=&safeSearch=ALL&offset=0&limit=1000"
 	response, err := http.Get(endpoint)
 	if err != nil {
@@ -51,7 +41,7 @@ func getDownloadableImageIds() []Design {
 	return imageList.Designs
 }
 
-func downloadImageFromUrl(id string) {
+func DownloadImageFromUrl(id string) {
 	imageUrl := fmt.Sprintf("https://image.spreadshirtmedia.com/image-server/v1/designs/%s?width=1000", id)
 
 	response, err := http.Get(imageUrl)

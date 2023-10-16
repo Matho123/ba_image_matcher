@@ -1,19 +1,17 @@
-package image_transformation
+package service
 
 import (
 	"github.com/disintegration/imaging"
 	"image"
 	"image/color"
 	"image/draw"
-	"image/png"
-	"log"
+	file_handling "image_matcher/file-handling"
 	"math"
 	"math/rand"
-	"os"
 	"time"
 )
 
-func ResizeImage(img *image.Image, scalingFactor int) image.Image {
+func resizeImage(img *image.Image, scalingFactor int) image.Image {
 
 	newWidth := (*img).Bounds().Dx() / scalingFactor
 	newHeight := (*img).Bounds().Dy() / scalingFactor
@@ -22,14 +20,14 @@ func ResizeImage(img *image.Image, scalingFactor int) image.Image {
 	return scaled
 }
 
-func RotateImage(img *image.Image, angle float64) image.Image {
+func rotateImage(img *image.Image, angle float64) image.Image {
 	croppedImage := cropImage(img)
 	rotatedImage := imaging.Rotate(croppedImage, angle, color.Transparent)
 
 	return rotatedImage
 }
 
-func MirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
+func mirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
 	var mirroredImage image.Image
 	var axis string
 
@@ -70,7 +68,7 @@ func MoveMotive(img *image.Image) (image.Image, float64) {
 
 func IntegrateInOtherImage(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	biggerImage := loadImageFromDisk("images/bigger-bg.png")
+	biggerImage := file_handling.LoadImageFromDisk("images/bigger-bg.png")
 
 	newImage, movedDistance := pasteImageRandomly(&croppedImage, *biggerImage)
 
@@ -147,37 +145,6 @@ func cropImage(img *image.Image) image.Image {
 	croppedImage := imaging.Crop(*img, image.Rect(minX, minY, maxX, maxY))
 
 	return croppedImage
-}
-
-func loadImageFromDisk(filePath string) *image.Image {
-	file, err := os.Open(filePath)
-	if err != nil {
-		log.Fatal("Error opening the image: ", err)
-	}
-	defer file.Close()
-
-	img, _, err := image.Decode(file)
-	if err != nil {
-		log.Fatal("Error decoding the image: ", err)
-	}
-	return &img
-}
-
-func SaveImageToDisk(name string, image image.Image) {
-	newPath := "images/variations/" + name + ".png"
-	outputFile, err := os.Create(newPath)
-	if err != nil {
-		log.Println("Error while creating outputfile for image: ", err)
-		return
-	}
-	defer outputFile.Close()
-
-	err = png.Encode(outputFile, image)
-	if err != nil {
-		log.Println("Error while saving image "+name+" to disk: ", err)
-		return
-	}
-	log.Println("saved variation", newPath)
 }
 
 //func ChangeMotiveColor(img *image.Image) image.Image {
