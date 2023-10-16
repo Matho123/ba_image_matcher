@@ -5,14 +5,13 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	file_handling "image_matcher/file-handling"
+	"image_matcher/file-handling"
 	"math"
 	"math/rand"
 	"time"
 )
 
 func resizeImage(img *image.Image, scalingFactor int) image.Image {
-
 	newWidth := (*img).Bounds().Dx() / scalingFactor
 	newHeight := (*img).Bounds().Dy() / scalingFactor
 

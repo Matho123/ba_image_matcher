@@ -9,10 +9,6 @@ import (
 	"time"
 )
 
-type SearchImageEval struct {
-	externalReference, classEval string
-}
-
 func runScenario(args []string) {
 	algorithm := args[0]
 	scenario := args[1]
@@ -23,17 +19,17 @@ func runScenario(args []string) {
 		log.Println("couldn't convert threshold")
 	}
 
-	var startTime time.Time
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
-	var classEval classificationEvaluation
+	var classEval ClassificationEvaluation
+	var imageEvals *[]file_handling.SearchImageEval
 
 	if scenario == "pHash" {
-		startTime = time.Now()
-		_, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
+		startTime := time.Now()
+		imageEvals, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
 		scenarioRuntime = time.Since(startTime)
 	} else {
-		startTime = time.Now()
-		_, classEval, extractionTime, matchingTime = runFeatureBasedScenario(scenario, algorithm, float64(threshold))
+		startTime := time.Now()
+		imageEvals, classEval, extractionTime, matchingTime = runFeatureBasedScenario(scenario, algorithm, float64(threshold))
 		scenarioRuntime = time.Since(startTime)
 	}
 
@@ -41,17 +37,20 @@ func runScenario(args []string) {
 	log.Println("ExtractionTime", extractionTime)
 	log.Println("MatchingTime", matchingTime)
 	log.Println("Eval: ", classEval.string())
+
+	file_handling.WriteOverallEvalToCSV(scenario, &classEval, extractionTime, matchingTime)
+	file_handling.WriteImageEvalToCSV(scenario, imageEvals)
 }
 
 func runPHashScenario(
 	scenario string,
 	maxHammingDistance int,
-) ([]SearchImageEval, classificationEvaluation, time.Duration, time.Duration) {
+) (*[]file_handling.SearchImageEval, ClassificationEvaluation, time.Duration, time.Duration) {
 	searchImages := service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
-	var imageEvaluations []SearchImageEval
+	var imageEvaluations []file_handling.SearchImageEval
 
-	classificationEval := classificationEvaluation{0, 0, 0, 0}
+	classificationEval := ClassificationEvaluation{0, 0, 0, 0}
 
 	for _, searchImage := range searchImages {
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
@@ -62,17 +61,23 @@ func runPHashScenario(
 		}
 		totalExtractionTime += extractionTime
 		totalMatchingTime += matchingTime
-		classificationEval.evaluateClassification(&matchedReferences, &searchImage.OriginalReference)
+
+		class := classificationEval.evaluateClassification(&matchedReferences, &searchImage.OriginalReference)
+		imageEvaluations = append(
+			imageEvaluations,
+			file_handling.SearchImageEval{ExternalReference: searchImage.ExternalReference, ClassEval: class},
+		)
 	}
 
-	return imageEvaluations, classificationEval, totalExtractionTime, totalMatchingTime
+	return &imageEvaluations, classificationEval, totalExtractionTime, totalMatchingTime
 }
 
 func runFeatureBasedScenario(
 	scenario string,
 	algorithm string,
 	similarityThreshold float64,
-) ([]SearchImageEval, classificationEvaluation, time.Duration, time.Duration) {
+) (*[]file_handling.SearchImageEval, ClassificationEvaluation, time.Duration, time.Duration) {
 	startTime := time.Now()
-	return []SearchImageEval{SearchImageEval{}}, classificationEvaluation{}, time.Since(startTime), time.Since(startTime)
+	return &[]file_handling.SearchImageEval{file_handling.SearchImageEval{}}, ClassificationEvaluation{}, time.Since(startTime),
+		time.Since(startTime)
 }

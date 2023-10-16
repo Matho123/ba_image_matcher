@@ -2,50 +2,50 @@ package testing
 
 import "fmt"
 
-type classificationEvaluation struct {
-	tp, tn, fp, fn int
+type ClassificationEvaluation struct {
+	TP, TN, FP, FN int
 }
 
-func (c *classificationEvaluation) recall() float64 {
-	return float64(c.tp) / float64(c.tp+c.fn)
+func (c *ClassificationEvaluation) Recall() float64 {
+	return float64(c.TP) / float64(c.TP+c.FN)
 }
 
-func (c *classificationEvaluation) specificity() float64 {
-	return float64(c.tn) / float64(c.tn+c.fp)
+func (c *ClassificationEvaluation) Specificity() float64 {
+	return float64(c.TN) / float64(c.TN+c.FP)
 }
 
-func (c *classificationEvaluation) balancedAccuracy() float64 {
-	return (c.recall() + c.specificity()) / 2
+func (c *ClassificationEvaluation) BalancedAccuracy() float64 {
+	return (c.Recall() + c.Specificity()) / 2
 }
 
-func (c *classificationEvaluation) evaluateClassification(matchedRefs *[]string, originalRef *string) string {
+func (c *ClassificationEvaluation) evaluateClassification(matchedRefs *[]string, originalRef *string) string {
 	amountMatched := len(*matchedRefs)
 	if *originalRef == "" && amountMatched > 0 {
-		c.fp++
+		c.FP++
 		return "false-positive"
 	} else if *originalRef != "" && amountMatched == 0 {
-		c.fn++
+		c.FN++
 		return "false-negative"
 	} else if *originalRef != "" && containsOriginalRef(matchedRefs, originalRef) {
-		c.tp++
+		c.TP++
 		return "true-positive"
 	} else if *originalRef == "" && !containsOriginalRef(matchedRefs, originalRef) {
-		c.tn++
+		c.TN++
 		return "true-negative"
 	}
 	return ""
 }
 
-func (c *classificationEvaluation) string() string {
+func (c *ClassificationEvaluation) string() string {
 	return fmt.Sprintf(
-		"tp: %d, fp: %d, tn: %d, fn: %d, recall: %.2f, specificity: %.2f, balanced-acc: %.2f",
-		c.tp,
-		c.fp,
-		c.tn,
-		c.fn,
-		c.recall(),
-		c.specificity(),
-		c.balancedAccuracy(),
+		"TP: %d, FP: %d, TN: %d, FN: %d, Recall: %.2f, Specificity: %.2f, balanced-acc: %.2f",
+		c.TP,
+		c.FP,
+		c.TN,
+		c.FN,
+		c.Recall(),
+		c.Specificity(),
+		c.BalancedAccuracy(),
 	)
 }
 

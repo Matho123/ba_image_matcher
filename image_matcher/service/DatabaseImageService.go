@@ -38,9 +38,9 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*file_handling.RawImage) error {
 			databaseConnection,
 			DatabaseSetImage{
 				externalReference: rawImage.ExternalReference,
-				siftDescriptor:    convertImageMatToByteArray(siftDesc),
-				orbDescriptor:     convertImageMatToByteArray(orbDesc),
-				briskDescriptor:   convertImageMatToByteArray(briskDesc),
+				siftDescriptor:    file_handling.ConvertImageMatToByteArray(siftDesc),
+				orbDescriptor:     file_handling.ConvertImageMatToByteArray(orbDesc),
+				briskDescriptor:   file_handling.ConvertImageMatToByteArray(briskDesc),
 				pHash:             pHash,
 			},
 		)
@@ -89,7 +89,7 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 
 		for _, databaseImage := range databaseImages {
-			databaseImageDescriptor := convertByteArrayToMat(databaseImage.descriptor)
+			databaseImageDescriptor := file_handling.ConvertByteArrayToMat(databaseImage.descriptor)
 			matchingStart := time.Now()
 			matches := imageMatcher.FindMatches(searchImageDescriptor, databaseImageDescriptor)
 			matchingTime += time.Since(matchingStart)
@@ -186,7 +186,7 @@ func AnalyzeAndMatchTwoImages(
 	if debug {
 		image1Mat := image_matching.ConvertImageToMat(&image1.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 		image2Mat := image_matching.ConvertImageToMat(&image2.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
-		drawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, bestMatches)
+		file_handling.DrawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, *bestMatches)
 	}
 
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil
@@ -200,51 +200,4 @@ func getAnalyzerAndMatcher(analyzer, matcher string) (image_matching.FeatureImag
 		return nil, nil, errors.New("invalid option for analyzer or matcher")
 	}
 	return imageAnalyzer, imageMatcher, nil
-}
-
-func convertImageMatToByteArray(image gocv.Mat) []byte {
-	if image.Empty() {
-		log.Println("descriptor is empty!")
-		return nil
-	}
-
-	nativeByteBuffer, err := gocv.IMEncode(".png", image)
-	if err != nil {
-		log.Println("unable to convert image to gocv.NativeByteBuffer! ", err)
-		return nil
-	}
-	image.ToBytes()
-	return nativeByteBuffer.GetBytes()
-}
-
-func convertByteArrayToMat(imageBytes []byte) gocv.Mat {
-	imageMat, err := gocv.IMDecode(imageBytes, -1)
-
-	if err != nil || imageMat.Empty() {
-		log.Println("unable to convert bytes to gocv.mat")
-	}
-	return imageMat
-}
-
-func drawMatches(
-	image1 *gocv.Mat,
-	keypoints1 []gocv.KeyPoint,
-	image2 *gocv.Mat,
-	keypoints2 []gocv.KeyPoint,
-	bestMatches []gocv.DMatch,
-) {
-	outImage := gocv.NewMat()
-	gocv.DrawMatches(
-		*image1,
-		keypoints1,
-		*image2,
-		keypoints2,
-		bestMatches,
-		&outImage,
-		color.RGBA{R: 255, A: 100},
-		color.RGBA{R: 255},
-		[]byte{},
-		gocv.DrawMatchesFlag(0),
-	)
-	gocv.IMWrite("debug/matches.png", outImage)
 }
