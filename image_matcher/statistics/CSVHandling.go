@@ -1,9 +1,8 @@
-package file_handling
+package statistics
 
 import (
 	"encoding/csv"
 	"fmt"
-	"image_matcher/testing"
 	"log"
 	"os"
 	"strconv"
@@ -12,11 +11,12 @@ import (
 
 type SearchImageEval struct {
 	ExternalReference, ClassEval string
+	ExtractionTime, MatchingTime time.Duration
 }
 
 func WriteOverallEvalToCSV(
 	scenario string,
-	classEval *testing.ClassificationEvaluation,
+	classEval *ClassificationEvaluation,
 	extractionTime time.Duration,
 	matchingTime time.Duration,
 ) {
@@ -39,10 +39,18 @@ func WriteOverallEvalToCSV(
 
 func WriteImageEvalToCSV(scenario string, imageEvaluations *[]SearchImageEval) {
 	data := [][]string{
-		{"image reference", "classification"},
+		{"image reference", "classification", "extraction time", "matching time"},
 	}
 	for _, imageEvaluation := range *imageEvaluations {
-		data = append(data, []string{imageEvaluation.ExternalReference, imageEvaluation.ClassEval})
+		data = append(
+			data,
+			[]string{
+				imageEvaluation.ExternalReference,
+				imageEvaluation.ClassEval,
+				imageEvaluation.ExtractionTime.String(),
+				imageEvaluation.MatchingTime.String(),
+			},
+		)
 	}
 	writeToCSV(scenario+"-detail-evaluation", &data)
 }

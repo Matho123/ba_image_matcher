@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"gocv.io/x/gocv"
 	"image_matcher/client"
-	"image_matcher/file-handling"
 	"image_matcher/service"
 	"log"
 	"time"
@@ -31,7 +30,7 @@ func registerImages(arguments []string) {
 
 	imagePath := arguments[0]
 
-	images := file_handling.LoadImagesFromPath(imagePath)
+	images := service.LoadImagesFromPath(imagePath)
 
 	err := service.AnalyzeAndSaveDatabaseImage(images)
 	if err != nil {
@@ -50,8 +49,8 @@ func compareTwoImages(arguments []string) {
 	imageMatcher := arguments[3]
 	debug := len(arguments) > 4 && arguments[4] == "debug"
 
-	image1 := file_handling.LoadRawImage(imagePath1)
-	image2 := file_handling.LoadRawImage(imagePath2)
+	image1 := service.LoadRawImage(imagePath1)
+	image2 := service.LoadRawImage(imagePath2)
 
 	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
 		*image1,
@@ -96,7 +95,7 @@ func matchToDatabase(arguments []string) {
 	imageAnalyzer := arguments[1]
 	imageMatcher := arguments[2]
 
-	image := file_handling.LoadRawImage(imagePath)
+	image := service.LoadRawImage(imagePath)
 
 	var matchReferences []string
 	var err error

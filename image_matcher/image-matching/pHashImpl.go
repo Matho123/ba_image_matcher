@@ -14,8 +14,6 @@ import (
 const DctWidth = 8
 const HighfreqFactor = 4
 
-const MaxHammingDistance = 4
-
 func calculateHash(image image.Image) uint64 {
 	imageSiteLength := DctWidth * HighfreqFactor
 	preprocessedImage := preprocessImage(image, imageSiteLength, imageSiteLength)

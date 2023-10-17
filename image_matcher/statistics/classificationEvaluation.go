@@ -1,4 +1,4 @@
-package testing
+package statistics
 
 import "fmt"
 
@@ -18,7 +18,7 @@ func (c *ClassificationEvaluation) BalancedAccuracy() float64 {
 	return (c.Recall() + c.Specificity()) / 2
 }
 
-func (c *ClassificationEvaluation) evaluateClassification(matchedRefs *[]string, originalRef *string) string {
+func (c *ClassificationEvaluation) EvaluateClassification(matchedRefs *[]string, originalRef *string) string {
 	amountMatched := len(*matchedRefs)
 	if *originalRef == "" && amountMatched > 0 {
 		c.FP++
@@ -36,7 +36,7 @@ func (c *ClassificationEvaluation) evaluateClassification(matchedRefs *[]string,
 	return ""
 }
 
-func (c *ClassificationEvaluation) string() string {
+func (c *ClassificationEvaluation) String() string {
 	return fmt.Sprintf(
 		"TP: %d, FP: %d, TN: %d, FN: %d, Recall: %.2f, Specificity: %.2f, balanced-acc: %.2f",
 		c.TP,

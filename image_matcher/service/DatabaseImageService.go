@@ -6,7 +6,6 @@ import (
 	"gocv.io/x/gocv"
 	"image/color"
 	"image_matcher/client"
-	"image_matcher/file-handling"
 	"image_matcher/image-matching"
 	"log"
 	"time"
@@ -20,7 +19,7 @@ var descriptorMapping = map[image_matching.FeatureImageAnalyzer]string{
 
 const MaxChunkSize = 50
 
-func AnalyzeAndSaveDatabaseImage(rawImages []*file_handling.RawImage) error {
+func AnalyzeAndSaveDatabaseImage(rawImages []*RawImage) error {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return err
@@ -38,9 +37,9 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*file_handling.RawImage) error {
 			databaseConnection,
 			DatabaseSetImage{
 				externalReference: rawImage.ExternalReference,
-				siftDescriptor:    file_handling.ConvertImageMatToByteArray(siftDesc),
-				orbDescriptor:     file_handling.ConvertImageMatToByteArray(orbDesc),
-				briskDescriptor:   file_handling.ConvertImageMatToByteArray(briskDesc),
+				siftDescriptor:    ConvertImageMatToByteArray(siftDesc),
+				orbDescriptor:     ConvertImageMatToByteArray(orbDesc),
+				briskDescriptor:   ConvertImageMatToByteArray(briskDesc),
 				pHash:             pHash,
 			},
 		)
@@ -53,7 +52,7 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*file_handling.RawImage) error {
 }
 
 func MatchAgainstDatabaseFeatureBased(
-	searchImage file_handling.RawImage,
+	searchImage RawImage,
 	analyzer string,
 	matcher string,
 	similarityThreshold float64,
@@ -89,7 +88,7 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 
 		for _, databaseImage := range databaseImages {
-			databaseImageDescriptor := file_handling.ConvertByteArrayToMat(databaseImage.descriptor)
+			databaseImageDescriptor := ConvertByteArrayToMat(databaseImage.descriptor)
 			matchingStart := time.Now()
 			matches := imageMatcher.FindMatches(searchImageDescriptor, databaseImageDescriptor)
 			matchingTime += time.Since(matchingStart)
@@ -108,7 +107,7 @@ func MatchAgainstDatabaseFeatureBased(
 	return matchedImages, nil, extractionTime, matchingTime
 }
 
-func MatchImageAgainstDatabasePHash(searchImage file_handling.RawImage, maxHammingDistance int) ([]string, error, time.Duration,
+func MatchImageAgainstDatabasePHash(searchImage RawImage, maxHammingDistance int) ([]string, error, time.Duration,
 	time.Duration) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
@@ -145,8 +144,8 @@ func MatchImageAgainstDatabasePHash(searchImage file_handling.RawImage, maxHammi
 }
 
 func AnalyzeAndMatchTwoImages(
-	image1 file_handling.RawImage,
-	image2 file_handling.RawImage,
+	image1 RawImage,
+	image2 RawImage,
 	analyzer string,
 	matcher string,
 	similarityThreshold float64,
@@ -186,7 +185,7 @@ func AnalyzeAndMatchTwoImages(
 	if debug {
 		image1Mat := image_matching.ConvertImageToMat(&image1.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 		image2Mat := image_matching.ConvertImageToMat(&image2.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
-		file_handling.DrawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, *bestMatches)
+		DrawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, *bestMatches)
 	}
 
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil

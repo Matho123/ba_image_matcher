@@ -3,7 +3,6 @@ package service
 import (
 	"fmt"
 	"image"
-	file_handling "image_matcher/file-handling"
 	"log"
 	"math/rand"
 	"strconv"
@@ -57,7 +56,7 @@ func GetSearchImages(scenario string) []SearchSetImage {
 	return searchSetImages
 }
 
-func InsertSearchImage(originalImage file_handling.RawImage, scenario string) {
+func InsertSearchImage(originalImage RawImage, scenario string) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
@@ -109,7 +108,7 @@ func InsertSearchImage(originalImage file_handling.RawImage, scenario string) {
 	for _, variation := range variations {
 		imageReference := externalReference + "-" + variation.notes
 
-		file_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.img)
+		SaveImageToDisk(scenario+"/"+imageReference, variation.img)
 
 		err = insertImageIntoSearchSet(
 			databaseConnection,
@@ -157,7 +156,7 @@ func generateRotatedVariations(img *image.Image) []*ImageVariation {
 	return variations
 }
 
-func GenerateUnique(originalImage file_handling.RawImage, scenario string) {
+func GenerateUnique(originalImage RawImage, scenario string) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
@@ -218,7 +217,7 @@ func GenerateUnique(originalImage file_handling.RawImage, scenario string) {
 
 	externalReference = externalReference + "-" + notes
 
-	file_handling.SaveImageToDisk(scenario+"/"+externalReference, variation)
+	SaveImageToDisk(scenario+"/"+externalReference, variation)
 
 	err = insertImageIntoSearchSet(
 		databaseConnection,

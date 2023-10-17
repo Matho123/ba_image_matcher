@@ -2,8 +2,8 @@ package testing
 
 import (
 	"fmt"
-	"image_matcher/file-handling"
 	"image_matcher/service"
+	"image_matcher/statistics"
 	"log"
 	"strconv"
 	"time"
@@ -20,10 +20,10 @@ func runScenario(args []string) {
 	}
 
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
-	var classEval ClassificationEvaluation
-	var imageEvals *[]file_handling.SearchImageEval
+	var classEval statistics.ClassificationEvaluation
+	var imageEvals *[]statistics.SearchImageEval
 
-	if scenario == "pHash" {
+	if algorithm == "phash" {
 		startTime := time.Now()
 		imageEvals, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
 		scenarioRuntime = time.Since(startTime)
@@ -36,25 +36,25 @@ func runScenario(args []string) {
 	log.Println("Scenario ran for", scenarioRuntime)
 	log.Println("ExtractionTime", extractionTime)
 	log.Println("MatchingTime", matchingTime)
-	log.Println("Eval: ", classEval.string())
+	log.Println("Eval: ", classEval.String())
 
-	file_handling.WriteOverallEvalToCSV(scenario, &classEval, extractionTime, matchingTime)
-	file_handling.WriteImageEvalToCSV(scenario, imageEvals)
+	statistics.WriteOverallEvalToCSV(scenario, &classEval, extractionTime, matchingTime)
+	statistics.WriteImageEvalToCSV(scenario, imageEvals)
 }
 
 func runPHashScenario(
 	scenario string,
 	maxHammingDistance int,
-) (*[]file_handling.SearchImageEval, ClassificationEvaluation, time.Duration, time.Duration) {
+) (*[]statistics.SearchImageEval, statistics.ClassificationEvaluation, time.Duration, time.Duration) {
 	searchImages := service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
-	var imageEvaluations []file_handling.SearchImageEval
+	var imageEvaluations []statistics.SearchImageEval
 
-	classificationEval := ClassificationEvaluation{0, 0, 0, 0}
+	classificationEval := statistics.ClassificationEvaluation{}
 
 	for _, searchImage := range searchImages {
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
-		rawImage := file_handling.LoadRawImage(path)
+		rawImage := service.LoadRawImage(path)
 		matchedReferences, err, extractionTime, matchingTime := service.MatchImageAgainstDatabasePHash(*rawImage, maxHammingDistance)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
@@ -62,10 +62,15 @@ func runPHashScenario(
 		totalExtractionTime += extractionTime
 		totalMatchingTime += matchingTime
 
-		class := classificationEval.evaluateClassification(&matchedReferences, &searchImage.OriginalReference)
+		class := classificationEval.EvaluateClassification(&matchedReferences, &searchImage.OriginalReference)
 		imageEvaluations = append(
 			imageEvaluations,
-			file_handling.SearchImageEval{ExternalReference: searchImage.ExternalReference, ClassEval: class},
+			statistics.SearchImageEval{
+				ExternalReference: searchImage.ExternalReference,
+				ClassEval:         class,
+				ExtractionTime:    extractionTime,
+				MatchingTime:      matchingTime,
+			},
 		)
 	}
 
@@ -76,8 +81,8 @@ func runFeatureBasedScenario(
 	scenario string,
 	algorithm string,
 	similarityThreshold float64,
-) (*[]file_handling.SearchImageEval, ClassificationEvaluation, time.Duration, time.Duration) {
+) (*[]statistics.SearchImageEval, statistics.ClassificationEvaluation, time.Duration, time.Duration) {
 	startTime := time.Now()
-	return &[]file_handling.SearchImageEval{file_handling.SearchImageEval{}}, ClassificationEvaluation{}, time.Since(startTime),
+	return &[]statistics.SearchImageEval{statistics.SearchImageEval{}}, statistics.ClassificationEvaluation{}, time.Since(startTime),
 		time.Since(startTime)
 }

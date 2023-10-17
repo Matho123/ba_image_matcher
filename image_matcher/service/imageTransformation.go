@@ -5,7 +5,6 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
-	"image_matcher/file-handling"
 	"math"
 	"math/rand"
 	"time"
@@ -67,7 +66,7 @@ func MoveMotive(img *image.Image) (image.Image, float64) {
 
 func IntegrateInOtherImage(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	biggerImage := file_handling.LoadImageFromDisk("images/bigger-bg.png")
+	biggerImage := LoadImageFromDisk("images/bigger-bg.png")
 
 	newImage, movedDistance := pasteImageRandomly(&croppedImage, *biggerImage)
 

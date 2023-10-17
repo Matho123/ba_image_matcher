@@ -1,4 +1,4 @@
-package file_handling
+package service
 
 import (
 	"gocv.io/x/gocv"
