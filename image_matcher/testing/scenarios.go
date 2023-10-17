@@ -2,6 +2,7 @@ package testing
 
 import (
 	"fmt"
+	image_matching "image_matcher/image-matching"
 	"image_matcher/service"
 	"image_matcher/statistics"
 	"log"
@@ -23,7 +24,7 @@ func runScenario(args []string) {
 	var classEval statistics.ClassificationEvaluation
 	var imageEvals *[]statistics.SearchImageEval
 
-	if algorithm == "phash" {
+	if algorithm == image_matching.PHASH {
 		startTime := time.Now()
 		imageEvals, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
 		scenarioRuntime = time.Since(startTime)

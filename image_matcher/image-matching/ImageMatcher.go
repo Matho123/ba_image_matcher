@@ -5,7 +5,7 @@ import (
 	"log"
 )
 
-const DistanceRatioThreshold = 0.8
+const distanceRatioThreshold = 0.8
 
 var ImageMatcherMapping = map[string]ImageMatcher{
 	"bfm":   BruteForceMatcher{gocv.NewBFMatcher()},
@@ -13,7 +13,7 @@ var ImageMatcherMapping = map[string]ImageMatcher{
 }
 
 type ImageMatcher interface {
-	FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch
+	FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch
 	Close()
 }
 
@@ -21,10 +21,10 @@ type BruteForceMatcher struct {
 	matcher gocv.BFMatcher
 }
 
-func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
-	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
+func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
+	convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
 
-	return bfm.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+	return bfm.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
 }
 
 func (bfm BruteForceMatcher) Close() {
@@ -35,10 +35,10 @@ type FLANNMatcher struct {
 	matcher gocv.FlannBasedMatcher
 }
 
-func (flann FLANNMatcher) FindMatches(imageDescriptor1 gocv.Mat, imageDescriptor2 gocv.Mat) [][]gocv.DMatch {
-	convertImageDescriptors(&imageDescriptor1, &imageDescriptor2, gocv.MatTypeCV32F)
+func (flann FLANNMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
+	convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
 
-	return flann.matcher.KnnMatch(imageDescriptor1, imageDescriptor2, 2)
+	return flann.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
 }
 
 func (flann FLANNMatcher) Close() {
@@ -68,7 +68,7 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	if maxDist > 0 {
 		distanceSum := 0.0
 		for _, match := range *filteredMatches {
-			println(match.Distance)
+			//println(match.Distance)
 			distanceSum += match.Distance
 		}
 		normalizedDistanceSum := distanceSum / maxDist
@@ -77,7 +77,8 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	similarityScore := 1.0 - averageNormalizedDistance
 
 	log.Println("similarity score: ", similarityScore)
-	log.Println(len(matches), len(*filteredMatches))
+	log.Println("amount of matchs:", len(matches))
+	log.Println("amount of filtered matches:", len(*filteredMatches))
 	return similarityScore >= similarityThreshold, filteredMatches
 }
 
@@ -93,7 +94,7 @@ func filterMatches(matches *[][]gocv.DMatch) (*[]gocv.DMatch, float64) {
 		firstBestMatchDistance := firstBestMatch.Distance
 		secondBestMatchDistance := secondBestMatch.Distance
 
-		if firstBestMatchDistance < DistanceRatioThreshold*secondBestMatchDistance {
+		if firstBestMatchDistance < distanceRatioThreshold*secondBestMatchDistance {
 			filteredMatches = append(filteredMatches, firstBestMatch)
 
 			if firstBestMatchDistance > maxDist {

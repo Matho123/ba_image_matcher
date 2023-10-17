@@ -9,10 +9,15 @@ import (
 	"time"
 )
 
+const SIFT = "sift"
+const ORB = "orb"
+const BRISK = "brisk"
+const PHASH = "phash"
+
 var ImageAnalyzerMapping = map[string]FeatureImageAnalyzer{
-	"orb":   ORBImageAnalyzer{},
-	"sift":  SiftImageAnalyzer{},
-	"brisk": BRISKImageAnalyzer{},
+	SIFT:  SiftImageAnalyzer{},
+	ORB:   ORBImageAnalyzer{},
+	BRISK: BRISKImageAnalyzer{},
 }
 
 type FeatureImageAnalyzer interface {

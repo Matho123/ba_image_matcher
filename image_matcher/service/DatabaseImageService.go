@@ -72,6 +72,7 @@ func MatchAgainstDatabaseFeatureBased(
 	var matchingTime time.Duration
 
 	_, searchImageDescriptor, extractionTime := image_matching.ExtractKeypointsAndDescriptors(&searchImage.Data, imageAnalyzer)
+	defer searchImageDescriptor.Close()
 
 	var matchedImages []string
 
@@ -88,10 +89,13 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 
 		for _, databaseImage := range databaseImages {
-			databaseImageDescriptor := ConvertByteArrayToMat(databaseImage.descriptor)
+			log.Println("Comparing to " + databaseImage.externalReference)
+			databaseImageDescriptor := ConvertByteArrayToDescriptorMat(databaseImage.descriptor, analyzer)
+
 			matchingStart := time.Now()
-			matches := imageMatcher.FindMatches(searchImageDescriptor, databaseImageDescriptor)
+			matches := imageMatcher.FindMatches(&searchImageDescriptor, databaseImageDescriptor)
 			matchingTime += time.Since(matchingStart)
+			databaseImageDescriptor.Close()
 
 			isMatch, _ := image_matching.DetermineSimilarity(matches, similarityThreshold)
 			if isMatch {
@@ -151,7 +155,7 @@ func AnalyzeAndMatchTwoImages(
 	similarityThreshold float64,
 	debug bool,
 ) (bool, []gocv.KeyPoint, []gocv.KeyPoint, time.Duration, time.Duration, error) {
-	if analyzer == "phash" {
+	if analyzer == image_matching.PHASH {
 		hash1, extractionTime1 := client.GetPHashValue(image1.Data)
 		hash2, extractionTime2 := client.GetPHashValue(image2.Data)
 		extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
@@ -173,11 +177,15 @@ func AnalyzeAndMatchTwoImages(
 	defer imageMatcher.Close()
 
 	keypoints1, imageDescriptors1, time1 := image_matching.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
+	defer imageDescriptors1.Close()
 	keypoints2, imageDescriptors2, time2 := image_matching.ExtractKeypointsAndDescriptors(&image2.Data, imageAnalyzer)
+	defer imageDescriptors2.Close()
 	extractionTime := time1 + time2
 
+	log.Println(imageDescriptors1.ToBytes())
+
 	startTimeMatching := time.Now()
-	matches := imageMatcher.FindMatches(imageDescriptors1, imageDescriptors2)
+	matches := imageMatcher.FindMatches(&imageDescriptors1, &imageDescriptors2)
 
 	imagesAreMatch, bestMatches := image_matching.DetermineSimilarity(matches, similarityThreshold)
 	matchingTime := time.Since(startTimeMatching)

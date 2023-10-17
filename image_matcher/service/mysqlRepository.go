@@ -103,7 +103,7 @@ func retrieveFeatureImageChunk(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
 	}
 	return imageEntityChunk, nil
 }
@@ -139,7 +139,7 @@ func retrievePHashImageChunk(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
 	}
 	return imageEntityChunk, nil
 }

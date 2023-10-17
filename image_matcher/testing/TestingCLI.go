@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"gocv.io/x/gocv"
 	"image_matcher/client"
+	image_matching "image_matcher/image-matching"
 	"image_matcher/service"
 	"log"
 	"time"
@@ -62,7 +63,7 @@ func compareTwoImages(arguments []string) {
 		log.Fatal(err)
 	}
 
-	if imageAnalyzer != "phash" {
+	if imageAnalyzer != image_matching.PHASH {
 		log.Println(fmt.Sprintf(
 			"Keypoints extracted: %d for image1 and %d for image2",
 			len(kp1),
@@ -100,7 +101,7 @@ func matchToDatabase(arguments []string) {
 	var matchReferences []string
 	var err error
 	var extractionTime, matchingTime time.Duration
-	if imageAnalyzer == "phash" {
+	if imageAnalyzer == image_matching.PHASH {
 		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
 			*image,
 			4,

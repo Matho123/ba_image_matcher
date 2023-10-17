@@ -7,12 +7,24 @@ import (
 	_ "image/jpeg"
 	"image/png"
 	_ "image/png"
+	image_matching "image_matcher/image-matching"
 	"io/fs"
 	"log"
 	"os"
 	"path/filepath"
 	"strings"
 )
+
+// sift descriptors consist of 128 32-bit floating point numbers
+// a 32-bit values be represented 4 bytes (32 / 8 = 4)
+// so a sift descriptor needs 128 * 4 bytes
+const siftDescriptorByteLength = 128 * 4
+
+// orb and brisk descriptors are binary strings
+// orb descriptors have 256 bit and brisk descriptors have 512 bit
+// when converting them to bytes their length is divided by 8
+const orbDescriptorByteLength = 256 / 8
+const briskDescriptorByteLength = 512 / 8
 
 type RawImage struct {
 	ExternalReference string
@@ -98,7 +110,7 @@ func LoadImageFromDisk(path string) *image.Image {
 		log.Fatal("Error decoding the image: ", err)
 	}
 
-	log.Println("successfully loaded: ", path)
+	//log.Println("successfully loaded: ", path)
 	return &img
 }
 
@@ -130,28 +142,38 @@ func isAllowedImageFile(filePath string) bool {
 	return false
 }
 
-func ConvertImageMatToByteArray(image gocv.Mat) []byte {
-	if image.Empty() {
+func ConvertImageMatToByteArray(mat gocv.Mat) []byte {
+	if mat.Empty() {
 		log.Println("descriptor is empty!")
 		return nil
 	}
-
-	nativeByteBuffer, err := gocv.IMEncode(".png", image)
-	if err != nil {
-		log.Println("unable to convert image to gocv.NativeByteBuffer! ", err)
-		return nil
-	}
-	image.ToBytes()
-	return nativeByteBuffer.GetBytes()
+	return mat.ToBytes()
 }
 
-func ConvertByteArrayToMat(imageBytes []byte) gocv.Mat {
-	imageMat, err := gocv.IMDecode(imageBytes, -1)
+func ConvertByteArrayToDescriptorMat(descriptorBytes []byte, imageAnalyzer string) *gocv.Mat {
+	switch imageAnalyzer {
+	case image_matching.SIFT:
+		rows := len(descriptorBytes) / siftDescriptorByteLength
+		return convertByteArrayToMat(descriptorBytes, rows, siftDescriptorByteLength/4, gocv.MatTypeCV32F)
+	case image_matching.ORB:
+		rows := len(descriptorBytes) / orbDescriptorByteLength
+		return convertByteArrayToMat(descriptorBytes, rows, orbDescriptorByteLength, gocv.MatTypeCV8U)
+	case image_matching.BRISK:
+		rows := len(descriptorBytes) / briskDescriptorByteLength
+		return convertByteArrayToMat(descriptorBytes, rows, briskDescriptorByteLength, gocv.MatTypeCV8U)
+	default:
+		return nil
+	}
+}
 
-	if err != nil || imageMat.Empty() {
+func convertByteArrayToMat(bytes []byte, rows, cols int, matType gocv.MatType) *gocv.Mat {
+	log.Println(bytes)
+	mat, err := gocv.NewMatFromBytes(rows, cols, matType, bytes)
+	if err != nil || mat.Empty() {
+		log.Println(mat.Empty(), err)
 		log.Println("unable to convert bytes to gocv.mat")
 	}
-	return imageMat
+	return &mat
 }
 
 func DrawMatches(
