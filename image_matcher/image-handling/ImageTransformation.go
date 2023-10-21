@@ -1,4 +1,4 @@
-package service
+package image_handling
 
 import (
 	"github.com/disintegration/imaging"
@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-func resizeImage(img *image.Image, scalingFactor int) image.Image {
+func ResizeImage(img *image.Image, scalingFactor int) image.Image {
 	newWidth := (*img).Bounds().Dx() / scalingFactor
 	newHeight := (*img).Bounds().Dy() / scalingFactor
 
@@ -18,14 +18,14 @@ func resizeImage(img *image.Image, scalingFactor int) image.Image {
 	return scaled
 }
 
-func rotateImage(img *image.Image, angle float64) image.Image {
+func RotateImage(img *image.Image, angle float64) image.Image {
 	croppedImage := cropImage(img)
 	rotatedImage := imaging.Rotate(croppedImage, angle, color.Transparent)
 
 	return rotatedImage
 }
 
-func mirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
+func MirrorImage(img *image.Image, horizontal bool) (image.Image, string) {
 	var mirroredImage image.Image
 	var axis string
 

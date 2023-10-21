@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	"image"
+	"image_matcher/image-handling"
 	"log"
 	"math/rand"
 	"strconv"
@@ -56,7 +57,7 @@ func GetSearchImages(scenario string) []SearchSetImage {
 	return searchSetImages
 }
 
-func InsertSearchImage(originalImage RawImage, scenario string) {
+func InsertSearchImage(originalImage image_handling.RawImage, scenario string) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
@@ -74,10 +75,10 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 		variations = generateRotatedVariations(&originalImage.Data)
 		break
 	case "mirrored":
-		mirroredHorizontal, axisHorizontal := mirrorImage(&originalImage.Data, true)
+		mirroredHorizontal, axisHorizontal := image_handling.MirrorImage(&originalImage.Data, true)
 		horizontalVariation := ImageVariation{mirroredHorizontal, axisHorizontal}
 
-		mirroredVertical, axisVertical := mirrorImage(&originalImage.Data, false)
+		mirroredVertical, axisVertical := image_handling.MirrorImage(&originalImage.Data, false)
 		verticalVariation := ImageVariation{mirroredVertical, axisVertical}
 		variations = []*ImageVariation{
 			&horizontalVariation,
@@ -85,11 +86,11 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 		}
 		break
 	case "moved":
-		moved, distance := MoveMotive(&originalImage.Data)
+		moved, distance := image_handling.MoveMotive(&originalImage.Data)
 		variations = []*ImageVariation{{moved, fmt.Sprintf("%.0f", distance)}}
 		break
 	case "background":
-		changed, bg := ChangeBackgroundColor(&originalImage.Data)
+		changed, bg := image_handling.ChangeBackgroundColor(&originalImage.Data)
 		r, g, b, _ := bg.RGBA()
 		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
 		variations = []*ImageVariation{{changed, fmt.Sprintf("%d, %d, %d", r8, g8, b8)}}
@@ -97,7 +98,7 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 	case "motive":
 		break
 	case "part":
-		newImage, distance := IntegrateInOtherImage(&originalImage.Data)
+		newImage, distance := image_handling.IntegrateInOtherImage(&originalImage.Data)
 		variations = []*ImageVariation{{img: newImage, notes: fmt.Sprintf("%.0f", distance)}}
 		break
 	default:
@@ -108,7 +109,7 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 	for _, variation := range variations {
 		imageReference := externalReference + "-" + variation.notes
 
-		SaveImageToDisk(scenario+"/"+imageReference, variation.img)
+		image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.img)
 
 		err = insertImageIntoSearchSet(
 			databaseConnection,
@@ -129,7 +130,7 @@ func InsertSearchImage(originalImage RawImage, scenario string) {
 func generateScaledVariations(img *image.Image) []*ImageVariation {
 	var variations []*ImageVariation
 	for _, scalingFactor := range scalingFactors {
-		scaled := resizeImage(img, scalingFactor)
+		scaled := image_handling.ResizeImage(img, scalingFactor)
 		variations = append(
 			variations,
 			&ImageVariation{
@@ -144,7 +145,7 @@ func generateScaledVariations(img *image.Image) []*ImageVariation {
 func generateRotatedVariations(img *image.Image) []*ImageVariation {
 	var variations []*ImageVariation
 	for _, angle := range rotationAngles {
-		rotated := rotateImage(img, angle)
+		rotated := image_handling.RotateImage(img, angle)
 		variations = append(
 			variations,
 			&ImageVariation{
@@ -156,7 +157,7 @@ func generateRotatedVariations(img *image.Image) []*ImageVariation {
 	return variations
 }
 
-func GenerateUnique(originalImage RawImage, scenario string) {
+func GenerateUnique(originalImage image_handling.RawImage, scenario string) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
@@ -172,7 +173,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 		randomIndex := rand.Intn(len(scalingFactors))
 		scalingFactor := scalingFactors[randomIndex]
 
-		scaled := resizeImage(&originalImage.Data, scalingFactor)
+		scaled := image_handling.ResizeImage(&originalImage.Data, scalingFactor)
 		variation = scaled
 		notes = strconv.Itoa(scalingFactor)
 		break
@@ -180,24 +181,24 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 		randomIndex := rand.Intn(len(rotationAngles))
 		angle := rotationAngles[randomIndex]
 
-		rotated := rotateImage(&originalImage.Data, angle)
+		rotated := image_handling.RotateImage(&originalImage.Data, angle)
 		variation = rotated
 		notes = fmt.Sprintf("%.0f", angle)
 		break
 	case "mirrored":
 		horizontal := rand.Intn(2) == 0
 
-		mirrored, axis := mirrorImage(&originalImage.Data, horizontal)
+		mirrored, axis := image_handling.MirrorImage(&originalImage.Data, horizontal)
 		variation = mirrored
 		notes = axis
 		break
 	case "moved":
-		moved, distance := MoveMotive(&originalImage.Data)
+		moved, distance := image_handling.MoveMotive(&originalImage.Data)
 		variation = moved
 		notes = fmt.Sprintf("%.0f", distance)
 		break
 	case "background":
-		changed, bg := ChangeBackgroundColor(&originalImage.Data)
+		changed, bg := image_handling.ChangeBackgroundColor(&originalImage.Data)
 		variation = changed
 		r, g, b, _ := bg.RGBA()
 		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
@@ -206,7 +207,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 	case "motive":
 		break
 	case "part":
-		newImage, distance := IntegrateInOtherImage(&originalImage.Data)
+		newImage, distance := image_handling.IntegrateInOtherImage(&originalImage.Data)
 		variation = newImage
 		notes = fmt.Sprintf("%.0f", distance)
 		break
@@ -217,7 +218,7 @@ func GenerateUnique(originalImage RawImage, scenario string) {
 
 	externalReference = externalReference + "-" + notes
 
-	SaveImageToDisk(scenario+"/"+externalReference, variation)
+	image_handling.SaveImageToDisk(scenario+"/"+externalReference, variation)
 
 	err = insertImageIntoSearchSet(
 		databaseConnection,

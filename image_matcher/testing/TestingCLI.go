@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"gocv.io/x/gocv"
 	"image_matcher/client"
-	image_matching "image_matcher/image-matching"
+	"image_matcher/image-handling"
 	"image_matcher/service"
 	"log"
 	"time"
@@ -31,7 +31,7 @@ func registerImages(arguments []string) {
 
 	imagePath := arguments[0]
 
-	images := service.LoadImagesFromPath(imagePath)
+	images := image_handling.LoadImagesFromPath(imagePath)
 
 	err := service.AnalyzeAndSaveDatabaseImage(images)
 	if err != nil {
@@ -50,8 +50,8 @@ func compareTwoImages(arguments []string) {
 	imageMatcher := arguments[3]
 	debug := len(arguments) > 4 && arguments[4] == "debug"
 
-	image1 := service.LoadRawImage(imagePath1)
-	image2 := service.LoadRawImage(imagePath2)
+	image1 := image_handling.LoadRawImage(imagePath1)
+	image2 := image_handling.LoadRawImage(imagePath2)
 
 	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
 		*image1,
@@ -63,7 +63,7 @@ func compareTwoImages(arguments []string) {
 		log.Fatal(err)
 	}
 
-	if imageAnalyzer != image_matching.PHASH {
+	if imageAnalyzer != image_handling.PHASH {
 		log.Println(fmt.Sprintf(
 			"Keypoints extracted: %d for image1 and %d for image2",
 			len(kp1),
@@ -96,12 +96,12 @@ func matchToDatabase(arguments []string) {
 	imageAnalyzer := arguments[1]
 	imageMatcher := arguments[2]
 
-	image := service.LoadRawImage(imagePath)
+	image := image_handling.LoadRawImage(imagePath)
 
 	var matchReferences []string
 	var err error
 	var extractionTime, matchingTime time.Duration
-	if imageAnalyzer == image_matching.PHASH {
+	if imageAnalyzer == image_handling.PHASH {
 		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
 			*image,
 			4,

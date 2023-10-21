@@ -1,4 +1,4 @@
-package image_matching
+package image_handling
 
 import (
 	"fmt"
@@ -23,8 +23,6 @@ type BruteForceMatcher struct {
 }
 
 func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
-	//convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
-
 	return bfm.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
 }
 
@@ -37,23 +35,14 @@ type FLANNMatcher struct {
 }
 
 func (flann FLANNMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
-	convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
+	ConvertImageDescriptorMat(imageDescriptor1, gocv.MatTypeCV32F)
+	ConvertImageDescriptorMat(imageDescriptor2, gocv.MatTypeCV32F)
 
 	return flann.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
 }
 
 func (flann FLANNMatcher) Close() {
 	flann.matcher.Close()
-}
-
-func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalType gocv.MatType) (*gocv.Mat, *gocv.Mat) {
-	if descriptor1.Type() != goalType {
-		descriptor1.ConvertTo(descriptor1, goalType)
-	}
-	if descriptor2.Type() != goalType {
-		descriptor2.ConvertTo(descriptor2, goalType)
-	}
-	return descriptor1, descriptor2
 }
 
 func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (bool, *[]gocv.DMatch) {

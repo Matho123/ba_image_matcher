@@ -1,4 +1,4 @@
-package image_matching
+package image_handling
 
 import (
 	"github.com/disintegration/imaging"

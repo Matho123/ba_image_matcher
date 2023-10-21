@@ -2,7 +2,7 @@ package testing
 
 import (
 	"fmt"
-	image_matching "image_matcher/image-matching"
+	"image_matcher/image-handling"
 	"image_matcher/service"
 	"image_matcher/statistics"
 	"log"
@@ -24,7 +24,7 @@ func runScenario(args []string) {
 	var classEval statistics.ClassificationEvaluation
 	var imageEvals *[]statistics.SearchImageEval
 
-	if algorithm == image_matching.PHASH {
+	if algorithm == image_handling.PHASH {
 		startTime := time.Now()
 		imageEvals, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
 		scenarioRuntime = time.Since(startTime)
@@ -55,7 +55,7 @@ func runPHashScenario(
 
 	for _, searchImage := range searchImages {
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
-		rawImage := service.LoadRawImage(path)
+		rawImage := image_handling.LoadRawImage(path)
 		matchedReferences, err, extractionTime, matchingTime := service.MatchImageAgainstDatabasePHash(*rawImage, maxHammingDistance)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
