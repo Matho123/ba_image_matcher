@@ -89,8 +89,13 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 
 		for _, databaseImage := range databaseImages {
-			log.Println("Comparing to " + databaseImage.externalReference)
-			databaseImageDescriptor := ConvertByteArrayToDescriptorMat(databaseImage.descriptor, analyzer)
+			println("\nComparing to " + databaseImage.externalReference)
+			databaseImageDescriptor, err := ConvertByteArrayToDescriptorMat(databaseImage.descriptor, analyzer)
+
+			if databaseImageDescriptor == nil || err != nil {
+				println("Descriptor was empty")
+				continue
+			}
 
 			matchingStart := time.Now()
 			matches := imageMatcher.FindMatches(&searchImageDescriptor, databaseImageDescriptor)

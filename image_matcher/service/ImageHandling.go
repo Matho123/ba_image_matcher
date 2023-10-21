@@ -150,7 +150,7 @@ func ConvertImageMatToByteArray(mat gocv.Mat) []byte {
 	return mat.ToBytes()
 }
 
-func ConvertByteArrayToDescriptorMat(descriptorBytes []byte, imageAnalyzer string) *gocv.Mat {
+func ConvertByteArrayToDescriptorMat(descriptorBytes []byte, imageAnalyzer string) (*gocv.Mat, error) {
 	switch imageAnalyzer {
 	case image_matching.SIFT:
 		rows := len(descriptorBytes) / siftDescriptorByteLength
@@ -162,18 +162,17 @@ func ConvertByteArrayToDescriptorMat(descriptorBytes []byte, imageAnalyzer strin
 		rows := len(descriptorBytes) / briskDescriptorByteLength
 		return convertByteArrayToMat(descriptorBytes, rows, briskDescriptorByteLength, gocv.MatTypeCV8U)
 	default:
-		return nil
+		return nil, nil
 	}
 }
 
-func convertByteArrayToMat(bytes []byte, rows, cols int, matType gocv.MatType) *gocv.Mat {
-	log.Println(bytes)
+func convertByteArrayToMat(bytes []byte, rows, cols int, matType gocv.MatType) (*gocv.Mat, error) {
 	mat, err := gocv.NewMatFromBytes(rows, cols, matType, bytes)
 	if err != nil || mat.Empty() {
-		log.Println(mat.Empty(), err)
 		log.Println("unable to convert bytes to gocv.mat")
+		return nil, err
 	}
-	return &mat
+	return &mat, nil
 }
 
 func DrawMatches(

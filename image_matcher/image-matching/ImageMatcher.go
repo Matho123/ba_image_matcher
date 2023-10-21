@@ -1,6 +1,7 @@
 package image_matching
 
 import (
+	"fmt"
 	"gocv.io/x/gocv"
 	"log"
 )
@@ -22,7 +23,7 @@ type BruteForceMatcher struct {
 }
 
 func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
-	convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
+	//convertImageDescriptors(imageDescriptor1, imageDescriptor2, gocv.MatTypeCV32F)
 
 	return bfm.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
 }
@@ -47,10 +48,10 @@ func (flann FLANNMatcher) Close() {
 
 func convertImageDescriptors(descriptor1 *gocv.Mat, descriptor2 *gocv.Mat, goalType gocv.MatType) (*gocv.Mat, *gocv.Mat) {
 	if descriptor1.Type() != goalType {
-		descriptor1.ConvertTo(descriptor1, gocv.MatTypeCV32F)
+		descriptor1.ConvertTo(descriptor1, goalType)
 	}
 	if descriptor2.Type() != goalType {
-		descriptor2.ConvertTo(descriptor2, gocv.MatTypeCV32F)
+		descriptor2.ConvertTo(descriptor2, goalType)
 	}
 	return descriptor1, descriptor2
 }
@@ -63,12 +64,10 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 		return false, nil
 	}
 
-	//similarity score calculation
 	averageNormalizedDistance := 0.0
 	if maxDist > 0 {
 		distanceSum := 0.0
 		for _, match := range *filteredMatches {
-			//println(match.Distance)
 			distanceSum += match.Distance
 		}
 		normalizedDistanceSum := distanceSum / maxDist
@@ -76,9 +75,8 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	}
 	similarityScore := 1.0 - averageNormalizedDistance
 
-	log.Println("similarity score: ", similarityScore)
-	log.Println("amount of matchs:", len(matches))
-	log.Println("amount of filtered matches:", len(*filteredMatches))
+	println(fmt.Sprintf("Similarity score: %.2f", similarityScore))
+	println("Amount of filtered matches:", len(*filteredMatches))
 	return similarityScore >= similarityThreshold, filteredMatches
 }
 
@@ -88,6 +86,11 @@ func filterMatches(matches *[][]gocv.DMatch) (*[]gocv.DMatch, float64) {
 	var maxDist float64
 
 	for _, matchPair := range *matches {
+		if len(matchPair) < 2 {
+			filteredMatches = append(filteredMatches, matchPair[0])
+			continue
+		}
+
 		firstBestMatch := matchPair[0]
 		secondBestMatch := matchPair[1]
 

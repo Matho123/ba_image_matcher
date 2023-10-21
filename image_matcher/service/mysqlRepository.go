@@ -76,8 +76,7 @@ func retrieveFeatureImageChunk(
 	offset int,
 	limit int) ([]DescriptorImage, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT external_reference, ? FROM database_image LIMIT ? OFFSET ?",
-		descriptorType,
+		fmt.Sprintf("SELECT external_reference, %s FROM database_image LIMIT ? OFFSET ?", descriptorType),
 		limit,
 		offset,
 	)

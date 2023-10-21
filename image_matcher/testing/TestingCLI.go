@@ -115,25 +115,20 @@ func matchToDatabase(arguments []string) {
 		)
 	}
 
-	log.Println(fmt.Sprintf(
-		"Time taken for extraction: %s",
-		extractionTime,
-	))
-	log.Println(fmt.Sprintf(
-		"Time taken for matching %s",
-		matchingTime,
-	))
-
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 	}
 
+	println("----------------------------------------------------")
+	println("Time taken for extracting Descriptors from search image:", extractionTime.String())
+	println("Time taken for matching search image with all database images:", matchingTime.String())
 	if len(matchReferences) > 0 {
+		println("Search image matched to database images: ")
 		for _, match := range matchReferences {
-			log.Println(fmt.Sprintf("image matched to %s", match))
+			println(match)
 		}
 	} else {
-		log.Println("image did not match")
+		println("Image did not match")
 	}
 }
 
