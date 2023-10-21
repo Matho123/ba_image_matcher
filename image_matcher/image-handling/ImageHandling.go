@@ -14,17 +14,6 @@ import (
 	"strings"
 )
 
-// sift descriptors consist of 128 32-bit floating point numbers
-// a 32-bit values be represented 4 bytes (32 / 8 = 4)
-// so a sift descriptor needs 128 * 4 bytes
-const siftDescriptorByteLength = 128 * 4
-
-// orb and brisk descriptors are binary strings
-// orb descriptors have 256 bit and brisk descriptors have 512 bit
-// when converting them to bytes their length is divided by 8
-const orbDescriptorByteLength = 256 / 8
-const briskDescriptorByteLength = 512 / 8
-
 type RawImage struct {
 	ExternalReference string
 	Data              image.Image

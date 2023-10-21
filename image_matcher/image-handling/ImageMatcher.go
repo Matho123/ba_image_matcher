@@ -14,7 +14,7 @@ var ImageMatcherMapping = map[string]ImageMatcher{
 }
 
 type ImageMatcher interface {
-	FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch
+	FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch
 	Close()
 }
 
@@ -22,8 +22,8 @@ type BruteForceMatcher struct {
 	matcher gocv.BFMatcher
 }
 
-func (bfm BruteForceMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
-	return bfm.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
+func (bfm BruteForceMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch {
+	return bfm.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, 2)
 }
 
 func (bfm BruteForceMatcher) Close() {
@@ -34,11 +34,19 @@ type FLANNMatcher struct {
 	matcher gocv.FlannBasedMatcher
 }
 
-func (flann FLANNMatcher) FindMatches(imageDescriptor1 *gocv.Mat, imageDescriptor2 *gocv.Mat) [][]gocv.DMatch {
-	ConvertImageDescriptorMat(imageDescriptor1, gocv.MatTypeCV32F)
-	ConvertImageDescriptorMat(imageDescriptor2, gocv.MatTypeCV32F)
+func (flann FLANNMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch {
+	k := 2
 
-	return flann.matcher.KnnMatch(*imageDescriptor1, *imageDescriptor2, 2)
+	//the amount of rows in a Descriptor Mat corresponds to the amount of Descriptors/Keypoints in an image.
+	//If an image has only one descriptor flann will throw an error for k = 2, when trying to build a k-tree.
+	if imageDescriptors1.Size()[0] <= 1 || imageDescriptors2.Size()[0] <= 1 {
+		k = 1
+	}
+
+	ConvertImageDescriptorMat(imageDescriptors1, gocv.MatTypeCV32F)
+	ConvertImageDescriptorMat(imageDescriptors2, gocv.MatTypeCV32F)
+
+	return flann.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, k)
 }
 
 func (flann FLANNMatcher) Close() {
