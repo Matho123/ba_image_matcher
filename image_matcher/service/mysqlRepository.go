@@ -195,7 +195,7 @@ func retrieveChunkFromSearchSet(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		log.Println(fmt.Sprintf("Retrieved %s from search set", image.ExternalReference))
+		//log.Println(fmt.Sprintf("Retrieved %s from search set", image.ExternalReference))
 	}
 	return imageEntityChunk, nil
 }

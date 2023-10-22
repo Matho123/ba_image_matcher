@@ -11,9 +11,11 @@ import (
 )
 
 func runScenario(args []string) {
-	algorithm := args[0]
-	scenario := args[1]
-	thresholdString := args[2]
+	scenario := args[0]
+	analyzingAlgorithm := args[1]
+	matchingAlgorithm := args[2]
+	thresholdString := args[3]
+	debug := len(args) > 4 && args[4] == "debug"
 
 	threshold, err := strconv.ParseFloat(thresholdString, 64)
 	if err != nil {
@@ -21,15 +23,16 @@ func runScenario(args []string) {
 	}
 
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
-	var classEval statistics.ClassificationEvaluation
+	var classEval *statistics.ClassificationEvaluation
 
-	if algorithm == image_handling.PHASH {
+	if analyzingAlgorithm == image_handling.PHASH {
 		startTime := time.Now()
-		classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
+		classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold), debug)
 		scenarioRuntime = time.Since(startTime)
 	} else {
 		startTime := time.Now()
-		classEval, extractionTime, matchingTime = runFeatureBasedScenario(scenario, algorithm, threshold)
+		classEval, extractionTime, matchingTime =
+			runFeatureBasedScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, debug)
 		scenarioRuntime = time.Since(startTime)
 	}
 
@@ -43,17 +46,21 @@ func runScenario(args []string) {
 func runPHashScenario(
 	scenario string,
 	maxHammingDistance int,
-) (statistics.ClassificationEvaluation, time.Duration, time.Duration) {
+	debug bool,
+) (*statistics.ClassificationEvaluation, time.Duration, time.Duration) {
 	searchImages := service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
-	imageEvaluations := make([]statistics.SearchImagePHashEval, len(*searchImages))
+	var imageEvaluations []statistics.SearchImagePHashEval
 
 	classificationEval := statistics.ClassificationEvaluation{}
 
 	for _, searchImage := range *searchImages {
+		log.Println("Matching", searchImage.ExternalReference)
+
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
 		rawImage := image_handling.LoadRawImage(path)
-		matchedReferences, err, extractionTime, matchingTime := service.MatchImageAgainstDatabasePHash(rawImage, maxHammingDistance)
+		matchedReferences, err, extractionTime, matchingTime :=
+			service.MatchImageAgainstDatabasePHash(rawImage, maxHammingDistance, debug)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
 		}
@@ -76,35 +83,41 @@ func runPHashScenario(
 		rawImage = nil
 		matchedReferences = nil
 	}
-	searchImages = nil
-	imageEvaluations = nil
 
 	statistics.WriteOverallEvalToCSV(scenario, image_handling.PHASH, &classificationEval, totalExtractionTime, totalMatchingTime)
 	statistics.WritePHashImageEvalToCSV(scenario, &imageEvaluations)
 
-	return classificationEval, totalExtractionTime, totalMatchingTime
+	searchImages = nil
+	imageEvaluations = nil
+
+	return &classificationEval, totalExtractionTime, totalMatchingTime
 }
 
 func runFeatureBasedScenario(
 	scenario string,
-	algorithm string,
+	analyzingAlgorithm string,
+	matchingAlgorithm string,
 	similarityThreshold float64,
+	debug bool,
 ) (*statistics.ClassificationEvaluation, time.Duration, time.Duration) {
 	searchImages := service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
-	imageEvaluations := make([]statistics.SearchImageFeatureBasedEval, len(*searchImages))
+	var imageEvaluations []statistics.SearchImageFeatureBasedEval
 
 	classificationEval := statistics.ClassificationEvaluation{}
 
 	for _, searchImage := range *searchImages {
+		log.Println("Matching", searchImage.ExternalReference)
+
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
 		rawImage := image_handling.LoadRawImage(path)
 		matchedReferences, err, searchImageDescriptors, extractionTime, matchingTime :=
 			service.MatchAgainstDatabaseFeatureBased(
 				rawImage,
-				algorithm,
-				image_handling.BRUTE_FORCE_MATCHER,
+				analyzingAlgorithm,
+				matchingAlgorithm,
 				similarityThreshold,
+				debug,
 			)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
@@ -131,8 +144,9 @@ func runFeatureBasedScenario(
 		matchedReferences = nil
 		searchImageDescriptors.Close()
 	}
-	statistics.WriteOverallEvalToCSV(scenario, algorithm, &classificationEval, totalExtractionTime, totalMatchingTime)
-	statistics.WriteFeatureBasedImageEvalToCSV(scenario, algorithm, &imageEvaluations)
+
+	statistics.WriteOverallEvalToCSV(scenario, analyzingAlgorithm, &classificationEval, totalExtractionTime, totalMatchingTime)
+	statistics.WriteFeatureBasedImageEvalToCSV(scenario, analyzingAlgorithm, &imageEvaluations)
 
 	searchImages = nil
 	imageEvaluations = nil

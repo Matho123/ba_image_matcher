@@ -1,7 +1,10 @@
 package image_handling
 
 import (
+	"github.com/disintegration/imaging"
 	"gocv.io/x/gocv"
+	"image"
+	"image/color"
 	"log"
 )
 
@@ -54,4 +57,19 @@ func convertByteArrayToMat(bytes []byte, rows, cols int, matType gocv.MatType) (
 		return nil, err
 	}
 	return &mat, nil
+}
+
+func ConvertImageToMat(img *image.Image, c color.Color) gocv.Mat {
+	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, c)
+	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
+
+	mat1, err := gocv.ImageToMatRGBA(newImage)
+
+	if err != nil {
+		log.Println("Error converting image to Mat: ", err)
+	}
+
+	gocv.CvtColor(mat1, &mat1, gocv.ColorRGBAToGray)
+
+	return mat1
 }

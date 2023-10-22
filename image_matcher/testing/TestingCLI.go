@@ -92,6 +92,7 @@ func matchToDatabase(arguments []string) {
 	imagePath := arguments[0]
 	imageAnalyzer := arguments[1]
 	imageMatcher := arguments[2]
+	debug := len(arguments) > 3 && arguments[3] == "debug"
 
 	image := image_handling.LoadRawImage(imagePath)
 
@@ -102,6 +103,7 @@ func matchToDatabase(arguments []string) {
 		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
 			image,
 			4,
+			debug,
 		)
 	} else {
 		matchReferences, err, _, extractionTime, matchingTime = service.MatchAgainstDatabaseFeatureBased(
@@ -109,6 +111,7 @@ func matchToDatabase(arguments []string) {
 			imageAnalyzer,
 			imageMatcher,
 			SimilarityThreshold,
+			debug,
 		)
 	}
 

@@ -1,9 +1,11 @@
 package image_handling
 
 import (
+	"errors"
 	"fmt"
 	"gocv.io/x/gocv"
 	"log"
+	"time"
 )
 
 const distanceRatioThreshold = 0.8
@@ -11,18 +13,18 @@ const distanceRatioThreshold = 0.8
 const BRUTE_FORCE_MATCHER = "bfm"
 const FLANN_BASED_MATCHER = "flann"
 
-// Returns functions, that create new instances.
-// Necessary because maps only return references for values, instead of instances.
-var ImageMatcherMapping = map[string]func() ImageMatcher{
-	BRUTE_FORCE_MATCHER: func() ImageMatcher {
-		return &BruteForceMatcher{gocv.NewBFMatcher()}
-	},
-	FLANN_BASED_MATCHER: func() ImageMatcher {
-		return &FLANNMatcher{gocv.NewFlannBasedMatcher()}
-	},
+func GetFeatureBasedMatcher(matcher string) (FeatureBasedImageMatcher, error) {
+	switch matcher {
+	case BRUTE_FORCE_MATCHER:
+		return &BruteForceMatcher{gocv.NewBFMatcher()}, nil
+	case FLANN_BASED_MATCHER:
+		return &FLANNBasedMatcher{gocv.NewFlannBasedMatcher()}, nil
+	default:
+		return nil, errors.New("invalid option for matcher")
+	}
 }
 
-type ImageMatcher interface {
+type FeatureBasedImageMatcher interface {
 	FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch
 	Close()
 }
@@ -37,14 +39,13 @@ func (bfm *BruteForceMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDesc
 
 func (bfm *BruteForceMatcher) Close() {
 	bfm.matcher.Close()
-	bfm = nil
 }
 
-type FLANNMatcher struct {
+type FLANNBasedMatcher struct {
 	matcher gocv.FlannBasedMatcher
 }
 
-func (flann *FLANNMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch {
+func (flann *FLANNBasedMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch {
 	k := 2
 
 	//the amount of rows in a Descriptor Mat corresponds to the amount of Descriptors/Keypoints in an image.
@@ -59,16 +60,22 @@ func (flann *FLANNMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescrip
 	return flann.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, k)
 }
 
-func (flann *FLANNMatcher) Close() {
+func (flann *FLANNBasedMatcher) Close() {
 	flann.matcher.Close()
-	flann = nil
 }
 
-func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (bool, float64, *[]gocv.DMatch) {
+func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64, debug bool) (
+	bool,
+	float64,
+	*[]gocv.DMatch,
+) {
 	filteredMatches, maxDist := filterMatches(&matches)
 
 	if len(*filteredMatches) == 0 {
-		log.Println("no good matches found")
+		if debug {
+			log.Println("no good matches found")
+		}
+
 		return false, 0.0, nil
 	}
 
@@ -85,11 +92,14 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64) (
 	}
 	similarityScore := (1.0 - averageNormalizedDistance) * filteredMatchRatio
 
-	println(fmt.Sprintf("Similarity score: %.2f", similarityScore))
-	println(fmt.Sprintf("Average match distance: %.2f", averageNormalizedDistance))
-	//println("Amount of matches:", len(matches))
-	//println("Amount of filtered matches:", len(*filteredMatches))
-	println(fmt.Sprintf("Filtered to unfiltered match ratio: %.2f", filteredMatchRatio))
+	if debug {
+		println(fmt.Sprintf("Similarity score: %.2f", similarityScore))
+		println(fmt.Sprintf("Average match distance: %.2f", averageNormalizedDistance))
+		//println("Amount of matches:", len(matches))
+		//println("Amount of filtered matches:", len(*filteredMatches))
+		println(fmt.Sprintf("Filtered to unfiltered match ratio: %.2f", filteredMatchRatio))
+	}
+
 	return similarityScore >= similarityThreshold, similarityScore, filteredMatches
 }
 
@@ -122,8 +132,13 @@ func filterMatches(matches *[][]gocv.DMatch) (*[]gocv.DMatch, float64) {
 	return &filteredMatches, maxDist
 }
 
-func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int) bool {
+func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bool, time.Duration) {
+	matchingStart := time.Now()
 	hammingDistance := calculateHammingDistance(hash1, hash2)
-	println("hamming distance: ", hammingDistance)
-	return hammingDistance <= maxDistance
+	matchingTime := time.Since(matchingStart)
+	if debug {
+		println("hamming distance: ", hammingDistance)
+	}
+
+	return hammingDistance <= maxDistance, matchingTime
 }

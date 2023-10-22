@@ -1,7 +1,6 @@
 package service
 
 import (
-	"errors"
 	"fmt"
 	"gocv.io/x/gocv"
 	"image/color"
@@ -11,10 +10,10 @@ import (
 	"time"
 )
 
-var descriptorMapping = map[image_handling.FeatureImageAnalyzer]string{
-	image_handling.SiftImageAnalyzer{}:  "sift_descriptor",
-	image_handling.ORBImageAnalyzer{}:   "orb_descriptor",
-	image_handling.BRISKImageAnalyzer{}: "brisk_descriptor",
+var descriptorMapping = map[string]string{
+	image_handling.SIFT:  "sift_descriptor",
+	image_handling.ORB:   "orb_descriptor",
+	image_handling.BRISK: "brisk_descriptor",
 }
 
 const MaxChunkSize = 50
@@ -28,9 +27,12 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 
 	for _, rawImage := range rawImages {
 
-		_, siftDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.SiftImageAnalyzer{})
-		_, orbDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.ORBImageAnalyzer{})
-		_, briskDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.BRISKImageAnalyzer{})
+		_, siftDesc, _ :=
+			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewSiftAnalyzer())
+		_, orbDesc, _ :=
+			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewOrbAnalyzer())
+		_, briskDesc, _ :=
+			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewBriskAnalyzer())
 		pHash, _ := client.GetPHashValue(rawImage.Data)
 
 		err := insertImageIntoDatabaseSet(
@@ -56,11 +58,13 @@ func MatchAgainstDatabaseFeatureBased(
 	analyzer string,
 	matcher string,
 	similarityThreshold float64,
+	debug bool,
 ) (*[]string, error, *gocv.Mat, time.Duration, time.Duration) {
 	imageAnalyzer, imageMatcher, err := getAnalyzerAndMatcher(analyzer, matcher)
 	if err != nil {
 		return nil, err, nil, 0, 0
 	}
+	defer (*imageAnalyzer).Close()
 	defer (*imageMatcher).Close()
 
 	databaseConnection, err := openDatabaseConnection()
@@ -69,11 +73,11 @@ func MatchAgainstDatabaseFeatureBased(
 	}
 	defer databaseConnection.Close()
 
-	var matchingTime time.Duration
+	var totalMatchingTime time.Duration
 
 	_, searchImageDescriptor, extractionTime := image_handling.ExtractKeypointsAndDescriptors(
 		&searchImage.Data,
-		*imageAnalyzer,
+		imageAnalyzer,
 	)
 
 	var matchedImages []string
@@ -82,7 +86,7 @@ func MatchAgainstDatabaseFeatureBased(
 	for {
 		databaseImageChunk, err := retrieveFeatureImageChunk(
 			databaseConnection,
-			descriptorMapping[*imageAnalyzer],
+			descriptorMapping[analyzer],
 			offset,
 			MaxChunkSize+1,
 		)
@@ -91,7 +95,9 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 
 		for _, databaseImage := range *databaseImageChunk {
-			println("\nComparing to " + databaseImage.externalReference)
+			if debug {
+				println("\nComparing to " + databaseImage.externalReference)
+			}
 			databaseImageDescriptor, err :=
 				image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptor, analyzer)
 
@@ -102,10 +108,10 @@ func MatchAgainstDatabaseFeatureBased(
 
 			matchingStart := time.Now()
 			matches := (*imageMatcher).FindMatches(&searchImageDescriptor, databaseImageDescriptor)
-			matchingTime += time.Since(matchingStart)
+			totalMatchingTime += time.Since(matchingStart)
 			databaseImageDescriptor.Close()
 
-			isMatch, _, _ := image_handling.DetermineSimilarity(matches, similarityThreshold)
+			isMatch, _, _ := image_handling.DetermineSimilarity(matches, similarityThreshold, debug)
 			if isMatch {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
@@ -116,22 +122,24 @@ func MatchAgainstDatabaseFeatureBased(
 		}
 		offset += MaxChunkSize
 
-		//release memory
 		databaseImageChunk = nil
 	}
-	return &matchedImages, nil, &searchImageDescriptor, extractionTime, matchingTime
+	return &matchedImages, nil, &searchImageDescriptor, extractionTime, totalMatchingTime
 }
 
-func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHammingDistance int) (*[]string, error,
+func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHammingDistance int, debug bool) (
+	*[]string,
+	error,
 	time.Duration,
-	time.Duration) {
+	time.Duration,
+) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return nil, err, 0, 0
 	}
 	defer databaseConnection.Close()
 
-	var matchingTime time.Duration
+	var totalMatchingTime time.Duration
 
 	searchImageHash, extractionTime := client.GetPHashValue(searchImage.Data)
 
@@ -144,21 +152,26 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
 
-		matchingStart := time.Now()
 		for _, databaseImage := range databaseImages {
-			println("\nComparing to " + databaseImage.externalReference)
-			if image_handling.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance) {
+			if debug {
+				println("\nComparing to " + databaseImage.externalReference)
+			}
+
+			isMatch, matchingTime :=
+				image_handling.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance, debug)
+			totalMatchingTime += matchingTime
+
+			if isMatch {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
 		}
-		matchingTime += time.Since(matchingStart)
 
 		if len(databaseImages) < MaxChunkSize+1 {
 			break
 		}
 		offset += MaxChunkSize
 	}
-	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), matchingTime
+	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
 }
 
 func AnalyzeAndMatchTwoImages(
@@ -185,9 +198,7 @@ func AnalyzeAndMatchTwoImages(
 		//	),
 		//)
 
-		startTimeMatching := time.Now()
-		imagesAreMatch := image_handling.HashesAreMatch(hash1, hash2, 4)
-		matchingTime := time.Since(startTimeMatching)
+		imagesAreMatch, matchingTime := image_handling.HashesAreMatch(hash1, hash2, 4, true)
 
 		return imagesAreMatch, []gocv.KeyPoint{}, []gocv.KeyPoint{}, extractionTime, matchingTime, nil
 	}
@@ -197,18 +208,19 @@ func AnalyzeAndMatchTwoImages(
 	if err != nil {
 		return false, nil, nil, 0, 0, err
 	}
+	defer (*imageAnalyzer).Close()
 	defer (*imageMatcher).Close()
 
-	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, *imageAnalyzer)
+	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
 	defer imageDescriptors1.Close()
-	keypoints2, imageDescriptors2, time2 := image_handling.ExtractKeypointsAndDescriptors(&image2.Data, *imageAnalyzer)
+	keypoints2, imageDescriptors2, time2 := image_handling.ExtractKeypointsAndDescriptors(&image2.Data, imageAnalyzer)
 	defer imageDescriptors2.Close()
 	extractionTime := time1 + time2
 
 	startTimeMatching := time.Now()
 	matches := (*imageMatcher).FindMatches(&imageDescriptors1, &imageDescriptors2)
 
-	imagesAreMatch, _, bestMatches := image_handling.DetermineSimilarity(matches, similarityThreshold)
+	imagesAreMatch, _, bestMatches := image_handling.DetermineSimilarity(matches, similarityThreshold, true)
 	matchingTime := time.Since(startTimeMatching)
 
 	if debug {
@@ -220,12 +232,13 @@ func AnalyzeAndMatchTwoImages(
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil
 }
 
-func getAnalyzerAndMatcher(analyzer, matcher string) (*image_handling.FeatureImageAnalyzer, *image_handling.ImageMatcher, error) {
-	imageAnalyzer := image_handling.ImageAnalyzerMapping[analyzer]
-	imageMatcher := image_handling.ImageMatcherMapping[matcher]()
+func getAnalyzerAndMatcher(analyzer, matcher string) (*image_handling.FeatureBasedImageAnalyzer, *image_handling.FeatureBasedImageMatcher, error) {
+	imageAnalyzer, err := image_handling.GetFeatureBasedAnalyzer(analyzer)
+	imageMatcher, err := image_handling.GetFeatureBasedMatcher(matcher)
 
-	if imageAnalyzer == nil || imageMatcher == nil {
-		return nil, nil, errors.New("invalid option for analyzer or matcher")
+	if err != nil {
+		return nil, nil, err
 	}
-	return &imageAnalyzer, &imageMatcher, nil
+
+	return imageAnalyzer, &imageMatcher, nil
 }
