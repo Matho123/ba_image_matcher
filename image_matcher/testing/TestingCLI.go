@@ -11,7 +11,7 @@ import (
 )
 
 // SimilarityThreshold TODO: needs to be tested
-const SimilarityThreshold = 0.7
+const SimilarityThreshold = 0.4
 
 var CommandMapping = map[string]func([]string){
 	"register": registerImages,
@@ -54,11 +54,8 @@ func compareTwoImages(arguments []string) {
 	image2 := image_handling.LoadRawImage(imagePath2)
 
 	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
-		*image1,
-		*image2,
-		imageAnalyzer,
-		imageMatcher,
-		SimilarityThreshold, debug)
+		*image1, *image2, imageAnalyzer, imageMatcher, SimilarityThreshold, debug,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -98,17 +95,17 @@ func matchToDatabase(arguments []string) {
 
 	image := image_handling.LoadRawImage(imagePath)
 
-	var matchReferences []string
+	var matchReferences *[]string
 	var err error
 	var extractionTime, matchingTime time.Duration
 	if imageAnalyzer == image_handling.PHASH {
 		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
-			*image,
+			image,
 			4,
 		)
 	} else {
-		matchReferences, err, extractionTime, matchingTime = service.MatchAgainstDatabaseFeatureBased(
-			*image,
+		matchReferences, err, _, extractionTime, matchingTime = service.MatchAgainstDatabaseFeatureBased(
+			image,
 			imageAnalyzer,
 			imageMatcher,
 			SimilarityThreshold,
@@ -122,9 +119,9 @@ func matchToDatabase(arguments []string) {
 	println("----------------------------------------------------")
 	println("Time taken for extracting Descriptors from search image:", extractionTime.String())
 	println("Time taken for matching search image with all database images:", matchingTime.String())
-	if len(matchReferences) > 0 {
+	if len(*matchReferences) > 0 {
 		println("Search image matched to database images: ")
-		for _, match := range matchReferences {
+		for _, match := range *matchReferences {
 			println(match)
 		}
 	} else {

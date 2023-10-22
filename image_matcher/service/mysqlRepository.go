@@ -74,7 +74,7 @@ func retrieveFeatureImageChunk(
 	databaseConnection *sql.DB,
 	descriptorType string,
 	offset int,
-	limit int) ([]DescriptorImage, error) {
+	limit int) (*[]DescriptorImage, error) {
 	imageRows, err := databaseConnection.Query(
 		fmt.Sprintf("SELECT external_reference, %s FROM database_image LIMIT ? OFFSET ?", descriptorType),
 		limit,
@@ -104,7 +104,7 @@ func retrieveFeatureImageChunk(
 
 		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
 	}
-	return imageEntityChunk, nil
+	return &imageEntityChunk, nil
 }
 
 func retrievePHashImageChunk(

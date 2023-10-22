@@ -9,13 +9,24 @@ import (
 	"time"
 )
 
-type SearchImageEval struct {
-	ExternalReference, ClassEval string
-	ExtractionTime, MatchingTime time.Duration
+type SearchImagePHashEval struct {
+	ExternalReference string
+	ClassEval         string
+	ExtractionTime    string
+	MatchingTime      string
+}
+
+type SearchImageFeatureBasedEval struct {
+	ExternalReference   string
+	ClassEval           string
+	NumberOfDescriptors int
+	ExtractionTime      string
+	MatchingTime        string
 }
 
 func WriteOverallEvalToCSV(
 	scenario string,
+	algorithm string,
 	classEval *ClassificationEvaluation,
 	extractionTime time.Duration,
 	matchingTime time.Duration,
@@ -34,10 +45,10 @@ func WriteOverallEvalToCSV(
 			matchingTime.String(),
 		},
 	}
-	writeToCSV(scenario+"-overall-evaluation", &data)
+	writeToCSV(scenario+"/"+algorithm+"-overall-evaluation", &data)
 }
 
-func WriteImageEvalToCSV(scenario string, imageEvaluations *[]SearchImageEval) {
+func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePHashEval) {
 	data := [][]string{
 		{"image reference", "classification", "extraction time", "matching time"},
 	}
@@ -47,12 +58,41 @@ func WriteImageEvalToCSV(scenario string, imageEvaluations *[]SearchImageEval) {
 			[]string{
 				imageEvaluation.ExternalReference,
 				imageEvaluation.ClassEval,
-				imageEvaluation.ExtractionTime.String(),
-				imageEvaluation.MatchingTime.String(),
+				imageEvaluation.ExtractionTime,
+				imageEvaluation.MatchingTime,
 			},
 		)
 	}
-	writeToCSV(scenario+"-detail-evaluation", &data)
+	writeToCSV(scenario+"/phash-detail-evaluation", &data)
+}
+
+func WriteFeatureBasedImageEvalToCSV(
+	scenario string,
+	algorithm string,
+	imageEvaluations *[]SearchImageFeatureBasedEval,
+) {
+	data := [][]string{
+		{
+			"image reference",
+			"classification",
+			"number of descriptors",
+			"extraction time",
+			"matching time",
+		},
+	}
+	for _, imageEvaluation := range *imageEvaluations {
+		data = append(
+			data,
+			[]string{
+				imageEvaluation.ExternalReference,
+				imageEvaluation.ClassEval,
+				fmt.Sprintf("%d", imageEvaluation.NumberOfDescriptors),
+				imageEvaluation.ExtractionTime,
+				imageEvaluation.MatchingTime,
+			},
+		)
+	}
+	writeToCSV(scenario+"/"+algorithm+"-detail-evaluation", &data)
 }
 
 func writeToCSV(fileName string, data *[][]string) {

@@ -52,35 +52,37 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 }
 
 func MatchAgainstDatabaseFeatureBased(
-	searchImage image_handling.RawImage,
+	searchImage *image_handling.RawImage,
 	analyzer string,
 	matcher string,
 	similarityThreshold float64,
-) ([]string, error, time.Duration, time.Duration) {
+) (*[]string, error, *gocv.Mat, time.Duration, time.Duration) {
 	imageAnalyzer, imageMatcher, err := getAnalyzerAndMatcher(analyzer, matcher)
 	if err != nil {
-		return []string{}, err, 0, 0
+		return nil, err, nil, 0, 0
 	}
-	defer imageMatcher.Close()
+	defer (*imageMatcher).Close()
 
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
-		return []string{}, err, 0, 0
+		return nil, err, nil, 0, 0
 	}
 	defer databaseConnection.Close()
 
 	var matchingTime time.Duration
 
-	_, searchImageDescriptor, extractionTime := image_handling.ExtractKeypointsAndDescriptors(&searchImage.Data, imageAnalyzer)
-	defer searchImageDescriptor.Close()
+	_, searchImageDescriptor, extractionTime := image_handling.ExtractKeypointsAndDescriptors(
+		&searchImage.Data,
+		*imageAnalyzer,
+	)
 
 	var matchedImages []string
 
 	offset := 0
 	for {
-		databaseImages, err := retrieveFeatureImageChunk(
+		databaseImageChunk, err := retrieveFeatureImageChunk(
 			databaseConnection,
-			descriptorMapping[imageAnalyzer],
+			descriptorMapping[*imageAnalyzer],
 			offset,
 			MaxChunkSize+1,
 		)
@@ -88,9 +90,10 @@ func MatchAgainstDatabaseFeatureBased(
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
 
-		for _, databaseImage := range databaseImages {
+		for _, databaseImage := range *databaseImageChunk {
 			println("\nComparing to " + databaseImage.externalReference)
-			databaseImageDescriptor, err := image_handling.ConvertByteArrayToDescriptorMat(databaseImage.descriptor, analyzer)
+			databaseImageDescriptor, err :=
+				image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptor, analyzer)
 
 			if databaseImageDescriptor == nil || err != nil {
 				println("Descriptor was empty")
@@ -98,29 +101,33 @@ func MatchAgainstDatabaseFeatureBased(
 			}
 
 			matchingStart := time.Now()
-			matches := imageMatcher.FindMatches(&searchImageDescriptor, databaseImageDescriptor)
+			matches := (*imageMatcher).FindMatches(&searchImageDescriptor, databaseImageDescriptor)
 			matchingTime += time.Since(matchingStart)
 			databaseImageDescriptor.Close()
 
-			isMatch, _ := image_handling.DetermineSimilarity(matches, similarityThreshold)
+			isMatch, _, _ := image_handling.DetermineSimilarity(matches, similarityThreshold)
 			if isMatch {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
 		}
 
-		if len(databaseImages) < MaxChunkSize+1 {
+		if len(*databaseImageChunk) < MaxChunkSize+1 {
 			break
 		}
 		offset += MaxChunkSize
+
+		//release memory
+		databaseImageChunk = nil
 	}
-	return matchedImages, nil, extractionTime, matchingTime
+	return &matchedImages, nil, &searchImageDescriptor, extractionTime, matchingTime
 }
 
-func MatchImageAgainstDatabasePHash(searchImage image_handling.RawImage, maxHammingDistance int) ([]string, error, time.Duration,
+func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHammingDistance int) (*[]string, error,
+	time.Duration,
 	time.Duration) {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
-		return []string{}, err, 0, 0
+		return nil, err, 0, 0
 	}
 	defer databaseConnection.Close()
 
@@ -136,8 +143,10 @@ func MatchImageAgainstDatabasePHash(searchImage image_handling.RawImage, maxHamm
 		if err != nil {
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
+
 		matchingStart := time.Now()
 		for _, databaseImage := range databaseImages {
+			println("\nComparing to " + databaseImage.externalReference)
 			if image_handling.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance) {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
@@ -149,7 +158,7 @@ func MatchImageAgainstDatabasePHash(searchImage image_handling.RawImage, maxHamm
 		}
 		offset += MaxChunkSize
 	}
-	return matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), matchingTime
+	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), matchingTime
 }
 
 func AnalyzeAndMatchTwoImages(
@@ -166,6 +175,15 @@ func AnalyzeAndMatchTwoImages(
 		extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
 
 		log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash1, hash2))
+		//hash12 := image_handling.PHash{}.GetHash(image1.Data)
+		//hash22 := image_handling.PHash{}.GetHash(image2.Data)
+		//log.Println(
+		//	fmt.Sprintf(
+		//		"hash1: %d | hash2: %d",
+		//		hash12,
+		//		hash22,
+		//	),
+		//)
 
 		startTimeMatching := time.Now()
 		imagesAreMatch := image_handling.HashesAreMatch(hash1, hash2, 4)
@@ -179,20 +197,18 @@ func AnalyzeAndMatchTwoImages(
 	if err != nil {
 		return false, nil, nil, 0, 0, err
 	}
-	defer imageMatcher.Close()
+	defer (*imageMatcher).Close()
 
-	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
+	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, *imageAnalyzer)
 	defer imageDescriptors1.Close()
-	keypoints2, imageDescriptors2, time2 := image_handling.ExtractKeypointsAndDescriptors(&image2.Data, imageAnalyzer)
+	keypoints2, imageDescriptors2, time2 := image_handling.ExtractKeypointsAndDescriptors(&image2.Data, *imageAnalyzer)
 	defer imageDescriptors2.Close()
 	extractionTime := time1 + time2
 
-	log.Println(imageDescriptors1.ToBytes())
-
 	startTimeMatching := time.Now()
-	matches := imageMatcher.FindMatches(&imageDescriptors1, &imageDescriptors2)
+	matches := (*imageMatcher).FindMatches(&imageDescriptors1, &imageDescriptors2)
 
-	imagesAreMatch, bestMatches := image_handling.DetermineSimilarity(matches, similarityThreshold)
+	imagesAreMatch, _, bestMatches := image_handling.DetermineSimilarity(matches, similarityThreshold)
 	matchingTime := time.Since(startTimeMatching)
 
 	if debug {
@@ -204,12 +220,12 @@ func AnalyzeAndMatchTwoImages(
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil
 }
 
-func getAnalyzerAndMatcher(analyzer, matcher string) (image_handling.FeatureImageAnalyzer, image_handling.ImageMatcher, error) {
+func getAnalyzerAndMatcher(analyzer, matcher string) (*image_handling.FeatureImageAnalyzer, *image_handling.ImageMatcher, error) {
 	imageAnalyzer := image_handling.ImageAnalyzerMapping[analyzer]
-	imageMatcher := image_handling.ImageMatcherMapping[matcher]
+	imageMatcher := image_handling.ImageMatcherMapping[matcher]()
 
 	if imageAnalyzer == nil || imageMatcher == nil {
 		return nil, nil, errors.New("invalid option for analyzer or matcher")
 	}
-	return imageAnalyzer, imageMatcher, nil
+	return &imageAnalyzer, &imageMatcher, nil
 }

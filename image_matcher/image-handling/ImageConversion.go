@@ -31,17 +31,17 @@ func ConvertImageDescriptorMat(descriptor *gocv.Mat, goalType gocv.MatType) *goc
 	return descriptor
 }
 
-func ConvertByteArrayToDescriptorMat(descriptorBytes []byte, imageAnalyzer string) (*gocv.Mat, error) {
+func ConvertByteArrayToDescriptorMat(descriptorBytes *[]byte, imageAnalyzer string) (*gocv.Mat, error) {
 	switch imageAnalyzer {
 	case SIFT:
-		rows := len(descriptorBytes) / siftDescriptorByteLength
-		return convertByteArrayToMat(descriptorBytes, rows, siftDescriptorByteLength/4, gocv.MatTypeCV32F)
+		rows := len(*descriptorBytes) / siftDescriptorByteLength
+		return convertByteArrayToMat(*descriptorBytes, rows, siftDescriptorByteLength/4, gocv.MatTypeCV32F)
 	case ORB:
-		rows := len(descriptorBytes) / orbDescriptorByteLength
-		return convertByteArrayToMat(descriptorBytes, rows, orbDescriptorByteLength, gocv.MatTypeCV8U)
+		rows := len(*descriptorBytes) / orbDescriptorByteLength
+		return convertByteArrayToMat(*descriptorBytes, rows, orbDescriptorByteLength, gocv.MatTypeCV8U)
 	case BRISK:
-		rows := len(descriptorBytes) / briskDescriptorByteLength
-		return convertByteArrayToMat(descriptorBytes, rows, briskDescriptorByteLength, gocv.MatTypeCV8U)
+		rows := len(*descriptorBytes) / briskDescriptorByteLength
+		return convertByteArrayToMat(*descriptorBytes, rows, briskDescriptorByteLength, gocv.MatTypeCV8U)
 	default:
 		return nil, nil
 	}

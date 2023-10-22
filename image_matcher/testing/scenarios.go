@@ -15,75 +15,127 @@ func runScenario(args []string) {
 	scenario := args[1]
 	thresholdString := args[2]
 
-	threshold, err := strconv.ParseInt(thresholdString, 10, 0)
+	threshold, err := strconv.ParseFloat(thresholdString, 64)
 	if err != nil {
 		log.Println("couldn't convert threshold")
 	}
 
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
 	var classEval statistics.ClassificationEvaluation
-	var imageEvals *[]statistics.SearchImageEval
 
 	if algorithm == image_handling.PHASH {
 		startTime := time.Now()
-		imageEvals, classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
+		classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold))
 		scenarioRuntime = time.Since(startTime)
 	} else {
 		startTime := time.Now()
-		imageEvals, classEval, extractionTime, matchingTime = runFeatureBasedScenario(scenario, algorithm, float64(threshold))
+		classEval, extractionTime, matchingTime = runFeatureBasedScenario(scenario, algorithm, threshold)
 		scenarioRuntime = time.Since(startTime)
 	}
 
-	log.Println("Scenario ran for", scenarioRuntime)
-	log.Println("ExtractionTime", extractionTime)
-	log.Println("MatchingTime", matchingTime)
-	log.Println("Eval: ", classEval.String())
-
-	statistics.WriteOverallEvalToCSV(scenario, &classEval, extractionTime, matchingTime)
-	statistics.WriteImageEvalToCSV(scenario, imageEvals)
+	println("\n---------------------------------")
+	println("Scenario ran for", scenarioRuntime.String())
+	println("ExtractionTime", extractionTime.String())
+	println("MatchingTime", matchingTime.String())
+	println("Eval: ", classEval.String())
 }
 
 func runPHashScenario(
 	scenario string,
 	maxHammingDistance int,
-) (*[]statistics.SearchImageEval, statistics.ClassificationEvaluation, time.Duration, time.Duration) {
+) (statistics.ClassificationEvaluation, time.Duration, time.Duration) {
 	searchImages := service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
-	var imageEvaluations []statistics.SearchImageEval
+	imageEvaluations := make([]statistics.SearchImagePHashEval, len(*searchImages))
 
 	classificationEval := statistics.ClassificationEvaluation{}
 
-	for _, searchImage := range searchImages {
+	for _, searchImage := range *searchImages {
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
 		rawImage := image_handling.LoadRawImage(path)
-		matchedReferences, err, extractionTime, matchingTime := service.MatchImageAgainstDatabasePHash(*rawImage, maxHammingDistance)
+		matchedReferences, err, extractionTime, matchingTime := service.MatchImageAgainstDatabasePHash(rawImage, maxHammingDistance)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
 		}
 		totalExtractionTime += extractionTime
 		totalMatchingTime += matchingTime
 
-		class := classificationEval.EvaluateClassification(&matchedReferences, &searchImage.OriginalReference)
+		class := classificationEval.EvaluateClassification(matchedReferences, &searchImage.OriginalReference)
 		imageEvaluations = append(
 			imageEvaluations,
-			statistics.SearchImageEval{
+			statistics.SearchImagePHashEval{
 				ExternalReference: searchImage.ExternalReference,
 				ClassEval:         class,
-				ExtractionTime:    extractionTime,
-				MatchingTime:      matchingTime,
+				ExtractionTime:    extractionTime.String(),
+				MatchingTime:      matchingTime.String(),
 			},
 		)
-	}
 
-	return &imageEvaluations, classificationEval, totalExtractionTime, totalMatchingTime
+		//release memory
+		rawImage.Data = nil
+		rawImage = nil
+		matchedReferences = nil
+	}
+	searchImages = nil
+	imageEvaluations = nil
+
+	statistics.WriteOverallEvalToCSV(scenario, image_handling.PHASH, &classificationEval, totalExtractionTime, totalMatchingTime)
+	statistics.WritePHashImageEvalToCSV(scenario, &imageEvaluations)
+
+	return classificationEval, totalExtractionTime, totalMatchingTime
 }
 
 func runFeatureBasedScenario(
 	scenario string,
 	algorithm string,
 	similarityThreshold float64,
-) (*[]statistics.SearchImageEval, statistics.ClassificationEvaluation, time.Duration, time.Duration) {
-	startTime := time.Now()
-	return &[]statistics.SearchImageEval{statistics.SearchImageEval{}}, statistics.ClassificationEvaluation{}, time.Since(startTime),
-		time.Since(startTime)
+) (*statistics.ClassificationEvaluation, time.Duration, time.Duration) {
+	searchImages := service.GetSearchImages(scenario)
+	var totalExtractionTime, totalMatchingTime time.Duration
+	imageEvaluations := make([]statistics.SearchImageFeatureBasedEval, len(*searchImages))
+
+	classificationEval := statistics.ClassificationEvaluation{}
+
+	for _, searchImage := range *searchImages {
+		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
+		rawImage := image_handling.LoadRawImage(path)
+		matchedReferences, err, searchImageDescriptors, extractionTime, matchingTime :=
+			service.MatchAgainstDatabaseFeatureBased(
+				rawImage,
+				algorithm,
+				image_handling.BRUTE_FORCE_MATCHER,
+				similarityThreshold,
+			)
+		if err != nil {
+			log.Println("error while matching", searchImage.ExternalReference, "against database!")
+		}
+
+		totalExtractionTime += extractionTime
+		totalMatchingTime += matchingTime
+
+		class := classificationEval.EvaluateClassification(matchedReferences, &searchImage.OriginalReference)
+		imageEvaluations = append(
+			imageEvaluations,
+			statistics.SearchImageFeatureBasedEval{
+				ExternalReference:   searchImage.ExternalReference,
+				ClassEval:           class,
+				NumberOfDescriptors: searchImageDescriptors.Rows(),
+				ExtractionTime:      extractionTime.String(),
+				MatchingTime:        matchingTime.String(),
+			},
+		)
+
+		//release memory
+		rawImage.Data = nil
+		rawImage = nil
+		matchedReferences = nil
+		searchImageDescriptors.Close()
+	}
+	statistics.WriteOverallEvalToCSV(scenario, algorithm, &classificationEval, totalExtractionTime, totalMatchingTime)
+	statistics.WriteFeatureBasedImageEvalToCSV(scenario, algorithm, &imageEvaluations)
+
+	searchImages = nil
+	imageEvaluations = nil
+
+	return &classificationEval, totalExtractionTime, totalMatchingTime
 }
