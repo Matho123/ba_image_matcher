@@ -93,7 +93,7 @@ func InsertSearchImage(originalImage image_handling.RawImage, scenario string) {
 		changed, bg := image_handling.ChangeBackgroundColor(&originalImage.Data)
 		r, g, b, _ := bg.RGBA()
 		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
-		variations = []*ImageVariation{{changed, fmt.Sprintf("%d, %d, %d", r8, g8, b8)}}
+		variations = []*ImageVariation{{changed, fmt.Sprintf("%d/%d/%d", r8, g8, b8)}}
 		break
 	case "motive":
 		break

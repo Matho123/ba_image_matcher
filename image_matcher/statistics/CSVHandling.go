@@ -26,14 +26,20 @@ type SearchImageFeatureBasedEval struct {
 
 func WriteOverallEvalToCSV(
 	scenario string,
-	algorithm string,
+	analyzer string,
+	matcher string,
+	threshold string,
 	classEval *ClassificationEvaluation,
 	extractionTime time.Duration,
 	matchingTime time.Duration,
 ) {
 	data := [][]string{
-		{"tp", "tn", "fp", "fn", "recall", "specificity", "balanced accuracy", "extraction time", "matching time"},
 		{
+			"threshold", "tp", "tn", "fp", "fn", "recall", "specificity",
+			"balanced accuracy", "extraction time", "matching time",
+		},
+		{
+			threshold,
 			strconv.Itoa(classEval.TP),
 			strconv.Itoa(classEval.TN),
 			strconv.Itoa(classEval.FP),
@@ -45,10 +51,13 @@ func WriteOverallEvalToCSV(
 			matchingTime.String(),
 		},
 	}
-	writeToCSV(scenario+"/"+algorithm+"-overall-evaluation", &data)
+	appendToCSV(
+		fmt.Sprintf("%s/%s-%s-overall-evaluation", scenario, analyzer, matcher),
+		&data,
+	)
 }
 
-func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePHashEval) {
+func WritePHashImageEvalToCSV(scenario string, threshold string, imageEvaluations *[]SearchImagePHashEval) {
 	data := [][]string{
 		{"image reference", "classification", "extraction time", "matching time"},
 	}
@@ -63,12 +72,14 @@ func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePH
 			},
 		)
 	}
-	writeToCSV(scenario+"/phash-detail-evaluation", &data)
+	writeNewCSV(fmt.Sprintf("%s/phash-%s-detail-evaluation", scenario, threshold), &data)
 }
 
 func WriteFeatureBasedImageEvalToCSV(
 	scenario string,
-	algorithm string,
+	analyzer string,
+	matcher string,
+	threshold string,
 	imageEvaluations *[]SearchImageFeatureBasedEval,
 ) {
 	data := [][]string{
@@ -92,10 +103,13 @@ func WriteFeatureBasedImageEvalToCSV(
 			},
 		)
 	}
-	writeToCSV(scenario+"/"+algorithm+"-detail-evaluation", &data)
+	writeNewCSV(
+		fmt.Sprintf("%s/%s-%s-%s-detail-evaluation", scenario, analyzer, matcher, threshold),
+		&data,
+	)
 }
 
-func writeToCSV(fileName string, data *[][]string) {
+func writeNewCSV(fileName string, data *[][]string) {
 	file, err := os.Create("test-output/" + fileName + ".csv")
 	if err != nil {
 		log.Fatal("Error writing csv", err)
@@ -106,6 +120,32 @@ func writeToCSV(fileName string, data *[][]string) {
 	defer csvWriter.Flush()
 
 	for _, row := range *data {
+		err := csvWriter.Write(row)
+		if err != nil {
+			log.Println("Error writing row in csv: ", err)
+		}
+	}
+}
+
+func appendToCSV(fileName string, data *[][]string) {
+	filePath := "test-output/" + fileName + ".csv"
+	_, err := os.Stat(filePath)
+
+	fileExists := err == nil
+
+	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatal("Error writing csv", err)
+	}
+	defer file.Close()
+
+	csvWriter := csv.NewWriter(file)
+	defer csvWriter.Flush()
+
+	for index, row := range *data {
+		if index == 0 && fileExists {
+			continue
+		}
 		err := csvWriter.Write(row)
 		if err != nil {
 			log.Println("Error writing row in csv: ", err)

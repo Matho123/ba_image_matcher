@@ -102,7 +102,7 @@ func MatchAgainstDatabaseFeatureBased(
 				image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptor, analyzer)
 
 			if databaseImageDescriptor == nil || err != nil {
-				println("Descriptor was empty")
+				println("Descriptor was empty", databaseImage.externalReference)
 				continue
 			}
 
@@ -226,7 +226,7 @@ func AnalyzeAndMatchTwoImages(
 	if debug {
 		image1Mat := image_handling.ConvertImageToMat(&image1.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 		image2Mat := image_handling.ConvertImageToMat(&image2.Data, color.RGBA{R: 255, G: 255, B: 255, A: 255})
-		image_handling.DrawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, *bestMatches)
+		image_handling.DrawMatches(&image1Mat, keypoints1, &image2Mat, keypoints2, bestMatches)
 	}
 
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil

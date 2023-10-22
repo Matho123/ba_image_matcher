@@ -6,22 +6,25 @@ import (
 	"image_matcher/service"
 	"image_matcher/statistics"
 	"log"
-	"strconv"
 	"time"
 )
 
-func runScenario(args []string) {
-	scenario := args[0]
-	analyzingAlgorithm := args[1]
-	matchingAlgorithm := args[2]
-	thresholdString := args[3]
-	debug := len(args) > 4 && args[4] == "debug"
+const (
+	IDENTICAL  = "identical"
+	SCALED     = "scaled"
+	ROTATED    = "rotated"
+	MIRRORED   = "mirrored"
+	MOVED      = "moved"
+	BACKGROUND = "background"
+	PART       = "part"
+	MIXED      = "mixed"
+)
 
-	threshold, err := strconv.ParseFloat(thresholdString, 64)
-	if err != nil {
-		log.Println("couldn't convert threshold")
-	}
+var scenarios = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
 
+func runSingleScenario(
+	scenario string, analyzingAlgorithm string, matchingAlgorithm string, threshold float64, debug bool,
+) {
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
 	var classEval *statistics.ClassificationEvaluation
 
@@ -41,6 +44,12 @@ func runScenario(args []string) {
 	println("ExtractionTime", extractionTime.String())
 	println("MatchingTime", matchingTime.String())
 	println("Eval: ", classEval.String())
+}
+
+func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
+	for _, scenario := range scenarios {
+		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
+	}
 }
 
 func runPHashScenario(
@@ -84,8 +93,13 @@ func runPHashScenario(
 		matchedReferences = nil
 	}
 
-	statistics.WriteOverallEvalToCSV(scenario, image_handling.PHASH, &classificationEval, totalExtractionTime, totalMatchingTime)
-	statistics.WritePHashImageEvalToCSV(scenario, &imageEvaluations)
+	thresholdString := fmt.Sprintf("%d", maxHammingDistance)
+
+	statistics.WriteOverallEvalToCSV(
+		scenario, image_handling.PHASH, "", thresholdString, &classificationEval, totalExtractionTime,
+		totalMatchingTime,
+	)
+	statistics.WritePHashImageEvalToCSV(scenario, thresholdString, &imageEvaluations)
 
 	searchImages = nil
 	imageEvaluations = nil
@@ -145,8 +159,15 @@ func runFeatureBasedScenario(
 		searchImageDescriptors.Close()
 	}
 
-	statistics.WriteOverallEvalToCSV(scenario, analyzingAlgorithm, &classificationEval, totalExtractionTime, totalMatchingTime)
-	statistics.WriteFeatureBasedImageEvalToCSV(scenario, analyzingAlgorithm, &imageEvaluations)
+	thresholdString := fmt.Sprintf("%.2f", similarityThreshold)
+
+	statistics.WriteOverallEvalToCSV(
+		scenario, analyzingAlgorithm, matchingAlgorithm, thresholdString, &classificationEval,
+		totalExtractionTime, totalMatchingTime,
+	)
+	statistics.WriteFeatureBasedImageEvalToCSV(
+		scenario, analyzingAlgorithm, matchingAlgorithm, thresholdString, &imageEvaluations,
+	)
 
 	searchImages = nil
 	imageEvaluations = nil

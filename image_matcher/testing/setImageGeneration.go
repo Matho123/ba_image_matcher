@@ -9,7 +9,6 @@ import (
 func populateDatabase([]string) {
 	paths := image_handling.GetFilePathsFromDirectory("images/originals")
 
-	log.Println(len(paths))
 	var chunkSize = 10
 
 	for index1 := chunkSize; index1 <= 800; index1 += chunkSize {

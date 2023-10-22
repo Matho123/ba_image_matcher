@@ -134,15 +134,19 @@ func DrawMatches(
 	keypoints1 []gocv.KeyPoint,
 	image2 *gocv.Mat,
 	keypoints2 []gocv.KeyPoint,
-	bestMatches []gocv.DMatch,
+	bestMatches *[]gocv.DMatch,
 ) {
+	if bestMatches == nil {
+		log.Println("Can't draw debug matches because there are no matches")
+		return
+	}
 	outImage := gocv.NewMat()
 	gocv.DrawMatches(
 		*image1,
 		keypoints1,
 		*image2,
 		keypoints2,
-		bestMatches,
+		*bestMatches,
 		&outImage,
 		color.RGBA{R: 255, A: 100},
 		color.RGBA{R: 255},

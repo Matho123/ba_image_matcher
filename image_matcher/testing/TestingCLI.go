@@ -7,6 +7,7 @@ import (
 	"image_matcher/image-handling"
 	"image_matcher/service"
 	"log"
+	"strconv"
 	"time"
 )
 
@@ -129,6 +130,25 @@ func matchToDatabase(arguments []string) {
 		}
 	} else {
 		println("Image did not match")
+	}
+}
+
+func runScenario(arguments []string) {
+	scenario := arguments[0]
+	analyzingAlgorithm := arguments[1]
+	matchingAlgorithm := arguments[2]
+	thresholdString := arguments[3]
+	debug := len(arguments) > 4 && arguments[4] == "debug"
+
+	threshold, err := strconv.ParseFloat(thresholdString, 64)
+	if err != nil {
+		log.Println("couldn't convert threshold")
+	}
+
+	if scenario == "all" {
+
+	} else {
+		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, debug)
 	}
 }
 
