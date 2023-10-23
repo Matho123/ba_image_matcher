@@ -9,19 +9,6 @@ import (
 	"time"
 )
 
-const (
-	IDENTICAL  = "identical"
-	SCALED     = "scaled"
-	ROTATED    = "rotated"
-	MIRRORED   = "mirrored"
-	MOVED      = "moved"
-	BACKGROUND = "background"
-	PART       = "part"
-	MIXED      = "mixed"
-)
-
-var scenarios = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
-
 func runSingleScenario(
 	scenario string, analyzingAlgorithm string, matchingAlgorithm string, threshold float64, debug bool,
 ) {
@@ -47,7 +34,7 @@ func runSingleScenario(
 }
 
 func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
-	for _, scenario := range scenarios {
+	for _, scenario := range service.SCENARIOS {
 		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
 	}
 }

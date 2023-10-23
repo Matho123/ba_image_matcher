@@ -99,7 +99,7 @@ func MatchAgainstDatabaseFeatureBased(
 				println("\nComparing to " + databaseImage.externalReference)
 			}
 			databaseImageDescriptor, err :=
-				image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptor, analyzer)
+				image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptors, analyzer)
 
 			if databaseImageDescriptor == nil || err != nil {
 				println("Descriptor was empty", databaseImage.externalReference)

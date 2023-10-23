@@ -18,7 +18,7 @@ type DatabaseSetImage struct {
 
 type DescriptorImage struct {
 	externalReference string
-	descriptor        []byte
+	descriptors       []byte
 }
 
 type PHashImage struct {
@@ -32,6 +32,13 @@ type SearchSetImage struct {
 	OriginalReference string
 	Scenario          string
 	Notes             string
+}
+
+type ModifiedImage struct {
+	externalReference string
+	originalReference string
+	scenario          string
+	notes             string
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
@@ -93,7 +100,7 @@ func retrieveFeatureImageChunk(
 
 		var err = imageRows.Scan(
 			&image.externalReference,
-			&image.descriptor,
+			&image.descriptors,
 		)
 
 		if err != nil {

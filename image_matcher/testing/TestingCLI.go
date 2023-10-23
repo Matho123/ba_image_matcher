@@ -21,7 +21,6 @@ var CommandMapping = map[string]func([]string){
 	"test":     test,
 	"download": downloadOriginalImages,
 	"populate": populateDatabase,
-	"pop1":     pop,
 	"scenario": runScenario,
 }
 
