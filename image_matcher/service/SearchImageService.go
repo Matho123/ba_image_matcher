@@ -20,11 +20,7 @@ const (
 
 var SCENARIOS = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
 
-var scalingFactors = []int{2, 4, 10}
-
-var rotationAngles = []float64{5, 10, 45, 90, 180}
-
-func GetSearchImages(scenario string) *[]SearchSetImage {
+func GetSearchImages(scenario string) *[]SearchImageEntity {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		log.Println("Error while retrieving chunk from search images: ", err)
@@ -32,7 +28,7 @@ func GetSearchImages(scenario string) *[]SearchSetImage {
 	}
 	defer databaseConnection.Close()
 
-	var searchSetImages []SearchSetImage
+	var searchSetImages []SearchImageEntity
 
 	offset := 0
 	for {
@@ -66,17 +62,17 @@ func InsertDuplicateSearchImage(variations *[]image_handling.ImageVariation, ori
 	var externalReference = fmt.Sprintf("%s-%s", originalReference, scenario)
 
 	for _, variation := range *variations {
-		imageReference := externalReference + "-" + variation.Notes
+		imageReference := externalReference + "-" + variation.ModificationInfo
 
-		image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.Img)
+		image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.ModifiedImage)
 
 		err = insertImageIntoSearchSet(
 			databaseConnection,
-			ModifiedImage{
+			SearchImageCreation{
 				externalReference: imageReference,
 				originalReference: originalReference,
 				scenario:          scenario,
-				notes:             variation.Notes,
+				modificationInfo:  variation.ModificationInfo,
 			},
 		)
 		if err != nil {
@@ -109,17 +105,17 @@ func insertUniqueSearchImage(
 	originalReference string,
 	scenario string,
 ) {
-	externalReference := fmt.Sprintf("%s-%s-%s", originalReference, scenario, uniqueVariation.Notes)
+	externalReference := fmt.Sprintf("%s-%s-%s", originalReference, scenario, uniqueVariation.ModificationInfo)
 
-	image_handling.SaveImageToDisk(scenario+"/"+externalReference, uniqueVariation.Img)
+	image_handling.SaveImageToDisk(scenario+"/"+externalReference, uniqueVariation.ModifiedImage)
 
 	err := insertImageIntoSearchSet(
 		databaseConnection,
-		ModifiedImage{
+		SearchImageCreation{
 			externalReference: externalReference,
 			originalReference: "",
 			scenario:          scenario,
-			notes:             uniqueVariation.Notes,
+			modificationInfo:  uniqueVariation.ModificationInfo,
 		},
 	)
 	if err != nil {

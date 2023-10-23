@@ -8,7 +8,7 @@ import (
 	"log"
 )
 
-type DatabaseSetImage struct {
+type ForbiddenImageCreation struct {
 	externalReference string
 	siftDescriptor    []byte
 	orbDescriptor     []byte
@@ -16,29 +16,29 @@ type DatabaseSetImage struct {
 	pHash             uint64
 }
 
-type DescriptorImage struct {
+type SearchImageCreation struct {
+	externalReference string
+	originalReference string
+	scenario          string
+	modificationInfo  string
+}
+
+type FeatureImageEntity struct {
 	externalReference string
 	descriptors       []byte
 }
 
-type PHashImage struct {
+type PHashImageEntity struct {
 	externalReference string
 	hash              uint64
 }
 
-type SearchSetImage struct {
+type SearchImageEntity struct {
 	Id                int
 	ExternalReference string
 	OriginalReference string
 	Scenario          string
 	Notes             string
-}
-
-type ModifiedImage struct {
-	externalReference string
-	originalReference string
-	scenario          string
-	notes             string
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
@@ -54,7 +54,7 @@ func openDatabaseConnection() (*sql.DB, error) {
 	return databaseConnection, nil
 }
 
-func insertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage DatabaseSetImage) error {
+func insertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage ForbiddenImageCreation) error {
 	externalReference := databaseSetImage.externalReference
 	siftDescriptor := databaseSetImage.siftDescriptor
 	orbDescriptor := databaseSetImage.orbDescriptor
@@ -81,7 +81,7 @@ func retrieveFeatureImageChunk(
 	databaseConnection *sql.DB,
 	descriptorType string,
 	offset int,
-	limit int) (*[]DescriptorImage, error) {
+	limit int) (*[]FeatureImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		fmt.Sprintf("SELECT external_reference, %s FROM database_image LIMIT ? OFFSET ?", descriptorType),
 		limit,
@@ -93,10 +93,10 @@ func retrieveFeatureImageChunk(
 	}
 	defer imageRows.Close()
 
-	var imageEntityChunk []DescriptorImage
+	var imageEntityChunk []FeatureImageEntity
 
 	for imageRows.Next() {
-		var image DescriptorImage
+		var image FeatureImageEntity
 
 		var err = imageRows.Scan(
 			&image.externalReference,
@@ -117,7 +117,7 @@ func retrieveFeatureImageChunk(
 func retrievePHashImageChunk(
 	databaseConnection *sql.DB,
 	offset int,
-	limit int) ([]PHashImage, error) {
+	limit int) ([]PHashImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		"SELECT external_reference, p_hash FROM database_image LIMIT ? OFFSET ?",
 		limit,
@@ -129,10 +129,10 @@ func retrievePHashImageChunk(
 	}
 	defer imageRows.Close()
 
-	var imageEntityChunk []PHashImage
+	var imageEntityChunk []PHashImageEntity
 
 	for imageRows.Next() {
-		var image PHashImage
+		var image PHashImageEntity
 
 		var err = imageRows.Scan(
 			&image.externalReference,
@@ -150,11 +150,11 @@ func retrievePHashImageChunk(
 	return imageEntityChunk, nil
 }
 
-func insertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage ModifiedImage) error {
+func insertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage SearchImageCreation) error {
 	externalReference := modifiedImage.externalReference
 	originalReference := modifiedImage.originalReference
 	scenario := modifiedImage.scenario
-	notes := modifiedImage.notes
+	notes := modifiedImage.modificationInfo
 
 	_, err := databaseConnection.Exec(
 		"INSERT INTO search_image (external_reference, original_reference, scenario, notes) VALUES (?, ?, ?, ?)",
@@ -175,7 +175,7 @@ func retrieveChunkFromSearchSet(
 	databaseConnection *sql.DB,
 	scenario string,
 	offset int,
-	limit int) ([]SearchSetImage, error) {
+	limit int) ([]SearchImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		"SELECT * FROM search_image WHERE scenario = ? LIMIT ? OFFSET ?",
 		scenario,
@@ -188,10 +188,10 @@ func retrieveChunkFromSearchSet(
 	}
 	defer imageRows.Close()
 
-	var imageEntityChunk []SearchSetImage
+	var imageEntityChunk []SearchImageEntity
 
 	for imageRows.Next() {
-		var image SearchSetImage
+		var image SearchImageEntity
 
 		err := imageRows.Scan(&image.Id, &image.ExternalReference, &image.OriginalReference, &image.Scenario,
 			&image.Notes)

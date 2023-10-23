@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-const distanceRatioThreshold = 0.8
+const DISTANCE_RATIO_THRESHOLD = 0.8
 
 const BRUTE_FORCE_MATCHER = "bfm"
 const FLANN_BASED_MATCHER = "flann"
@@ -120,7 +120,7 @@ func filterMatches(matches *[][]gocv.DMatch) (*[]gocv.DMatch, float64) {
 		firstBestMatchDistance := firstBestMatch.Distance
 		secondBestMatchDistance := secondBestMatch.Distance
 
-		if firstBestMatchDistance < distanceRatioThreshold*secondBestMatchDistance {
+		if firstBestMatchDistance < DISTANCE_RATIO_THRESHOLD*secondBestMatchDistance {
 			filteredMatches = append(filteredMatches, firstBestMatch)
 
 			if firstBestMatchDistance > maxDist {

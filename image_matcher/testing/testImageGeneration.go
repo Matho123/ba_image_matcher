@@ -22,39 +22,47 @@ func populateDatabase([]string) {
 
 		for _, original := range originals {
 			if index1 == 10 || index1 == 130 || index1 == 420 || index1 == 730 {
-				scenario := "identical"
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := "identical"
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 70 || index1 == 130 || index1 == 420 || index1 == 750 {
-				scenario := image_handling.SCALED
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.SCALED
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 10 || index1 == 180 || index1 == 750 {
-				scenario := image_handling.ROTATED
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.ROTATED
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 70 || index1 == 180 || index1 == 540 || index1 == 730 {
-				scenario := image_handling.MIRRORED
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.MIRRORED
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 50 || index1 == 280 || index1 == 540 || index1 == 780 {
-				scenario := image_handling.BACKGROUND
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.BACKGROUND
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 10 || index1 == 300 || index1 == 670 || index1 == 780 {
-				scenario := image_handling.MOVED
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.MOVED
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 			}
 			if index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710 {
-				scenario := image_handling.PART
-				variations := image_handling.GenerateVariations(original, scenario)
-				service.InsertDuplicateSearchImage(variations, original.ExternalReference, scenario)
+				modifier := image_handling.PART
+				variations := image_handling.GenerateDuplicateVariations(original, modifier)
+				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+			}
+			if index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710 {
+				variation := image_handling.GenerateMixedVariation(original)
+				service.InsertDuplicateSearchImage(
+					&[]image_handling.ImageVariation{*variation},
+					original.ExternalReference,
+					"mixed",
+				)
 			}
 		}
 

@@ -37,7 +37,7 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 
 		err := insertImageIntoDatabaseSet(
 			databaseConnection,
-			DatabaseSetImage{
+			ForbiddenImageCreation{
 				externalReference: rawImage.ExternalReference,
 				siftDescriptor:    image_handling.ConvertImageMatToByteArray(siftDesc),
 				orbDescriptor:     image_handling.ConvertImageMatToByteArray(orbDesc),

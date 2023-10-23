@@ -144,31 +144,3 @@ func cropImage(img *image.Image) image.Image {
 
 	return croppedImage
 }
-
-//func ChangeMotiveColor(img *image.Image) image.Image {
-//
-//}
-//
-//func createMotiveMask(img *image.Image) *image.Gray {
-//	bounds := (*img).Bounds()
-//	motiveMask := image.NewGray(bounds)
-//
-//	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
-//		for x := bounds.Min.X; x < bounds.Max.X; x++ {
-//			pixelColor := (*img).At(x, y).(color.NRGBA)
-//
-//		}
-//	}
-//	return motiveMask
-//}
-//
-//func calculateColorDistance(color1, color2 color.NRGBA) float64 {
-//	red1, green1, blue1 := color1.R, color1.G, color1.B
-//	red2, green2, blue2 := color2.R, color2.G, color2.B
-//
-//	deltaRed := float64(red1 - red2)
-//	deltaGreen := float64(green1 - green2)
-//	deltaBlue := float64(blue1 - blue2)
-//
-//	return math.Sqrt(deltaRed*deltaRed + deltaGreen*deltaGreen + deltaBlue*deltaBlue)
-//}

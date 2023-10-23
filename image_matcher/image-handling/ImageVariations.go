@@ -5,6 +5,7 @@ import (
 	"image"
 	"math/rand"
 	"strconv"
+	"time"
 )
 
 const (
@@ -16,142 +17,156 @@ const (
 	PART       = "part"
 )
 
+var MODIFIERS = []string{SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART}
+
+var SCALING_FACTORS = []int{2, 4, 10}
+
+var ROTATION_ANGLES = []float64{5, 10, 45, 90, 180}
+
 type ImageVariation struct {
-	Img   image.Image
-	Notes string
+	ModifiedImage    image.Image
+	ModificationInfo string
 }
 
-var scalingFactors = []int{2, 4, 10}
-
-var rotationAngles = []float64{5, 10, 45, 90, 180}
-
-func GenerateVariations(originalImage *RawImage, modifier string) *[]ImageVariation {
-	var variations *[]ImageVariation
+func GenerateDuplicateVariations(originalImage *RawImage, modifier string) *[]ImageVariation {
 
 	switch modifier {
 	case SCALED:
-		variations = generateScaledVariations(&originalImage.Data)
-		break
-	case ROTATED:
-		variations = generateRotatedVariations(&originalImage.Data)
-		break
-	case MIRRORED:
-		mirroredHorizontal, axisHorizontal := MirrorImage(&originalImage.Data, true)
-		horizontalVariation := ImageVariation{mirroredHorizontal, axisHorizontal}
+		return generateAllScaledVariations(&originalImage.Data)
 
-		mirroredVertical, axisVertical := MirrorImage(&originalImage.Data, false)
-		verticalVariation := ImageVariation{mirroredVertical, axisVertical}
-		variations = &[]ImageVariation{
-			horizontalVariation,
-			verticalVariation,
-		}
-		break
-	case MOVED:
-		moved, distance := MoveMotive(&originalImage.Data)
-		variations = &[]ImageVariation{{moved, fmt.Sprintf("%.0f", distance)}}
-		break
-	case BACKGROUND:
-		changed, bg := ChangeBackgroundColor(&originalImage.Data)
-		r, g, b, _ := bg.RGBA()
-		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
-		variations = &[]ImageVariation{{changed, fmt.Sprintf("%d/%d/%d", r8, g8, b8)}}
-		break
-	case PART:
-		newImage, distance := IntegrateInOtherImage(&originalImage.Data)
-		variations = &[]ImageVariation{{Img: newImage, Notes: fmt.Sprintf("%.0f", distance)}}
-		break
+	case ROTATED:
+		return generateAllRotatedVariations(&originalImage.Data)
+
+	case MIRRORED:
+		return generateAllMirroredVariations(&originalImage.Data)
+
 	default:
-		variations = &[]ImageVariation{{Img: originalImage.Data, Notes: ""}}
-		break
+		modifiedImage, modificationInfo := modifyImage(&originalImage.Data, modifier)
+
+		return &[]ImageVariation{{*modifiedImage, modificationInfo}}
 	}
 
-	return variations
 }
 
 func GenerateUniqueVariation(originalImage *RawImage, modifier string) *ImageVariation {
-	var variation image.Image
-	var notes string
+	modifiedImage, modificationInfo := modifyImage(&originalImage.Data, modifier)
+
+	return &ImageVariation{
+		ModifiedImage:    *modifiedImage,
+		ModificationInfo: modificationInfo,
+	}
+}
+
+func GenerateMixedVariation(originalImage *RawImage) *ImageVariation {
+	shuffledModifiers := shuffleArray(MODIFIERS)
+
+	rand.Seed(time.Now().UnixNano())
+	modifierAmount := rand.Intn(4)
+
+	modifiedImage := &originalImage.Data
+	modificationInfo := ""
+	for i := 0; i < modifierAmount; i++ {
+		modifier := shuffledModifiers[i]
+		modifiedImage, _ = modifyImage(modifiedImage, modifier)
+		modificationInfo += modifier + "-"
+	}
+	return &ImageVariation{*modifiedImage, modificationInfo}
+}
+
+func shuffleArray(array []string) []string {
+	rand.Seed(time.Now().UnixNano())
+	for i := len(array) - 1; i > 0; i-- {
+		j := rand.Intn(i + 1)
+		array[i], array[j] = array[j], array[i]
+	}
+	return array
+}
+
+func modifyImage(originalImage *image.Image, modifier string) (*image.Image, string) {
+	rand.Seed(time.Now().UnixNano())
 
 	switch modifier {
 	case SCALED:
-		randomIndex := rand.Intn(len(scalingFactors))
-		scalingFactor := scalingFactors[randomIndex]
+		randomIndex := rand.Intn(len(SCALING_FACTORS))
+		scalingFactor := SCALING_FACTORS[randomIndex]
 
-		scaled := ResizeImage(&originalImage.Data, scalingFactor)
-		variation = scaled
-		notes = strconv.Itoa(scalingFactor)
-		break
+		scaled := ResizeImage(originalImage, scalingFactor)
+		return &scaled, strconv.Itoa(scalingFactor)
+
 	case ROTATED:
-		randomIndex := rand.Intn(len(rotationAngles))
-		angle := rotationAngles[randomIndex]
+		randomIndex := rand.Intn(len(ROTATION_ANGLES))
+		angle := ROTATION_ANGLES[randomIndex]
 
-		rotated := RotateImage(&originalImage.Data, angle)
-		variation = rotated
-		notes = fmt.Sprintf("%.0f", angle)
-		break
-	case "mirrored":
+		rotated := RotateImage(originalImage, angle)
+		return &rotated, fmt.Sprintf("%.0f", angle)
+
+	case MIRRORED:
 		horizontal := rand.Intn(2) == 0
 
-		mirrored, axis := MirrorImage(&originalImage.Data, horizontal)
-		variation = mirrored
-		notes = axis
-		break
-	case "moved":
-		moved, distance := MoveMotive(&originalImage.Data)
-		variation = moved
-		notes = fmt.Sprintf("%.0f", distance)
-		break
-	case "background":
-		changed, bg := ChangeBackgroundColor(&originalImage.Data)
-		variation = changed
+		mirrored, axis := MirrorImage(originalImage, horizontal)
+		return &mirrored, axis
+
+	case MOVED:
+		moved, distance := MoveMotive(originalImage)
+
+		return &moved, fmt.Sprintf("%.0f", distance)
+
+	case BACKGROUND:
+		changed, bg := ChangeBackgroundColor(originalImage)
 		r, g, b, _ := bg.RGBA()
 		r8, g8, b8 := uint8(r>>8), uint8(g>>8), uint8(b>>8)
-		notes = fmt.Sprintf("%d, %d, %d", r8, g8, b8)
-		break
-	case "motive":
-		break
-	case "part":
-		newImage, distance := IntegrateInOtherImage(&originalImage.Data)
-		variation = newImage
-		notes = fmt.Sprintf("%.0f", distance)
-		break
+
+		return &changed, fmt.Sprintf("%d, %d, %d", r8, g8, b8)
+
+	case PART:
+		newImage, distance := IntegrateInOtherImage(originalImage)
+
+		return &newImage, fmt.Sprintf("%.0f", distance)
+
 	default:
-		variation = originalImage.Data
-		break
-	}
-
-	return &ImageVariation{
-		Img:   variation,
-		Notes: notes,
+		return originalImage, ""
 	}
 }
 
-func generateScaledVariations(img *image.Image) *[]ImageVariation {
+func generateAllScaledVariations(originalImage *image.Image) *[]ImageVariation {
 	var variations []ImageVariation
-	for _, scalingFactor := range scalingFactors {
-		scaled := ResizeImage(img, scalingFactor)
+	for _, scalingFactor := range SCALING_FACTORS {
+		scaled := ResizeImage(originalImage, scalingFactor)
 		variations = append(
 			variations,
 			ImageVariation{
-				Img:   scaled,
-				Notes: strconv.Itoa(scalingFactor),
+				ModifiedImage:    scaled,
+				ModificationInfo: strconv.Itoa(scalingFactor),
 			},
 		)
 	}
 	return &variations
 }
 
-func generateRotatedVariations(img *image.Image) *[]ImageVariation {
+func generateAllRotatedVariations(originalImage *image.Image) *[]ImageVariation {
 	var variations []ImageVariation
-	for _, angle := range rotationAngles {
-		rotated := RotateImage(img, angle)
+	for _, angle := range ROTATION_ANGLES {
+		rotated := RotateImage(originalImage, angle)
 		variations = append(
 			variations,
 			ImageVariation{
-				Img:   rotated,
-				Notes: fmt.Sprintf("%.0f", angle),
+				ModifiedImage:    rotated,
+				ModificationInfo: fmt.Sprintf("%.0f", angle),
 			},
 		)
 	}
 	return &variations
+}
+
+func generateAllMirroredVariations(originalImage *image.Image) *[]ImageVariation {
+	mirroredHorizontal, axisHorizontal := MirrorImage(originalImage, true)
+	horizontalVariation := ImageVariation{mirroredHorizontal, axisHorizontal}
+
+	mirroredVertical, axisVertical := MirrorImage(originalImage, false)
+	verticalVariation := ImageVariation{mirroredVertical, axisVertical}
+
+	return &[]ImageVariation{
+		horizontalVariation,
+		verticalVariation,
+	}
 }
