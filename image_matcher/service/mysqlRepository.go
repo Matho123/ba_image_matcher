@@ -62,7 +62,7 @@ func insertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage For
 	pHash := databaseSetImage.pHash
 
 	_, err := databaseConnection.Exec(
-		"INSERT INTO database_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor , p_hash) VALUES (?, ?, ?, ?, ?)",
+		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash) VALUES (?, ?, ?, ?, ?)",
 		externalReference,
 		siftDescriptor,
 		orbDescriptor,
@@ -83,7 +83,7 @@ func retrieveFeatureImageChunk(
 	offset int,
 	limit int) (*[]FeatureImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
-		fmt.Sprintf("SELECT external_reference, %s FROM database_image LIMIT ? OFFSET ?", descriptorType),
+		fmt.Sprintf("SELECT external_reference, %s FROM forbidden_image LIMIT ? OFFSET ?", descriptorType),
 		limit,
 		offset,
 	)
@@ -119,7 +119,7 @@ func retrievePHashImageChunk(
 	offset int,
 	limit int) ([]PHashImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT external_reference, p_hash FROM database_image LIMIT ? OFFSET ?",
+		"SELECT external_reference, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
 		offset,
 	)

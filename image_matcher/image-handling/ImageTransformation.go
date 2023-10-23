@@ -66,7 +66,7 @@ func MoveMotive(img *image.Image) (image.Image, float64) {
 
 func IntegrateInOtherImage(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	biggerImage := LoadImageFromDisk("images/bigger-bg.png")
+	biggerImage := LoadImageFromDisk("images/part-background.png")
 
 	newImage, movedDistance := pasteImageRandomly(&croppedImage, *biggerImage)
 
