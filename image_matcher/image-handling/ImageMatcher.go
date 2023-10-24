@@ -74,7 +74,7 @@ func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64, d
 		normalizedDistanceSum := distanceSum / maxDist
 		averageNormalizedDistance = normalizedDistanceSum / float64(len(*filteredMatches))
 	}
-	similarityScore := (1.0 - averageNormalizedDistance) * filteredMatchRatio
+	similarityScore := 0.5*(1.0-averageNormalizedDistance) + 0.5*filteredMatchRatio
 
 	if debug {
 		println(fmt.Sprintf("Similarity score: %.2f", similarityScore))
