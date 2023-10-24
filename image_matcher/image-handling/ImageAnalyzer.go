@@ -1,7 +1,6 @@
 package image_handling
 
 import (
-	"errors"
 	"gocv.io/x/gocv"
 	"image"
 	"image/color"
@@ -13,32 +12,18 @@ const ORB = "orb"
 const BRISK = "brisk"
 const PHASH = "phash"
 
-func GetFeatureBasedAnalyzer(analyzer string) (*FeatureBasedImageAnalyzer, error) {
-	switch analyzer {
-	case SIFT:
-		return NewSiftAnalyzer(), nil
-	case ORB:
-		return NewOrbAnalyzer(), nil
-	case BRISK:
-		return NewBriskAnalyzer(), nil
-	default:
-		return nil, errors.New("invalid option for analyzer")
-	}
+var ANALYZER_MAPPING = map[string]FeatureBasedImageAnalyzer{
+	SIFT:  &SiftImageAnalyzer{gocv.NewSIFT()},
+	ORB:   &ORBImageAnalyzer{gocv.NewORB()},
+	BRISK: &BRISKImageAnalyzer{gocv.NewBRISK()},
 }
 
 type FeatureBasedImageAnalyzer interface {
 	AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat, time.Duration)
-	Close()
 }
 
 type SiftImageAnalyzer struct {
 	analyzer gocv.SIFT
-}
-
-func NewSiftAnalyzer() *FeatureBasedImageAnalyzer {
-	var analyzer FeatureBasedImageAnalyzer
-	analyzer = &SiftImageAnalyzer{gocv.NewSIFT()}
-	return &analyzer
 }
 
 func (sift *SiftImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat, time.Duration) {
@@ -49,18 +34,8 @@ func (sift *SiftImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, g
 	return keypoints, descriptors, extractionTime
 }
 
-func (sift *SiftImageAnalyzer) Close() {
-	sift.analyzer.Close()
-}
-
 type ORBImageAnalyzer struct {
 	analyzer gocv.ORB
-}
-
-func NewOrbAnalyzer() *FeatureBasedImageAnalyzer {
-	var analyzer FeatureBasedImageAnalyzer
-	analyzer = &ORBImageAnalyzer{gocv.NewORB()}
-	return &analyzer
 }
 
 func (orb *ORBImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat, time.Duration) {
@@ -71,18 +46,8 @@ func (orb *ORBImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, goc
 	return keypoints, descriptors, extractionTime
 }
 
-func (orb *ORBImageAnalyzer) Close() {
-	orb.analyzer.Close()
-}
-
 type BRISKImageAnalyzer struct {
 	analyzer gocv.BRISK
-}
-
-func NewBriskAnalyzer() *FeatureBasedImageAnalyzer {
-	var analyzer FeatureBasedImageAnalyzer
-	analyzer = &BRISKImageAnalyzer{gocv.NewBRISK()}
-	return &analyzer
 }
 
 func (brisk *BRISKImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint, gocv.Mat, time.Duration) {
@@ -91,10 +56,6 @@ func (brisk *BRISKImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint,
 	extractionTime := time.Since(startTime)
 
 	return keypoints, descriptors, extractionTime
-}
-
-func (brisk *BRISKImageAnalyzer) Close() {
-	brisk.analyzer.Close()
 }
 
 type PHash struct{}

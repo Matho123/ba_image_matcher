@@ -90,9 +90,16 @@ func GenerateAndInsertUniqueSearchImages(originalImage *image_handling.RawImage)
 	defer databaseConnection.Close()
 
 	for _, scenario := range SCENARIOS {
+		var variation *image_handling.ImageVariation
+		if scenario == MIXED {
+			variation = image_handling.GenerateMixedVariation(originalImage)
+		} else {
+			variation = image_handling.GenerateUniqueVariation(originalImage, scenario)
+		}
+
 		insertUniqueSearchImage(
 			databaseConnection,
-			image_handling.GenerateUniqueVariation(originalImage, scenario),
+			variation,
 			originalImage.ExternalReference,
 			scenario,
 		)

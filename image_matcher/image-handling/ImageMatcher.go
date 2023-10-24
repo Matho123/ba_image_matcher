@@ -1,7 +1,6 @@
 package image_handling
 
 import (
-	"errors"
 	"fmt"
 	"gocv.io/x/gocv"
 	"log"
@@ -13,20 +12,13 @@ const DISTANCE_RATIO_THRESHOLD = 0.8
 const BRUTE_FORCE_MATCHER = "bfm"
 const FLANN_BASED_MATCHER = "flann"
 
-func GetFeatureBasedMatcher(matcher string) (FeatureBasedImageMatcher, error) {
-	switch matcher {
-	case BRUTE_FORCE_MATCHER:
-		return &BruteForceMatcher{gocv.NewBFMatcher()}, nil
-	case FLANN_BASED_MATCHER:
-		return &FLANNBasedMatcher{gocv.NewFlannBasedMatcher()}, nil
-	default:
-		return nil, errors.New("invalid option for matcher")
-	}
+var MATCHER_MAPPING = map[string]FeatureBasedImageMatcher{
+	BRUTE_FORCE_MATCHER: &BruteForceMatcher{gocv.NewBFMatcher()},
+	FLANN_BASED_MATCHER: &FLANNBasedMatcher{gocv.NewFlannBasedMatcher()},
 }
 
 type FeatureBasedImageMatcher interface {
 	FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch
-	Close()
 }
 
 type BruteForceMatcher struct {
@@ -35,10 +27,6 @@ type BruteForceMatcher struct {
 
 func (bfm *BruteForceMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDescriptors2 *gocv.Mat) [][]gocv.DMatch {
 	return bfm.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, 2)
-}
-
-func (bfm *BruteForceMatcher) Close() {
-	bfm.matcher.Close()
 }
 
 type FLANNBasedMatcher struct {
@@ -58,10 +46,6 @@ func (flann *FLANNBasedMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDe
 	ConvertImageDescriptorMat(imageDescriptors2, gocv.MatTypeCV32F)
 
 	return flann.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, k)
-}
-
-func (flann *FLANNBasedMatcher) Close() {
-	flann.matcher.Close()
 }
 
 func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64, debug bool) (

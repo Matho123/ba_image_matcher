@@ -74,34 +74,34 @@ func GenerateMixedVariation(originalImage *RawImage) *ImageVariation {
 }
 
 func shuffleArray(array []string) []string {
-	rand.Seed(time.Now().UnixNano())
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	for i := len(array) - 1; i > 0; i-- {
-		j := rand.Intn(i + 1)
+		j := random.Intn(i + 1)
 		array[i], array[j] = array[j], array[i]
 	}
 	return array
 }
 
 func modifyImage(originalImage *image.Image, modifier string) (*image.Image, string) {
-	rand.Seed(time.Now().UnixNano())
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	switch modifier {
 	case SCALED:
-		randomIndex := rand.Intn(len(SCALING_FACTORS))
+		randomIndex := random.Intn(len(SCALING_FACTORS))
 		scalingFactor := SCALING_FACTORS[randomIndex]
 
 		scaled := ResizeImage(originalImage, scalingFactor)
 		return &scaled, strconv.Itoa(scalingFactor)
 
 	case ROTATED:
-		randomIndex := rand.Intn(len(ROTATION_ANGLES))
+		randomIndex := random.Intn(len(ROTATION_ANGLES))
 		angle := ROTATION_ANGLES[randomIndex]
 
 		rotated := RotateImage(originalImage, angle)
 		return &rotated, fmt.Sprintf("%.0f", angle)
 
 	case MIRRORED:
-		horizontal := rand.Intn(2) == 0
+		horizontal := random.Intn(2) == 0
 
 		mirrored, axis := MirrorImage(originalImage, horizontal)
 		return &mirrored, axis

@@ -6,12 +6,29 @@ import (
 	"log"
 )
 
+var indizes = []int{10, 50, 70, 130, 180, 280, 300, 420, 540, 650, 670, 710, 730, 750, 780}
+
+func contains(arr *[]int, number int) bool {
+	for _, e := range *arr {
+		if number == e {
+			return true
+		}
+	}
+	return false
+}
+
 func populateDatabase([]string) {
+
 	paths := image_handling.GetFilePathsFromDirectory("images/originals")
+
+	arr3 := indizes[9:13]
+	arr4 := indizes[6:11]
+	arr6 := indizes[8:15]
+	arr12 := indizes[0:12]
 
 	var chunkSize = 10
 
-	for index1 := chunkSize; index1 <= 800; index1 += chunkSize {
+	for index1 := chunkSize; index1 <= 850; index1 += chunkSize {
 		originals := image_handling.LoadImagesFromDirectory(paths[(index1 - chunkSize):(index1)])
 
 		//register db set images
@@ -21,48 +38,56 @@ func populateDatabase([]string) {
 		}
 
 		for _, original := range originals {
-			if index1 == 10 || index1 == 130 || index1 == 420 || index1 == 730 {
+			if contains(&arr12, index1) {
 				modifier := "identical"
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 70 || index1 == 130 || index1 == 420 || index1 == 750 {
+			if contains(&arr4, index1) {
 				modifier := image_handling.SCALED
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 10 || index1 == 180 || index1 == 750 {
+			if contains(&arr3, index1) {
 				modifier := image_handling.ROTATED
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 70 || index1 == 180 || index1 == 540 || index1 == 730 {
+			if contains(&arr6, index1) {
 				modifier := image_handling.MIRRORED
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 50 || index1 == 280 || index1 == 540 || index1 == 780 {
+			if contains(&arr12, index1) {
 				modifier := image_handling.BACKGROUND
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 10 || index1 == 300 || index1 == 670 || index1 == 780 {
+			if contains(&arr12, index1) {
 				modifier := image_handling.MOVED
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710 {
+			if contains(&arr12, index1) {
 				modifier := image_handling.PART
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
+				variations = nil
 			}
-			if index1 == 10 || index1 == 300 || index1 == 650 || index1 == 710 {
+			if contains(&arr12, index1) {
 				variation := image_handling.GenerateMixedVariation(original)
 				service.InsertDuplicateSearchImage(
 					&[]image_handling.ImageVariation{*variation},
 					original.ExternalReference,
 					"mixed",
 				)
+				variation = nil
 			}
 		}
 
@@ -70,7 +95,7 @@ func populateDatabase([]string) {
 	}
 
 	//create uniques for search sets
-	for index := 800 + chunkSize; index <= 800+len(paths[800:]); index += chunkSize {
+	for index := 850 + chunkSize; index <= 850+len(paths[850:]); index += chunkSize {
 		originals := image_handling.LoadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		for _, original := range originals {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"fmt"
 	"gocv.io/x/gocv"
 	"image/color"
@@ -27,12 +28,14 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 
 	for _, rawImage := range rawImages {
 
-		_, siftDesc, _ :=
-			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewSiftAnalyzer())
-		_, orbDesc, _ :=
-			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewOrbAnalyzer())
-		_, briskDesc, _ :=
-			image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, image_handling.NewBriskAnalyzer())
+		sift := image_handling.ANALYZER_MAPPING[image_handling.SIFT]
+		_, siftDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &sift)
+
+		orb := image_handling.ANALYZER_MAPPING[image_handling.ORB]
+		_, orbDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &orb)
+
+		brisk := image_handling.ANALYZER_MAPPING[image_handling.BRISK]
+		_, briskDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &brisk)
 		pHash, _ := client.GetPHashValue(rawImage.Data)
 
 		err := insertImageIntoDatabaseSet(
@@ -64,8 +67,6 @@ func MatchAgainstDatabaseFeatureBased(
 	if err != nil {
 		return nil, err, nil, 0, 0
 	}
-	defer (*imageAnalyzer).Close()
-	defer (*imageMatcher).Close()
 
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
@@ -208,8 +209,6 @@ func AnalyzeAndMatchTwoImages(
 	if err != nil {
 		return false, nil, nil, 0, 0, err
 	}
-	defer (*imageAnalyzer).Close()
-	defer (*imageMatcher).Close()
 
 	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
 	defer imageDescriptors1.Close()
@@ -233,12 +232,12 @@ func AnalyzeAndMatchTwoImages(
 }
 
 func getAnalyzerAndMatcher(analyzer, matcher string) (*image_handling.FeatureBasedImageAnalyzer, *image_handling.FeatureBasedImageMatcher, error) {
-	imageAnalyzer, err := image_handling.GetFeatureBasedAnalyzer(analyzer)
-	imageMatcher, err := image_handling.GetFeatureBasedMatcher(matcher)
+	imageAnalyzer := image_handling.ANALYZER_MAPPING[analyzer]
+	imageMatcher := image_handling.MATCHER_MAPPING[matcher]
 
-	if err != nil {
-		return nil, nil, err
+	if imageAnalyzer == nil || imageMatcher == nil {
+		return nil, nil, errors.New("couldn't find analyzer or matcher")
 	}
 
-	return imageAnalyzer, &imageMatcher, nil
+	return &imageAnalyzer, &imageMatcher, nil
 }
