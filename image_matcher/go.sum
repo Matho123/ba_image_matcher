@@ -5,8 +5,8 @@ github.com/go-sql-driver/mysql v1.7.1/go.mod h1:OXbVy3sEdcQ2Doequ6Z5BW6fXNQTmx+9
 github.com/hybridgroup/mjpeg v0.0.0-20140228234708-4680f319790e/go.mod h1:eagM805MRKrioHYuU7iKLUyFPVKqVV6um5DAvCkUtXs=
 github.com/pascaldekloe/goe v0.1.0/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/yuin/goldmark v1.4.13/go.mod h1:6yULJ656Px+3vBD8DxQVa3kxgyrAnzto9xy5taEt/CY=
-gocv.io/x/gocv v0.33.0 h1:WDtaBrq92AKrhepYzEktydDzNSm3t5k7ciawZK4rns8=
-gocv.io/x/gocv v0.33.0/go.mod h1:oc6FvfYqfBp99p+yOEzs9tbYF9gOrAQSeL/dyIPefJU=
+gocv.io/x/gocv v0.35.0 h1:Qaxb5KdVyy8Spl4S4K0SMZ6CVmKtbfoSGQAxRD3FZlw=
+gocv.io/x/gocv v0.35.0/go.mod h1:oc6FvfYqfBp99p+yOEzs9tbYF9gOrAQSeL/dyIPefJU=
 golang.org/x/crypto v0.0.0-20190308221718-c2843e01d9a2/go.mod h1:djNgcEr1/C05ACkg1iLfiJU5Ep61QUkGW8qpdssI0+w=
 golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/exp v0.0.0-20230817173708-d852ddb80c63 h1:m64FZMko/V45gv0bNmrNYoDEq8U5YUhetc9cBWKS1TQ=
