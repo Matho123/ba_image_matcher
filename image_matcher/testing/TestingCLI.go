@@ -143,7 +143,7 @@ func runScenario(arguments []string) {
 	}
 
 	if scenario == "all" {
-
+		runAllScenarios(analyzingAlgorithm, matchingAlgorithm, threshold)
 	} else {
 		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, debug)
 	}
@@ -154,6 +154,5 @@ func downloadOriginalImages([]string) {
 
 	for _, design := range designs {
 		client.DownloadImageFromUrl(design.Id)
-		time.Sleep(5 * time.Second)
 	}
 }

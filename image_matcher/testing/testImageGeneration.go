@@ -6,7 +6,7 @@ import (
 	"log"
 )
 
-var indizes = []int{10, 50, 70, 130, 180, 280, 300, 420, 540, 650, 670, 710, 730, 750, 780}
+var indizes = [12]int{10, 50, 70, 130, 180, 540, 650, 670, 710, 730, 750, 780}
 
 func contains(arr *[]int, number int) bool {
 	for _, e := range *arr {
@@ -21,14 +21,14 @@ func populateDatabase([]string) {
 
 	paths := image_handling.GetFilePathsFromDirectory("images/originals")
 
-	arr3 := indizes[9:13]
+	arr3 := indizes[8:12]
 	arr4 := indizes[6:11]
-	arr6 := indizes[8:15]
+	arr6 := indizes[0:7]
 	arr12 := indizes[0:12]
 
 	var chunkSize = 10
 
-	for index1 := chunkSize; index1 <= 850; index1 += chunkSize {
+	for index1 := chunkSize; index1 <= 820; index1 += chunkSize {
 		originals := image_handling.LoadImagesFromDirectory(paths[(index1 - chunkSize):(index1)])
 
 		//register db set images
@@ -95,7 +95,7 @@ func populateDatabase([]string) {
 	}
 
 	//create uniques for search sets
-	for index := 850 + chunkSize; index <= 850+len(paths[850:]); index += chunkSize {
+	for index := 820 + chunkSize; index <= 820+len(paths[820:]); index += chunkSize {
 		originals := image_handling.LoadImagesFromDirectory(paths[(index - chunkSize):(index)])
 
 		for _, original := range originals {
