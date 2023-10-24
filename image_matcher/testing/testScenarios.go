@@ -9,6 +9,30 @@ import (
 	"time"
 )
 
+var FEATURE_BASE_THRESHOLDS = []float64{0.2, 0.3, 0.4, 0.5, 0.6, 0.7}
+
+var PHASH_THRESHOLDS = []float64{4, 8, 12, 16, 20, 24}
+
+func runAllForEachAlgorithm([]string) {
+	for _, threshold := range PHASH_THRESHOLDS {
+		runAllScenarios(image_handling.PHASH, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	}
+
+	for _, threshold := range FEATURE_BASE_THRESHOLDS {
+		runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	}
+
+	for _, threshold := range FEATURE_BASE_THRESHOLDS {
+		runAllScenarios(image_handling.ORB, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	}
+}
+
+func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
+	for _, scenario := range service.SCENARIOS {
+		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
+	}
+}
+
 func runSingleScenario(
 	scenario string, analyzingAlgorithm string, matchingAlgorithm string, threshold float64, debug bool,
 ) {
@@ -31,12 +55,6 @@ func runSingleScenario(
 	println("ExtractionTime", extractionTime.String())
 	println("MatchingTime", matchingTime.String())
 	println("Eval: ", classEval.String())
-}
-
-func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
-	for _, scenario := range service.SCENARIOS {
-		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
-	}
 }
 
 func runPHashScenario(

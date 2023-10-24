@@ -20,6 +20,7 @@ var CommandMapping = map[string]func([]string){
 	"scenario": runScenario,
 	"download": downloadOriginalImages,
 	"populate": populateDatabase,
+	"runAll":   runAllForEachAlgorithm,
 }
 
 func registerImages(arguments []string) {
