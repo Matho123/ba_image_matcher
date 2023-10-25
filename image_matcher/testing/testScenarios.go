@@ -18,17 +18,17 @@ func runAllForEachAlgorithm([]string) {
 	//	runAllScenarios(image_handling.PHASH, "", threshold)
 	//}
 
-	//for _, threshold := range FEATURE_BASE_THRESHOLDS {
-	//	runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
-	//}
+	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
+		runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	}
 
-	for _, threshold := range []float64{0.4, 0.5, 0.6, 0.7} {
+	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
 		runAllScenarios(image_handling.ORB, image_handling.BRUTE_FORCE_MATCHER, threshold)
 	}
 
-	//for _, threshold := range FEATURE_BASE_THRESHOLDS {
-	//	runAllScenarios(image_handling.BRISK, image_handling.BRUTE_FORCE_MATCHER, threshold)
-	//}
+	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
+		runAllScenarios(image_handling.BRISK, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	}
 }
 
 func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
