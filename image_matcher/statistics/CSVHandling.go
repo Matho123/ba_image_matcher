@@ -110,7 +110,7 @@ func WriteFeatureBasedImageEvalToCSV(
 }
 
 func writeNewCSV(fileName string, data *[][]string) {
-	file, err := os.Create("test-output/" + fileName + ".csv")
+	file, err := os.Create("test-output/csv-files/" + fileName + ".csv")
 	if err != nil {
 		log.Fatal("Error writing csv", err)
 	}
@@ -128,7 +128,7 @@ func writeNewCSV(fileName string, data *[][]string) {
 }
 
 func appendToCSV(fileName string, data *[][]string) {
-	filePath := "test-output/" + fileName + ".csv"
+	filePath := "test-output/csv-files/" + fileName + ".csv"
 	_, err := os.Stat(filePath)
 
 	fileExists := err == nil

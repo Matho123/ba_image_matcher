@@ -2,9 +2,9 @@ package testing
 
 import (
 	"fmt"
-	"image_matcher/client"
-	"image_matcher/image-handling"
-	"image_matcher/service"
+	"image_matcher/image_analyzer"
+	"image_matcher/image_handling"
+	"image_matcher/image_service"
 	"log"
 	"strconv"
 	"time"
@@ -18,7 +18,6 @@ var CommandMapping = map[string]func([]string){
 	"compare":  compareTwoImages,
 	"match":    matchToDatabase,
 	"scenario": runScenario,
-	"download": downloadOriginalImages,
 	"populate": populateDatabase,
 	"runAll":   runAllForEachAlgorithm,
 }
@@ -32,7 +31,7 @@ func registerImages(arguments []string) {
 
 	images := image_handling.LoadImagesFromPath(imagePath)
 
-	err := service.AnalyzeAndSaveDatabaseImage(images)
+	err := image_service.AnalyzeAndSaveDatabaseImage(images)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -52,14 +51,14 @@ func compareTwoImages(arguments []string) {
 	image1 := image_handling.LoadRawImage(imagePath1)
 	image2 := image_handling.LoadRawImage(imagePath2)
 
-	isMatch, kp1, kp2, extractionTime, matchingTime, err := service.AnalyzeAndMatchTwoImages(
+	isMatch, kp1, kp2, extractionTime, matchingTime, err := image_service.AnalyzeAndMatchTwoImages(
 		*image1, *image2, imageAnalyzer, imageMatcher, SimilarityThreshold, debug,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if imageAnalyzer != image_handling.PHASH {
+	if imageAnalyzer != image_analyzer.PHASH {
 		log.Println(fmt.Sprintf(
 			"Keypoints extracted: %d for image1 and %d for image2",
 			len(kp1),
@@ -98,14 +97,14 @@ func matchToDatabase(arguments []string) {
 	var matchReferences *[]string
 	var err error
 	var extractionTime, matchingTime time.Duration
-	if imageAnalyzer == image_handling.PHASH {
-		matchReferences, err, extractionTime, matchingTime = service.MatchImageAgainstDatabasePHash(
+	if imageAnalyzer == image_analyzer.PHASH {
+		matchReferences, err, extractionTime, matchingTime = image_service.MatchImageAgainstDatabasePHash(
 			image,
 			4,
 			debug,
 		)
 	} else {
-		matchReferences, err, _, extractionTime, matchingTime = service.MatchAgainstDatabaseFeatureBased(
+		matchReferences, err, _, extractionTime, matchingTime = image_service.MatchAgainstDatabaseFeatureBased(
 			image,
 			imageAnalyzer,
 			imageMatcher,
@@ -147,13 +146,5 @@ func runScenario(arguments []string) {
 		runAllScenarios(analyzingAlgorithm, matchingAlgorithm, threshold)
 	} else {
 		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, debug)
-	}
-}
-
-func downloadOriginalImages([]string) {
-	designs := client.GetDownloadableImageIds()
-
-	for _, design := range designs {
-		client.DownloadImageFromUrl(design.Id)
 	}
 }

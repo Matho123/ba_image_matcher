@@ -2,8 +2,10 @@ package testing
 
 import (
 	"fmt"
-	"image_matcher/image-handling"
-	"image_matcher/service"
+	"image_matcher/image_analyzer"
+	"image_matcher/image_handling"
+	"image_matcher/image_matching"
+	"image_matcher/image_service"
 	"image_matcher/statistics"
 	"log"
 	"time"
@@ -18,21 +20,24 @@ func runAllForEachAlgorithm([]string) {
 	//	runAllScenarios(image_handling.PHASH, "", threshold)
 	//}
 
-	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
-		runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
-	}
+	/*	for _, threshold := range FEATURE_BASE_THRESHOLDS {
+			//runAllScenarios(image_handling.BRISK, image_handling.BRUTE_FORCE_MATCHER, threshold)
+			runFeatureBasedScenario(image_service.MIXED, image_analyzer.BRISK, image_matching.FLANN_BASED_MATCHER, threshold, false)
+		}
 
-	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
-		runAllScenarios(image_handling.ORB, image_handling.BRUTE_FORCE_MATCHER, threshold)
-	}
+		for _, threshold := range FEATURE_BASE_THRESHOLDS {
+			//runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
+			runFeatureBasedScenario(image_service.MIXED, image_analyzer.SIFT, image_matching.FLANN_BASED_MATCHER, threshold, false)
+		}*/
 
-	for _, threshold := range []float64{0.25, 0.35, 0.45, 0.55, 0.65} {
-		runAllScenarios(image_handling.BRISK, image_handling.BRUTE_FORCE_MATCHER, threshold)
+	for _, threshold := range FEATURE_BASE_THRESHOLDS {
+		//runAllScenarios(image_handling.ORB, image_handling.BRUTE_FORCE_MATCHER, threshold)
+		runFeatureBasedScenario(image_service.MIXED, image_analyzer.ORB, image_matching.FLANN_BASED_MATCHER, threshold, false)
 	}
 }
 
 func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
-	for _, scenario := range service.SCENARIOS {
+	for _, scenario := range image_service.SCENARIOS {
 		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
 	}
 }
@@ -43,7 +48,7 @@ func runSingleScenario(
 	var scenarioRuntime, extractionTime, matchingTime time.Duration
 	var classEval *statistics.ClassificationEvaluation
 
-	if analyzingAlgorithm == image_handling.PHASH {
+	if analyzingAlgorithm == image_analyzer.PHASH {
 		startTime := time.Now()
 		classEval, extractionTime, matchingTime = runPHashScenario(scenario, int(threshold), debug)
 		scenarioRuntime = time.Since(startTime)
@@ -66,7 +71,7 @@ func runPHashScenario(
 	maxHammingDistance int,
 	debug bool,
 ) (*statistics.ClassificationEvaluation, time.Duration, time.Duration) {
-	searchImages := service.GetSearchImages(scenario)
+	searchImages := image_service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
 	var imageEvaluations []statistics.SearchImagePHashEval
 
@@ -78,7 +83,7 @@ func runPHashScenario(
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
 		rawImage := image_handling.LoadRawImage(path)
 		matchedReferences, err, extractionTime, matchingTime :=
-			service.MatchImageAgainstDatabasePHash(rawImage, maxHammingDistance, debug)
+			image_service.MatchImageAgainstDatabasePHash(rawImage, maxHammingDistance, debug)
 		if err != nil {
 			log.Println("error while matching", searchImage.ExternalReference, "against database!")
 		}
@@ -105,7 +110,7 @@ func runPHashScenario(
 	thresholdString := fmt.Sprintf("%d", maxHammingDistance)
 
 	statistics.WriteOverallEvalToCSV(
-		scenario, image_handling.PHASH, "", thresholdString, &classificationEval, totalExtractionTime,
+		scenario, image_analyzer.PHASH, "", thresholdString, &classificationEval, totalExtractionTime,
 		totalMatchingTime,
 	)
 	statistics.WritePHashImageEvalToCSV(scenario, thresholdString, &imageEvaluations)
@@ -123,7 +128,7 @@ func runFeatureBasedScenario(
 	similarityThreshold float64,
 	debug bool,
 ) (*statistics.ClassificationEvaluation, time.Duration, time.Duration) {
-	searchImages := service.GetSearchImages(scenario)
+	searchImages := image_service.GetSearchImages(scenario)
 	var totalExtractionTime, totalMatchingTime time.Duration
 	var imageEvaluations []statistics.SearchImageFeatureBasedEval
 
@@ -135,7 +140,7 @@ func runFeatureBasedScenario(
 		path := fmt.Sprintf("images/variations/%s/%s.png", scenario, searchImage.ExternalReference)
 		rawImage := image_handling.LoadRawImage(path)
 		matchedReferences, err, searchImageDescriptors, extractionTime, matchingTime :=
-			service.MatchAgainstDatabaseFeatureBased(
+			image_service.MatchAgainstDatabaseFeatureBased(
 				rawImage,
 				analyzingAlgorithm,
 				matchingAlgorithm,

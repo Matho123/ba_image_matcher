@@ -66,7 +66,7 @@ func MoveMotive(img *image.Image) (image.Image, float64) {
 
 func IntegrateInOtherImage(img *image.Image) (image.Image, float64) {
 	croppedImage := cropImage(img)
-	biggerImage := LoadImageFromDisk("images/part-background.png")
+	biggerImage := loadImageFromDisk("images/part-background.png")
 
 	newImage, movedDistance := pasteImageRandomly(&croppedImage, *biggerImage)
 
@@ -83,9 +83,9 @@ func pasteImageRandomly(pastedImage *image.Image, backgroundImage image.Image) (
 	maxX := (backgroundWidth - pastedImagedWidth) / 2
 	maxY := (backgroundHeight - pastedImageHeight) / 2
 
-	rand.Seed(time.Now().UnixNano())
-	movedX := rand.Intn(2*maxX+1) - maxX
-	movedY := rand.Intn(2*maxY+1) - maxY
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	movedX := random.Intn(2*maxX+1) - maxX
+	movedY := random.Intn(2*maxY+1) - maxY
 
 	bgImageCenterX, bgImageCenterY := backgroundWidth/2, backgroundHeight/2
 	pastedImageCenterX, pastedImageCenterY := pastedImagedWidth/2, pastedImageHeight/2

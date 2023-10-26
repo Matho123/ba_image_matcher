@@ -1,10 +1,9 @@
-package image_handling
+package image_analyzer
 
 import (
 	"image"
 	"image/color"
 	"image/draw"
-	"math/bits"
 	"sort"
 
 	"gonum.org/v1/gonum/dsp/fourier"
@@ -117,8 +116,4 @@ func computeHash(lowFreqDCT mat.Matrix, median float64) uint64 {
 		}
 	}
 	return hash
-}
-
-func calculateHammingDistance(hash1, hash2 uint64) int {
-	return bits.OnesCount64(hash1 ^ hash2)
 }

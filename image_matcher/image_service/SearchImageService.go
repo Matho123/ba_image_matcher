@@ -1,9 +1,9 @@
-package service
+package image_service
 
 import (
 	"database/sql"
 	"fmt"
-	"image_matcher/image-handling"
+	"image_matcher/image_handling"
 	"log"
 )
 

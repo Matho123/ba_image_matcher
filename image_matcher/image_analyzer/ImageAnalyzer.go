@@ -1,9 +1,10 @@
-package image_handling
+package image_analyzer
 
 import (
 	"gocv.io/x/gocv"
 	"image"
 	"image/color"
+	"image_matcher/image_handling"
 	"time"
 )
 
@@ -69,8 +70,8 @@ func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer *FeatureBase
 	gocv.Mat,
 	time.Duration,
 ) {
-	blackBgMat := ConvertImageToMat(img, color.RGBA{A: 255})
-	whiteBgMat := ConvertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	blackBgMat := image_handling.ConvertImageToMat(img, color.RGBA{A: 255})
+	whiteBgMat := image_handling.ConvertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 
 	var finalKeypoints []gocv.KeyPoint
 	var finalExtractionTime time.Duration

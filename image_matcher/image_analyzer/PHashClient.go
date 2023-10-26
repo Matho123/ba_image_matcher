@@ -1,4 +1,4 @@
-package client
+package image_analyzer
 
 import (
 	"bytes"
@@ -33,7 +33,7 @@ func GetPHashValue(image image.Image) (uint64, float64) {
 		log.Fatal("Error while sending request: ", err)
 	}
 
-	var hashDTO PHash
+	var hashDTO PHashDTO
 	err = json.Unmarshal(responseBody, &hashDTO)
 	if err != nil {
 		log.Fatal("Error while trying to unmarshal responsebody: ", err)
@@ -49,7 +49,7 @@ func GetPHashValue(image image.Image) (uint64, float64) {
 	return uIntHash, hashDTO.Runtime
 }
 
-type PHash struct {
+type PHashDTO struct {
 	Hash string `json:"hash"`
 	//runtime in seconds
 	Runtime float64 `json:"runtime"`

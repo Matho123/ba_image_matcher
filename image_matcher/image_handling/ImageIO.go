@@ -60,16 +60,16 @@ func GetFilePathsFromDirectory(directoryPath string) []string {
 }
 
 func LoadImagesFromDirectory(filePaths []string) []*RawImage {
-	var rawImageDtos []*RawImage
+	var rawImage []*RawImage
 
 	for _, path := range filePaths {
 		rawImageDto := LoadRawImage(path)
 		if rawImageDto != nil {
-			rawImageDtos = append(rawImageDtos, rawImageDto)
+			rawImage = append(rawImage, rawImageDto)
 		}
 	}
 
-	return rawImageDtos
+	return rawImage
 }
 
 func LoadRawImage(path string) *RawImage {
@@ -77,7 +77,7 @@ func LoadRawImage(path string) *RawImage {
 		return nil
 	}
 
-	img := LoadImageFromDisk(path)
+	img := loadImageFromDisk(path)
 
 	filenameWithExt := filepath.Base(path)
 	filenameWithoutExt := strings.TrimSuffix(filenameWithExt, filepath.Ext(filenameWithExt))
@@ -85,7 +85,7 @@ func LoadRawImage(path string) *RawImage {
 	return &RawImage{ExternalReference: filenameWithoutExt, Data: *img}
 }
 
-func LoadImageFromDisk(path string) *image.Image {
+func loadImageFromDisk(path string) *image.Image {
 	file, err := os.Open(path)
 	if err != nil {
 		log.Fatal("Error opening the image: ", err)

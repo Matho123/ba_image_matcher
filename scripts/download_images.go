@@ -1,11 +1,13 @@
-package client
+package main
 
 import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 type ImageList struct {
@@ -14,6 +16,25 @@ type ImageList struct {
 
 type Design struct {
 	Id string `json:"id"`
+}
+
+func main() {
+	targetDirectory := os.Args[1]
+	if targetDirectory == "" {
+		log.Fatal("no target directory selected")
+	}
+
+	directoryInfo, err := os.Stat(targetDirectory)
+	if err != nil || !directoryInfo.IsDir() {
+		log.Fatal("target directory is not a valid")
+	}
+
+	designs := GetDownloadableImageIds()
+
+	for _, design := range designs {
+		DownloadImageFromUrl(targetDirectory, design.Id)
+		time.Sleep(3 * time.Second) //space out requests to not overload the server
+	}
 }
 
 func GetDownloadableImageIds() []Design {
@@ -41,7 +62,7 @@ func GetDownloadableImageIds() []Design {
 	return imageList.Designs
 }
 
-func DownloadImageFromUrl(id string) {
+func DownloadImageFromUrl(targetDirectory string, id string) {
 	imageUrl := fmt.Sprintf("https://image.spreadshirtmedia.com/image-server/v1/designs/%s?width=1000", id)
 
 	response, err := http.Get(imageUrl)
@@ -56,7 +77,7 @@ func DownloadImageFromUrl(id string) {
 		return
 	}
 
-	outputFile, err := os.Create("images/originals/" + id + ".png")
+	outputFile, err := os.Create(targetDirectory + "/" + id + ".png")
 	if err != nil {
 		fmt.Println("Error creating output file:", err)
 		return

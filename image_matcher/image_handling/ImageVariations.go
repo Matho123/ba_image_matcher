@@ -60,8 +60,8 @@ func GenerateUniqueVariation(originalImage *RawImage, modifier string) *ImageVar
 func GenerateMixedVariation(originalImage *RawImage) *ImageVariation {
 	shuffledModifiers := shuffleArray(MODIFIERS)
 
-	rand.Seed(time.Now().UnixNano())
-	modifierAmount := rand.Intn(4)
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	modifierAmount := random.Intn(4)
 
 	modifiedImage := &originalImage.Data
 	modificationInfo := ""

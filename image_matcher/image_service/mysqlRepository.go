@@ -1,4 +1,4 @@
-package service
+package image_service
 
 import (
 	"database/sql"

@@ -1,20 +1,21 @@
-package service
+package image_service
 
 import (
 	"errors"
 	"fmt"
 	"gocv.io/x/gocv"
 	"image/color"
-	"image_matcher/client"
-	"image_matcher/image-handling"
+	"image_matcher/image_analyzer"
+	"image_matcher/image_handling"
+	"image_matcher/image_matching"
 	"log"
 	"time"
 )
 
 var descriptorMapping = map[string]string{
-	image_handling.SIFT:  "sift_descriptor",
-	image_handling.ORB:   "orb_descriptor",
-	image_handling.BRISK: "brisk_descriptor",
+	image_analyzer.SIFT:  "sift_descriptor",
+	image_analyzer.ORB:   "orb_descriptor",
+	image_analyzer.BRISK: "brisk_descriptor",
 }
 
 const MaxChunkSize = 50
@@ -28,15 +29,15 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 
 	for _, rawImage := range rawImages {
 
-		sift := image_handling.ANALYZER_MAPPING[image_handling.SIFT]
-		_, siftDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &sift)
+		sift := image_analyzer.ANALYZER_MAPPING[image_analyzer.SIFT]
+		_, siftDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &sift)
 
-		orb := image_handling.ANALYZER_MAPPING[image_handling.ORB]
-		_, orbDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &orb)
+		orb := image_analyzer.ANALYZER_MAPPING[image_analyzer.ORB]
+		_, orbDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &orb)
 
-		brisk := image_handling.ANALYZER_MAPPING[image_handling.BRISK]
-		_, briskDesc, _ := image_handling.ExtractKeypointsAndDescriptors(&rawImage.Data, &brisk)
-		pHash, _ := client.GetPHashValue(rawImage.Data)
+		brisk := image_analyzer.ANALYZER_MAPPING[image_analyzer.BRISK]
+		_, briskDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &brisk)
+		pHash, _ := image_analyzer.GetPHashValue(rawImage.Data)
 
 		err := insertImageIntoDatabaseSet(
 			databaseConnection,
@@ -76,7 +77,7 @@ func MatchAgainstDatabaseFeatureBased(
 
 	var totalMatchingTime time.Duration
 
-	_, searchImageDescriptor, extractionTime := image_handling.ExtractKeypointsAndDescriptors(
+	_, searchImageDescriptor, extractionTime := image_analyzer.ExtractKeypointsAndDescriptors(
 		&searchImage.Data,
 		imageAnalyzer,
 	)
@@ -112,7 +113,7 @@ func MatchAgainstDatabaseFeatureBased(
 			totalMatchingTime += time.Since(matchingStart)
 			databaseImageDescriptor.Close()
 
-			isMatch, _, _ := image_handling.DetermineSimilarity(matches, similarityThreshold, debug)
+			isMatch, _, _ := image_matching.DetermineSimilarity(matches, similarityThreshold, debug)
 			if isMatch {
 				matchedImages = append(matchedImages, databaseImage.externalReference)
 			}
@@ -142,7 +143,7 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 
 	var totalMatchingTime time.Duration
 
-	searchImageHash, extractionTime := client.GetPHashValue(searchImage.Data)
+	searchImageHash, extractionTime := image_analyzer.GetPHashValue(searchImage.Data)
 
 	var matchedImages []string
 
@@ -159,7 +160,7 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 			}
 
 			isMatch, matchingTime :=
-				image_handling.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance, debug)
+				image_matching.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance, debug)
 			totalMatchingTime += matchingTime
 
 			if isMatch {
@@ -183,9 +184,9 @@ func AnalyzeAndMatchTwoImages(
 	similarityThreshold float64,
 	debug bool,
 ) (bool, []gocv.KeyPoint, []gocv.KeyPoint, time.Duration, time.Duration, error) {
-	if analyzer == image_handling.PHASH {
-		hash1, extractionTime1 := client.GetPHashValue(image1.Data)
-		hash2, extractionTime2 := client.GetPHashValue(image2.Data)
+	if analyzer == image_analyzer.PHASH {
+		hash1, extractionTime1 := image_analyzer.GetPHashValue(image1.Data)
+		hash2, extractionTime2 := image_analyzer.GetPHashValue(image2.Data)
 		extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
 
 		log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash1, hash2))
@@ -199,7 +200,7 @@ func AnalyzeAndMatchTwoImages(
 		//	),
 		//)
 
-		imagesAreMatch, matchingTime := image_handling.HashesAreMatch(hash1, hash2, 4, true)
+		imagesAreMatch, matchingTime := image_matching.HashesAreMatch(hash1, hash2, 4, true)
 
 		return imagesAreMatch, []gocv.KeyPoint{}, []gocv.KeyPoint{}, extractionTime, matchingTime, nil
 	}
@@ -210,16 +211,16 @@ func AnalyzeAndMatchTwoImages(
 		return false, nil, nil, 0, 0, err
 	}
 
-	keypoints1, imageDescriptors1, time1 := image_handling.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
+	keypoints1, imageDescriptors1, time1 := image_analyzer.ExtractKeypointsAndDescriptors(&image1.Data, imageAnalyzer)
 	defer imageDescriptors1.Close()
-	keypoints2, imageDescriptors2, time2 := image_handling.ExtractKeypointsAndDescriptors(&image2.Data, imageAnalyzer)
+	keypoints2, imageDescriptors2, time2 := image_analyzer.ExtractKeypointsAndDescriptors(&image2.Data, imageAnalyzer)
 	defer imageDescriptors2.Close()
 	extractionTime := time1 + time2
 
 	startTimeMatching := time.Now()
 	matches := (*imageMatcher).FindMatches(&imageDescriptors1, &imageDescriptors2)
 
-	imagesAreMatch, _, bestMatches := image_handling.DetermineSimilarity(matches, similarityThreshold, true)
+	imagesAreMatch, _, bestMatches := image_matching.DetermineSimilarity(matches, similarityThreshold, true)
 	matchingTime := time.Since(startTimeMatching)
 
 	if debug {
@@ -231,9 +232,9 @@ func AnalyzeAndMatchTwoImages(
 	return imagesAreMatch, keypoints1, keypoints2, extractionTime, matchingTime, nil
 }
 
-func getAnalyzerAndMatcher(analyzer, matcher string) (*image_handling.FeatureBasedImageAnalyzer, *image_handling.FeatureBasedImageMatcher, error) {
-	imageAnalyzer := image_handling.ANALYZER_MAPPING[analyzer]
-	imageMatcher := image_handling.MATCHER_MAPPING[matcher]
+func getAnalyzerAndMatcher(analyzer, matcher string) (*image_analyzer.FeatureBasedImageAnalyzer, *image_matching.FeatureBasedImageMatcher, error) {
+	imageAnalyzer := image_analyzer.ANALYZER_MAPPING[analyzer]
+	imageMatcher := image_matching.MATCHER_MAPPING[matcher]
 
 	if imageAnalyzer == nil || imageMatcher == nil {
 		return nil, nil, errors.New("couldn't find analyzer or matcher")
