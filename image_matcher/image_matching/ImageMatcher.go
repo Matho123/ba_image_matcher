@@ -48,6 +48,24 @@ func (flann *FLANNBasedMatcher) FindMatches(imageDescriptors1 *gocv.Mat, imageDe
 	return flann.matcher.KnnMatch(*imageDescriptors1, *imageDescriptors2, k)
 }
 
+func FindHashMatchesPerThreshold(hash1 uint64, hash2 uint64, thresholds *[]int) (map[int]bool, time.Duration) {
+	thresholdMap := make(map[int]bool)
+
+	amountOfThresholds := len(*thresholds)
+	var finalMatchingTime time.Duration
+
+	for i := 0; i < amountOfThresholds; i++ {
+		threshold := (*thresholds)[i]
+		isMatch, matchingTime := HashesAreMatch(hash1, hash2, threshold, false)
+		thresholdMap[threshold] = isMatch
+
+		if i == amountOfThresholds-1 {
+			finalMatchingTime = matchingTime
+		}
+	}
+	return thresholdMap, finalMatchingTime
+}
+
 func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bool, time.Duration) {
 	matchingStart := time.Now()
 	hammingDistance := calculateHammingDistance(hash1, hash2)

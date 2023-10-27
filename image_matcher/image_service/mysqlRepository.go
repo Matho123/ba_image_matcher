@@ -175,7 +175,8 @@ func retrieveChunkFromSearchSet(
 	databaseConnection *sql.DB,
 	scenario string,
 	offset int,
-	limit int) ([]SearchImageEntity, error) {
+	limit int,
+) ([]SearchImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		"SELECT * FROM search_image WHERE scenario = ? LIMIT ? OFFSET ?",
 		scenario,

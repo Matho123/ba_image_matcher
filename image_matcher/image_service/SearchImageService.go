@@ -18,37 +18,37 @@ const (
 	MIXED      = "mixed"
 )
 
-var SCENARIOS = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
+var Scenarios = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
 
 func GetSearchImages(scenario string) *[]SearchImageEntity {
-	databaseConnection, err := openDatabaseConnection()
+	var searchSetImages []SearchImageEntity
+
+	err := applyDatabaseOperation(func(databaseConnection *sql.DB) {
+		offset := 0
+		for {
+			retrievedImages, err := retrieveChunkFromSearchSet(
+				databaseConnection,
+				scenario,
+				offset,
+				maxChunkSize+1,
+			)
+			if err != nil {
+				log.Println("Error while retrieving chunk from search images: ", err)
+			}
+
+			searchSetImages = append(searchSetImages, retrievedImages...)
+
+			if len(retrievedImages) < maxChunkSize+1 {
+				break
+			}
+			offset += maxChunkSize
+		}
+	})
 	if err != nil {
 		log.Println("Error while retrieving chunk from search images: ", err)
 		return nil
 	}
-	defer databaseConnection.Close()
 
-	var searchSetImages []SearchImageEntity
-
-	offset := 0
-	for {
-		retrievedImages, err := retrieveChunkFromSearchSet(
-			databaseConnection,
-			scenario,
-			offset,
-			MaxChunkSize+1,
-		)
-		if err != nil {
-			log.Println("Error while retrieving chunk from search images: ", err)
-		}
-
-		searchSetImages = append(searchSetImages, retrievedImages...)
-
-		if len(retrievedImages) < MaxChunkSize+1 {
-			break
-		}
-		offset += MaxChunkSize
-	}
 	return &searchSetImages
 }
 
@@ -89,7 +89,7 @@ func GenerateAndInsertUniqueSearchImages(originalImage *image_handling.RawImage)
 	}
 	defer databaseConnection.Close()
 
-	for _, scenario := range SCENARIOS {
+	for _, scenario := range Scenarios {
 		var variation *image_handling.ImageVariation
 		if scenario == MIXED {
 			variation = image_handling.GenerateMixedVariation(originalImage)

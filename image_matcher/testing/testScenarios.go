@@ -37,7 +37,7 @@ func runAllForEachAlgorithm([]string) {
 }
 
 func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
-	for _, scenario := range image_service.SCENARIOS {
+	for _, scenario := range image_service.Scenarios {
 		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, false)
 	}
 }
