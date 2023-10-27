@@ -53,56 +53,54 @@ func GetSearchImages(scenario string) *[]SearchImageEntity {
 }
 
 func InsertDuplicateSearchImage(variations *[]image_handling.ImageVariation, originalReference string, scenario string) {
-	databaseConnection, err := openDatabaseConnection()
+	var externalReference = fmt.Sprintf("%s-%s", originalReference, scenario)
+	var err error
+
+	err = applyDatabaseOperation(func(databaseConnection *sql.DB) {
+		for _, variation := range *variations {
+			imageReference := externalReference + "-" + variation.ModificationInfo
+
+			image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.ModifiedImage)
+
+			err = insertImageIntoSearchSet(
+				databaseConnection,
+				SearchImageCreation{
+					externalReference: imageReference,
+					originalReference: originalReference,
+					scenario:          scenario,
+					modificationInfo:  variation.ModificationInfo,
+				},
+			)
+			if err != nil {
+				log.Println("failed to insert ", externalReference, err)
+			}
+		}
+	})
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
 	}
-	defer databaseConnection.Close()
-
-	var externalReference = fmt.Sprintf("%s-%s", originalReference, scenario)
-
-	for _, variation := range *variations {
-		imageReference := externalReference + "-" + variation.ModificationInfo
-
-		image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.ModifiedImage)
-
-		err = insertImageIntoSearchSet(
-			databaseConnection,
-			SearchImageCreation{
-				externalReference: imageReference,
-				originalReference: originalReference,
-				scenario:          scenario,
-				modificationInfo:  variation.ModificationInfo,
-			},
-		)
-		if err != nil {
-			log.Println("failed to insert ", externalReference, err)
-		}
-	}
-
 }
 
 func GenerateAndInsertUniqueSearchImages(originalImage *image_handling.RawImage) {
-	databaseConnection, err := openDatabaseConnection()
+	err := applyDatabaseOperation(func(databaseConnection *sql.DB) {
+		for _, scenario := range Scenarios {
+			var variation *image_handling.ImageVariation
+			if scenario == MIXED {
+				variation = image_handling.GenerateMixedVariation(originalImage)
+			} else {
+				variation = image_handling.GenerateUniqueVariation(originalImage, scenario)
+			}
+
+			insertUniqueSearchImage(
+				databaseConnection,
+				variation,
+				originalImage.ExternalReference,
+				scenario,
+			)
+		}
+	})
 	if err != nil {
 		log.Println("Failed to open db for searchImages: ", err)
-	}
-	defer databaseConnection.Close()
-
-	for _, scenario := range Scenarios {
-		var variation *image_handling.ImageVariation
-		if scenario == MIXED {
-			variation = image_handling.GenerateMixedVariation(originalImage)
-		} else {
-			variation = image_handling.GenerateUniqueVariation(originalImage, scenario)
-		}
-
-		insertUniqueSearchImage(
-			databaseConnection,
-			variation,
-			originalImage.ExternalReference,
-			scenario,
-		)
 	}
 }
 

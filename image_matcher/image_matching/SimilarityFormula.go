@@ -6,6 +6,18 @@ import (
 	"log"
 )
 
+func FindDescriptorMatchesPerThreshold(
+	matches [][]gocv.DMatch, matchedPerThreshold *map[float64][]string, originalReference string,
+) {
+	for threshold, matchedImages := range *matchedPerThreshold {
+		isMatch, _, _ := DetermineSimilarity(matches, threshold, false)
+		if isMatch {
+			matchedImages = append(matchedImages, originalReference)
+			(*matchedPerThreshold)[threshold] = matchedImages
+		}
+	}
+}
+
 func DetermineSimilarity(matches [][]gocv.DMatch, similarityThreshold float64, debug bool) (
 	bool,
 	float64,

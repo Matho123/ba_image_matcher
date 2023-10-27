@@ -3,3 +3,4 @@ image-matcher.iml
 .idea
 /images/
 /debug/
+/test-output/csv-files/old/

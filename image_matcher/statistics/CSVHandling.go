@@ -3,6 +3,7 @@ package statistics
 import (
 	"encoding/csv"
 	"fmt"
+	"image_matcher/image_analyzer"
 	"log"
 	"os"
 	"strconv"
@@ -10,6 +11,7 @@ import (
 )
 
 type SearchImagePHashEval struct {
+	Threshold         int
 	ExternalReference string
 	ClassEval         string
 	ExtractionTime    string
@@ -17,6 +19,7 @@ type SearchImagePHashEval struct {
 }
 
 type SearchImageFeatureBasedEval struct {
+	Threshold           int
 	ExternalReference   string
 	ClassEval           string
 	NumberOfDescriptors int
@@ -51,13 +54,19 @@ func WriteOverallEvalToCSV(
 			matchingTime.String(),
 		},
 	}
+	var filename string
+	if analyzer == image_analyzer.PHASH {
+		filename = fmt.Sprintf("%s/%s-overall-evaluation", analyzer, scenario)
+	} else {
+		filename = fmt.Sprintf("%s/%s-%s-overall-evaluation", analyzer, matcher, scenario)
+	}
 	appendToCSV(
-		fmt.Sprintf("%s/%s-%s-overall-evaluation", scenario, analyzer, matcher),
+		filename,
 		&data,
 	)
 }
 
-func WritePHashImageEvalToCSV(scenario string, threshold string, imageEvaluations *[]SearchImagePHashEval) {
+func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePHashEval) {
 	data := [][]string{
 		{"image reference", "classification", "extraction time", "matching time"},
 	}
@@ -72,14 +81,13 @@ func WritePHashImageEvalToCSV(scenario string, threshold string, imageEvaluation
 			},
 		)
 	}
-	writeNewCSV(fmt.Sprintf("%s/phash-%s-detail-evaluation", scenario, threshold), &data)
+	appendToCSV(fmt.Sprintf("phash/%s-detail-evaluation", scenario), &data)
 }
 
 func WriteFeatureBasedImageEvalToCSV(
 	scenario string,
 	analyzer string,
 	matcher string,
-	threshold string,
 	imageEvaluations *[]SearchImageFeatureBasedEval,
 ) {
 	data := [][]string{
@@ -103,28 +111,10 @@ func WriteFeatureBasedImageEvalToCSV(
 			},
 		)
 	}
-	writeNewCSV(
-		fmt.Sprintf("%s/%s-%s-%s-detail-evaluation", scenario, analyzer, matcher, threshold),
+	appendToCSV(
+		fmt.Sprintf("%s/%s-%s-detail-evaluation", analyzer, scenario, matcher),
 		&data,
 	)
-}
-
-func writeNewCSV(fileName string, data *[][]string) {
-	file, err := os.Create("test-output/csv-files/" + fileName + ".csv")
-	if err != nil {
-		log.Fatal("Error writing csv", err)
-	}
-	defer file.Close()
-
-	csvWriter := csv.NewWriter(file)
-	defer csvWriter.Flush()
-
-	for _, row := range *data {
-		err := csvWriter.Write(row)
-		if err != nil {
-			log.Println("Error writing row in csv: ", err)
-		}
-	}
 }
 
 func appendToCSV(fileName string, data *[][]string) {
@@ -132,10 +122,19 @@ func appendToCSV(fileName string, data *[][]string) {
 	_, err := os.Stat(filePath)
 
 	fileExists := err == nil
+	err = nil
 
-	file, err := os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
-	if err != nil {
-		log.Fatal("Error writing csv", err)
+	var file *os.File
+	if fileExists {
+		file, err = os.OpenFile(filePath, os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0666)
+		if err != nil {
+			log.Fatal("Error writing csv", err)
+		}
+	} else {
+		file, err = os.Create("test-output/csv-files/" + fileName + ".csv")
+		if err != nil {
+			log.Fatal("Error writing csv", err)
+		}
 	}
 	defer file.Close()
 
