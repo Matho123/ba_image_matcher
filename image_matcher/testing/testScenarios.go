@@ -4,21 +4,20 @@ import (
 	"fmt"
 	"image_matcher/image_analyzer"
 	"image_matcher/image_handling"
-	"image_matcher/image_matching"
 	"image_matcher/image_service"
 	"image_matcher/statistics"
 	"log"
 	"time"
 )
 
-var FEATURE_BASE_THRESHOLDS = []float64{0.2, 0.3, 0.4, 0.5, 0.6, 0.7}
+var featureBaseThresholds = []float64{0.2, 0.3, 0.4, 0.5, 0.6, 0.7}
 
-var PHASH_THRESHOLDS = []float64{4, 8, 12, 16, 20, 24}
+var phashThresholds = []float64{4, 8, 12, 16, 20, 24}
 
 func runAllForEachAlgorithm([]string) {
-	//for _, threshold := range PHASH_THRESHOLDS {
-	//	runAllScenarios(image_handling.PHASH, "", threshold)
-	//}
+	for _, threshold := range phashThresholds {
+		runAllScenarios(image_handling.PHASH, "", threshold)
+	}
 
 	/*	for _, threshold := range FEATURE_BASE_THRESHOLDS {
 			//runAllScenarios(image_handling.BRISK, image_handling.BFMatcher, threshold)
@@ -30,10 +29,10 @@ func runAllForEachAlgorithm([]string) {
 			runFeatureBasedScenario(image_service.MIXED, image_analyzer.SIFT, image_matching.FlannMatcher, threshold, false)
 		}*/
 
-	for _, threshold := range FEATURE_BASE_THRESHOLDS {
+	/*	for _, threshold := range FEATURE_BASE_THRESHOLDS {
 		//runAllScenarios(image_handling.ORB, image_handling.BFMatcher, threshold)
 		runFeatureBasedScenario(image_service.MIXED, image_analyzer.ORB, image_matching.FlannMatcher, threshold, false)
-	}
+	}*/
 }
 
 func runAllScenarios(analyzingAlgorithm string, matchingAlgorithm string, threshold float64) {
