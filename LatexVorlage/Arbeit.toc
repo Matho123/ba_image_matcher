@@ -46,16 +46,19 @@
 \contentsline {section}{\numberline {5.4}Umsetzung}{25}{section.5.4}%
 \contentsline {chapter}{\numberline {6}Versuche und Auswertung}{26}{chapter.6}%
 \contentsline {section}{\numberline {6.1}Evaluation des Baseline-Algorithmus}{26}{section.6.1}%
-\contentsline {section}{\numberline {6.2}Evaluation der feature-based Algorithmen}{26}{section.6.2}%
-\contentsline {chapter}{\numberline {7}Neues Bilderkennungs-System}{27}{chapter.7}%
-\contentsline {section}{\numberline {7.1}Vor\"uberlegung}{27}{section.7.1}%
-\contentsline {section}{\numberline {7.2}Entwurf und Umsetzung}{28}{section.7.2}%
-\contentsline {section}{\numberline {7.3}Auswertung}{28}{section.7.3}%
-\contentsline {chapter}{\numberline {8}Schluss}{29}{chapter.8}%
-\contentsline {section}{\numberline {8.1}Fazit}{29}{section.8.1}%
-\contentsline {section}{\numberline {8.2}Diskussion}{29}{section.8.2}%
-\contentsline {section}{\numberline {8.3}Ausblick}{29}{section.8.3}%
-\contentsline {chapter}{\nonumberline Literaturverzeichnis}{I}{chapter*.46}%
-\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{III}{chapter*.47}%
-\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{IV}{chapter*.48}%
+\contentsline {section}{\numberline {6.2}Evaluation der feature-based Algorithmen}{30}{section.6.2}%
+\contentsline {section}{\numberline {6.3}Evaluation SIFT}{30}{section.6.3}%
+\contentsline {section}{\numberline {6.4}Evaluation ORB}{31}{section.6.4}%
+\contentsline {section}{\numberline {6.5}Evaluation BRISK}{32}{section.6.5}%
+\contentsline {chapter}{\numberline {7}Neues Bilderkennungs-System}{33}{chapter.7}%
+\contentsline {section}{\numberline {7.1}Vor\"uberlegung}{33}{section.7.1}%
+\contentsline {section}{\numberline {7.2}Entwurf und Umsetzung}{34}{section.7.2}%
+\contentsline {section}{\numberline {7.3}Auswertung}{34}{section.7.3}%
+\contentsline {chapter}{\numberline {8}Schluss}{35}{chapter.8}%
+\contentsline {section}{\numberline {8.1}Fazit}{35}{section.8.1}%
+\contentsline {section}{\numberline {8.2}Diskussion}{35}{section.8.2}%
+\contentsline {section}{\numberline {8.3}Ausblick}{35}{section.8.3}%
+\contentsline {chapter}{\nonumberline Literaturverzeichnis}{I}{chapter*.51}%
+\contentsline {chapter}{\nonumberline Abbildungsverzeichnis}{III}{chapter*.52}%
+\contentsline {chapter}{\nonumberline Tabellenverzeichnis}{IV}{chapter*.53}%
 \providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

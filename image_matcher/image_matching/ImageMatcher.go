@@ -7,14 +7,14 @@ import (
 	"time"
 )
 
-const DISTANCE_RATIO_THRESHOLD = 0.8
+const DistanceRatioThreshold = 0.8
 
-const BRUTE_FORCE_MATCHER = "bfm"
-const FLANN_BASED_MATCHER = "flann"
+const BFMatcher = "bfm"
+const FlannMatcher = "flann"
 
-var MATCHER_MAPPING = map[string]FeatureBasedImageMatcher{
-	BRUTE_FORCE_MATCHER: &BruteForceMatcher{gocv.NewBFMatcher()},
-	FLANN_BASED_MATCHER: &FLANNBasedMatcher{gocv.NewFlannBasedMatcher()},
+var MatcherMapping = map[string]FeatureBasedImageMatcher{
+	BFMatcher:    &BruteForceMatcher{gocv.NewBFMatcher()},
+	FlannMatcher: &FLANNBasedMatcher{gocv.NewFlannBasedMatcher()},
 }
 
 type FeatureBasedImageMatcher interface {

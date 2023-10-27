@@ -62,7 +62,7 @@ func filterMatches(matches *[][]gocv.DMatch) (*[]gocv.DMatch, float64) {
 		firstBestMatchDistance := firstBestMatch.Distance
 		secondBestMatchDistance := secondBestMatch.Distance
 
-		if firstBestMatchDistance < DISTANCE_RATIO_THRESHOLD*secondBestMatchDistance {
+		if firstBestMatchDistance < DistanceRatioThreshold*secondBestMatchDistance {
 			filteredMatches = append(filteredMatches, firstBestMatch)
 
 			if firstBestMatchDistance > maxDist {

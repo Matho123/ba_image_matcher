@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-var descriptorMapping = map[string]string{
+var DescriptorMapping = map[string]string{
 	image_analyzer.SIFT:  "sift_descriptor",
 	image_analyzer.ORB:   "orb_descriptor",
 	image_analyzer.BRISK: "brisk_descriptor",
@@ -29,13 +29,13 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 
 	for _, rawImage := range rawImages {
 
-		sift := image_analyzer.ANALYZER_MAPPING[image_analyzer.SIFT]
+		sift := image_analyzer.AnalyzerMapping[image_analyzer.SIFT]
 		_, siftDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &sift)
 
-		orb := image_analyzer.ANALYZER_MAPPING[image_analyzer.ORB]
+		orb := image_analyzer.AnalyzerMapping[image_analyzer.ORB]
 		_, orbDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &orb)
 
-		brisk := image_analyzer.ANALYZER_MAPPING[image_analyzer.BRISK]
+		brisk := image_analyzer.AnalyzerMapping[image_analyzer.BRISK]
 		_, briskDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &brisk)
 		pHash, _ := image_analyzer.GetPHashValue(rawImage.Data)
 
@@ -88,7 +88,7 @@ func MatchAgainstDatabaseFeatureBased(
 	for {
 		databaseImageChunk, err := retrieveFeatureImageChunk(
 			databaseConnection,
-			descriptorMapping[analyzer],
+			DescriptorMapping[analyzer],
 			offset,
 			MaxChunkSize+1,
 		)
@@ -96,7 +96,7 @@ func MatchAgainstDatabaseFeatureBased(
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
 
-		for _, databaseImage := range *databaseImageChunk {
+		for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
 			if debug {
 				println("\nComparing to " + databaseImage.externalReference)
 			}
@@ -149,12 +149,12 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 
 	offset := 0
 	for {
-		databaseImages, err := retrievePHashImageChunk(databaseConnection, offset, MaxChunkSize+1)
+		databaseImageChunk, err := retrievePHashImageChunk(databaseConnection, offset, MaxChunkSize+1)
 		if err != nil {
 			log.Println("Error while retrieving chunk from database images: ", err)
 		}
 
-		for _, databaseImage := range databaseImages {
+		for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
 			if debug {
 				println("\nComparing to " + databaseImage.externalReference)
 			}
@@ -168,7 +168,7 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 			}
 		}
 
-		if len(databaseImages) < MaxChunkSize+1 {
+		if len(*databaseImageChunk) < MaxChunkSize+1 {
 			break
 		}
 		offset += MaxChunkSize
@@ -233,8 +233,8 @@ func AnalyzeAndMatchTwoImages(
 }
 
 func getAnalyzerAndMatcher(analyzer, matcher string) (*image_analyzer.FeatureBasedImageAnalyzer, *image_matching.FeatureBasedImageMatcher, error) {
-	imageAnalyzer := image_analyzer.ANALYZER_MAPPING[analyzer]
-	imageMatcher := image_matching.MATCHER_MAPPING[matcher]
+	imageAnalyzer := image_analyzer.AnalyzerMapping[analyzer]
+	imageMatcher := image_matching.MatcherMapping[matcher]
 
 	if imageAnalyzer == nil || imageMatcher == nil {
 		return nil, nil, errors.New("couldn't find analyzer or matcher")

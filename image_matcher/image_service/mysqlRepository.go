@@ -117,7 +117,7 @@ func retrieveFeatureImageChunk(
 func retrievePHashImageChunk(
 	databaseConnection *sql.DB,
 	offset int,
-	limit int) ([]PHashImageEntity, error) {
+	limit int) (*[]PHashImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		"SELECT external_reference, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
@@ -147,7 +147,7 @@ func retrievePHashImageChunk(
 
 		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
 	}
-	return imageEntityChunk, nil
+	return &imageEntityChunk, nil
 }
 
 func insertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage SearchImageCreation) error {

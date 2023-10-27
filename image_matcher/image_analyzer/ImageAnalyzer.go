@@ -13,7 +13,7 @@ const ORB = "orb"
 const BRISK = "brisk"
 const PHASH = "phash"
 
-var ANALYZER_MAPPING = map[string]FeatureBasedImageAnalyzer{
+var AnalyzerMapping = map[string]FeatureBasedImageAnalyzer{
 	SIFT:  &SiftImageAnalyzer{gocv.NewSIFT()},
 	ORB:   &ORBImageAnalyzer{gocv.NewORB()},
 	BRISK: &BRISKImageAnalyzer{gocv.NewBRISK()},
