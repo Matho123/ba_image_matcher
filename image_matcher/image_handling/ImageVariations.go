@@ -17,11 +17,11 @@ const (
 	PART       = "part"
 )
 
-var MODIFIERS = []string{SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART}
+var modifiers = []string{SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART}
 
-var SCALING_FACTORS = []int{2, 4, 10}
+var scalingFactors = []int{2, 4, 10}
 
-var ROTATION_ANGLES = []float64{5, 10, 45, 90, 180}
+var rotationAngles = []float64{5, 10, 45, 90, 180}
 
 type ImageVariation struct {
 	ModifiedImage    image.Image
@@ -58,7 +58,7 @@ func GenerateUniqueVariation(originalImage *RawImage, modifier string) *ImageVar
 }
 
 func GenerateMixedVariation(originalImage *RawImage) *ImageVariation {
-	shuffledModifiers := shuffleArray(MODIFIERS)
+	shuffledModifiers := shuffleArray(modifiers)
 
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	modifierAmount := random.Intn(4)
@@ -87,15 +87,15 @@ func modifyImage(originalImage *image.Image, modifier string) (*image.Image, str
 
 	switch modifier {
 	case SCALED:
-		randomIndex := random.Intn(len(SCALING_FACTORS))
-		scalingFactor := SCALING_FACTORS[randomIndex]
+		randomIndex := random.Intn(len(scalingFactors))
+		scalingFactor := scalingFactors[randomIndex]
 
 		scaled := ResizeImage(originalImage, scalingFactor)
 		return &scaled, strconv.Itoa(scalingFactor)
 
 	case ROTATED:
-		randomIndex := random.Intn(len(ROTATION_ANGLES))
-		angle := ROTATION_ANGLES[randomIndex]
+		randomIndex := random.Intn(len(rotationAngles))
+		angle := rotationAngles[randomIndex]
 
 		rotated := RotateImage(originalImage, angle)
 		return &rotated, fmt.Sprintf("%.0f", angle)
@@ -130,7 +130,7 @@ func modifyImage(originalImage *image.Image, modifier string) (*image.Image, str
 
 func generateAllScaledVariations(originalImage *image.Image) *[]ImageVariation {
 	var variations []ImageVariation
-	for _, scalingFactor := range SCALING_FACTORS {
+	for _, scalingFactor := range scalingFactors {
 		scaled := ResizeImage(originalImage, scalingFactor)
 		variations = append(
 			variations,
@@ -145,7 +145,7 @@ func generateAllScaledVariations(originalImage *image.Image) *[]ImageVariation {
 
 func generateAllRotatedVariations(originalImage *image.Image) *[]ImageVariation {
 	var variations []ImageVariation
-	for _, angle := range ROTATION_ANGLES {
+	for _, angle := range rotationAngles {
 		rotated := RotateImage(originalImage, angle)
 		variations = append(
 			variations,

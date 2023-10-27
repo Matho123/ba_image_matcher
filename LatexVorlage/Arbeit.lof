@@ -11,6 +11,11 @@
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Skizze Entwurf\relax }}{23}{figure.caption.45}%
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {6.1}{\ignorespaces Zuverl\"assigkeit des pHash Algorithmus in mehreren Szenarien\relax }}{26}{figure.caption.46}%
+\contentsline {figure}{\numberline {6.2}{\ignorespaces Zuverl\"assigkeit des pHash Algorithmus in mehreren Szenarien \"uber mehrere Grenzwerte f\"ur die Hamming-Distanz\relax }}{27}{figure.caption.47}%
+\contentsline {figure}{\numberline {6.3}{\ignorespaces Zuverl\"assigkeit des SIFT Algorithmus in mehreren Szenarien \"uber mehrere Grenzwerte f\"ur den Bild\"ahnlichkeits-Score\relax }}{30}{figure.caption.48}%
+\contentsline {figure}{\numberline {6.4}{\ignorespaces Zuverl\"assigkeit des ORB Algorithmus in mehreren Szenarien \"uber mehrere Grenzwerte f\"ur den Bild\"ahnlichkeits-Score\relax }}{31}{figure.caption.49}%
+\contentsline {figure}{\numberline {6.5}{\ignorespaces Zuverl\"assigkeit des BRISK Algorithmus in mehreren Szenarien \"uber mehrere Grenzwerte f\"ur den Bild\"ahnlichkeits-Score\relax }}{32}{figure.caption.50}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

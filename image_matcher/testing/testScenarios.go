@@ -21,18 +21,18 @@ func runAllForEachAlgorithm([]string) {
 	//}
 
 	/*	for _, threshold := range FEATURE_BASE_THRESHOLDS {
-			//runAllScenarios(image_handling.BRISK, image_handling.BRUTE_FORCE_MATCHER, threshold)
-			runFeatureBasedScenario(image_service.MIXED, image_analyzer.BRISK, image_matching.FLANN_BASED_MATCHER, threshold, false)
+			//runAllScenarios(image_handling.BRISK, image_handling.BFMatcher, threshold)
+			runFeatureBasedScenario(image_service.MIXED, image_analyzer.BRISK, image_matching.FlannMatcher, threshold, false)
 		}
 
 		for _, threshold := range FEATURE_BASE_THRESHOLDS {
-			//runAllScenarios(image_handling.SIFT, image_handling.BRUTE_FORCE_MATCHER, threshold)
-			runFeatureBasedScenario(image_service.MIXED, image_analyzer.SIFT, image_matching.FLANN_BASED_MATCHER, threshold, false)
+			//runAllScenarios(image_handling.SIFT, image_handling.BFMatcher, threshold)
+			runFeatureBasedScenario(image_service.MIXED, image_analyzer.SIFT, image_matching.FlannMatcher, threshold, false)
 		}*/
 
 	for _, threshold := range FEATURE_BASE_THRESHOLDS {
-		//runAllScenarios(image_handling.ORB, image_handling.BRUTE_FORCE_MATCHER, threshold)
-		runFeatureBasedScenario(image_service.MIXED, image_analyzer.ORB, image_matching.FLANN_BASED_MATCHER, threshold, false)
+		//runAllScenarios(image_handling.ORB, image_handling.BFMatcher, threshold)
+		runFeatureBasedScenario(image_service.MIXED, image_analyzer.ORB, image_matching.FlannMatcher, threshold, false)
 	}
 }
 

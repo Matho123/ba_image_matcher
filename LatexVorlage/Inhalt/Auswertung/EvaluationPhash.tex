@@ -2,3 +2,48 @@
 \label{sec:EvaluationPhash}
 
 
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.7]{Abbildungen/Evaluation/phash/standard}
+\caption{Zuverlässigkeit des pHash Algorithmus in mehreren Szenarien}
+\label{fig:phash-standard}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/identical}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/scaled}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/moved}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/background}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/rotated}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/mirrored}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/part}
+\includegraphics[scale=0.43]{Abbildungen/Evaluation/phash/mixed}
+\caption{Zuverlässigkeit des pHash Algorithmus in mehreren Szenarien über mehrere Grenzwerte für die Hamming-Distanz}
+\label{fig:phash-thresholds}
+\end{figure}
+
+In Abbildung \ref{fig:phash-standard} ist die Performance des pHash Algorithmus, der in der Spread Group eingesetzt wird, in den verschiedenen Szenarien zu sehen. 
+Für diese Tests wurde der Grenzwert für die Hamming-Distanz auf 4 festgelegt. 
+Dieser Grenzwert wird auch in der Spread Group verwendet.
+
+Bemerkenswert ist, dass die Spezifizität in allen Szenarien bei 100\% liegt. pHash ist sehr gut darin falsch-positiv Bewertungen zu vermeiden. 
+Ein Unikat im Suchsatz wurde in Tests also niemals fälschlicherweise als Duplikat erkannt. 
+
+Was den Recall angeht, performt pHash besonders gut bei identischen, skalierten und verschobenen Kopien. 
+In diesen Fällen werden die meisten Duplikate richtig erkannt. 
+In allen anderen Szenarien hat pHash große Schwierigkeiten Duplikate zu erkennen. 
+
+Die hohe Zuverlässigkeit beim erkennen von verschoben Duplikaten, lässt sich darauf zurückführen, dass fast alle Bilder im Suchsatz für dieses Szenario einen transparenten Hintergrund haben. 
+Bilder mit transparenten werden von pHash auf die Größe ihres Motivs zugeschnitten. 
+Dadurch geht die Verschiebung verloren und Duplikate können einfach erkannt werden.
+Einzelne Testbilder mit opaken Hintergrund haben ergeben, dass pHash Schwierigkeiten hat Duplikate mit großen Verschiebungen zu erkennen. 
+
+Der pHash Algorithmus wurde außerdem für höhere Grenzwerte bei der Hamming-Distanz getestet (siehe Abbildung \ref{fig:phash-thresholds}). 
+Grenzwerte bis zu 8 erhöhen den Recall mit geringen einbußen bei der Spezifizität. Für Grenzwerte bis 16 steigt der Recall noch weiter, allerdings mit höherer Belastung der Spezifizität. 
+Besonders die Szenarien mit Duplikaten mit geänderte Rotation der Motvie und geänderter Hintergrundfarbe profiteren von dem erhöhten Grenzwert.
+
+Bei Grenzwerten größer als 16 nimmt die Reduktion der Spezifizität stark zu. 
+
+
+
