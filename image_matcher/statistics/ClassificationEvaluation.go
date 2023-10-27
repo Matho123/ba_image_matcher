@@ -20,7 +20,6 @@ func (c *ClassificationEvaluation) BalancedAccuracy() float64 {
 
 func (c *ClassificationEvaluation) EvaluateClassification(matchedRefs *[]string, originalRef *string) string {
 	amountMatched := len(*matchedRefs)
-	println(amountMatched, *originalRef, containsOriginalRef(matchedRefs, originalRef))
 	if *originalRef == "" && amountMatched > 0 {
 		c.FP++
 		return "false-positive"

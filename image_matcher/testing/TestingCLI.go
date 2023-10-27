@@ -19,7 +19,7 @@ var CommandMapping = map[string]func([]string){
 	"match":    matchToDatabase,
 	"scenario": runScenario,
 	"populate": populateDatabase,
-	"runAll":   runAllForEachAlgorithm,
+	"runAll":   runAllScenariosPerAlgorithm,
 }
 
 func registerImages(arguments []string) {
@@ -143,8 +143,8 @@ func runScenario(arguments []string) {
 	}
 
 	if scenario == "all" {
-		runAllScenarios(analyzingAlgorithm, matchingAlgorithm, threshold)
+		runAllScenarios(analyzingAlgorithm, matchingAlgorithm, &[]float64{threshold})
 	} else {
-		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, threshold, debug)
+		runSingleScenario(scenario, analyzingAlgorithm, matchingAlgorithm, &[]float64{threshold}, debug)
 	}
 }

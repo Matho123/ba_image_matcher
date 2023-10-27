@@ -51,6 +51,36 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 	return err
 }
 
+func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHammingDistance int, debug bool) (
+	*[]string,
+	error,
+	time.Duration,
+	time.Duration,
+) {
+	var totalMatchingTime time.Duration
+	searchImageHash, extractionTime := image_analyzer.GetPHashValue(searchImage.Data)
+	var matchedImages []string
+
+	err := applyChunkedPHashRetrievalOperation(func(databaseImage PHashImageEntity) {
+		if debug {
+			println("\nComparing to " + databaseImage.externalReference)
+		}
+		isMatch, matchingTime :=
+			image_matching.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance, debug)
+		totalMatchingTime += matchingTime
+
+		if isMatch {
+			matchedImages = append(matchedImages, databaseImage.externalReference)
+		}
+	})
+
+	if err != nil {
+		return nil, err, time.Duration(0), time.Duration(0)
+	}
+
+	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
+}
+
 func MatchAgainstDatabaseFeatureBased(
 	searchImage *image_handling.RawImage,
 	analyzer string,
@@ -101,39 +131,52 @@ func MatchAgainstDatabaseFeatureBased(
 	return &matchedImages, nil, &searchImageDescriptor, extractionTime, totalMatchingTime
 }
 
-func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHammingDistance int, debug bool) (
-	*[]string,
-	error,
-	time.Duration,
-	time.Duration,
-) {
-	var totalMatchingTime time.Duration
-	searchImageHash, extractionTime := image_analyzer.GetPHashValue(searchImage.Data)
-	var matchedImages []string
-
-	err := applyChunkedPHashRetrievalOperation(func(databaseImage PHashImageEntity) {
-		if debug {
-			println("\nComparing to " + databaseImage.externalReference)
-		}
-		isMatch, matchingTime :=
-			image_matching.HashesAreMatch(searchImageHash, databaseImage.hash, maxHammingDistance, debug)
-		totalMatchingTime += matchingTime
-
-		if isMatch {
-			matchedImages = append(matchedImages, databaseImage.externalReference)
-		}
-	})
-
+func MatchAgainstDatabaseFeatureBasedWithMultipleThresholds(
+	searchImage *image_handling.RawImage, analyzer, matcher string, thresholds *[]float64,
+) (*map[float64][]string, error, *gocv.Mat, time.Duration, time.Duration) {
+	imageAnalyzer, imageMatcher, err := getAnalyzerAndMatcher(analyzer, matcher)
 	if err != nil {
-		return nil, err, time.Duration(0), time.Duration(0)
+		log.Println(err)
 	}
 
-	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
+	_, searchImageDescriptor, extractionTime := image_analyzer.ExtractKeypointsAndDescriptors(
+		&searchImage.Data,
+		imageAnalyzer,
+	)
+
+	var totalMatchingTime time.Duration
+	matchedImagesPerThreshold := make(map[float64][]string)
+
+	for _, threshold := range *thresholds {
+		matchedImagesPerThreshold[threshold] = []string{}
+	}
+
+	err = applyChunkedFeatureBasedRetrievalOperation(func(databaseImage FeatureImageEntity) {
+		databaseImageDescriptor, err :=
+			image_handling.ConvertByteArrayToDescriptorMat(&databaseImage.descriptors, analyzer)
+
+		if databaseImageDescriptor == nil || err != nil {
+			println("Descriptor was empty", databaseImage.externalReference)
+			return
+		}
+
+		matchingStart := time.Now()
+		matches := (*imageMatcher).FindMatches(&searchImageDescriptor, databaseImageDescriptor)
+		totalMatchingTime += time.Since(matchingStart)
+		databaseImageDescriptor.Close()
+
+		image_matching.FindDescriptorMatchesPerThreshold(
+			matches, &matchedImagesPerThreshold, databaseImage.externalReference,
+		)
+	}, descriptorMapping[analyzer])
+	if err != nil {
+		return nil, err, nil, time.Duration(0), time.Duration(0)
+	}
+
+	return &matchedImagesPerThreshold, nil, &searchImageDescriptor, extractionTime, totalMatchingTime
 }
 
-func MatchImageAgainstDatabasePHashMultipleThresholds(
-	searchImage *image_handling.RawImage, maxHammingDistances *[]int,
-) (
+func MatchImageAgainstDatabasePHashWithMultipleThresholds(searchImage *image_handling.RawImage, thresholds *[]int) (
 	*map[int][]string,
 	error,
 	time.Duration,
@@ -142,11 +185,16 @@ func MatchImageAgainstDatabasePHashMultipleThresholds(
 
 	var totalMatchingTime time.Duration
 	searchImageHash, extractionTime := image_analyzer.GetPHashValue(searchImage.Data)
-	var matchedImagesPerThreshold map[int][]string
+	matchedImagesPerThreshold := make(map[int][]string)
+
+	for _, threshold := range *thresholds {
+		matchedImagesPerThreshold[threshold] = []string{}
+	}
 
 	err := applyChunkedPHashRetrievalOperation(func(databaseImage PHashImageEntity) {
-		_, matchingTime :=
-			image_matching.FindHashMatchesPerThreshold(searchImageHash, databaseImage.hash, maxHammingDistances)
+		matchingTime := image_matching.FindHashMatchesPerThreshold(
+			searchImageHash, databaseImage.hash, &matchedImagesPerThreshold, databaseImage.externalReference,
+		)
 		totalMatchingTime += matchingTime
 	})
 

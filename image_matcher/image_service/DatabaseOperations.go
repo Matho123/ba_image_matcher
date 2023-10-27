@@ -7,7 +7,7 @@ import (
 
 const maxChunkSize = 50
 
-func applyDatabaseOperation(applyFunction func(db *sql.DB)) error {
+func applyDatabaseOperation(applyFunction func(databaseConnection *sql.DB)) error {
 	databaseConnection, err := openDatabaseConnection()
 	if err != nil {
 		return err
