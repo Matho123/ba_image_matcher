@@ -58,7 +58,7 @@ func WriteOverallEvalToCSV(
 	if analyzer == image_analyzer.PHASH {
 		filename = fmt.Sprintf("%s/%s-overall-evaluation", analyzer, scenario)
 	} else {
-		filename = fmt.Sprintf("%s/%s-%s-overall-evaluation", analyzer, matcher, scenario)
+		filename = fmt.Sprintf("%s/%s-%s-overall-evaluation", analyzer, scenario, matcher)
 	}
 	appendToCSV(
 		filename,
