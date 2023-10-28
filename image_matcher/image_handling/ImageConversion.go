@@ -59,17 +59,29 @@ func convertByteArrayToMat(bytes []byte, rows, cols int, matType gocv.MatType) (
 	return &mat, nil
 }
 
-func ConvertImageToMat(img *image.Image, c color.Color) gocv.Mat {
+func ConvertImageToGrayMatWithBackground(img *image.Image, c color.Color) gocv.Mat {
 	newImage := imaging.New((*img).Bounds().Size().X, (*img).Bounds().Size().Y, c)
 	newImage = imaging.Overlay(newImage, *img, image.Pt(0, 0), 1.0)
 
-	mat1, err := gocv.ImageToMatRGBA(newImage)
+	mat, err := gocv.ImageToMatRGBA(newImage)
 
 	if err != nil {
 		log.Println("Error converting image to Mat: ", err)
 	}
 
-	gocv.CvtColor(mat1, &mat1, gocv.ColorRGBAToGray)
+	gocv.CvtColor(mat, &mat, gocv.ColorRGBAToGray)
 
-	return mat1
+	return mat
+}
+
+func ConvertImageToGrayMat(img *image.Image) gocv.Mat {
+	mat, err := gocv.ImageToMatRGBA(*img)
+
+	if err != nil {
+		log.Println("Error converting image to Mat: ", err)
+	}
+
+	gocv.CvtColor(mat, &mat, gocv.ColorRGBAToGray)
+
+	return mat
 }

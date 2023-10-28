@@ -101,8 +101,8 @@ func loadImageFromDisk(path string) *image.Image {
 	return &img
 }
 
-func SaveImageToDisk(name string, image image.Image) {
-	newPath := "images/variations/" + name + ".png"
+func SaveImageToDisk(path string, image image.Image) {
+	newPath := path + ".png"
 	outputFile, err := os.Create(newPath)
 	if err != nil {
 		log.Println("Error while creating outputfile for image: ", err)
@@ -112,7 +112,7 @@ func SaveImageToDisk(name string, image image.Image) {
 
 	err = png.Encode(outputFile, image)
 	if err != nil {
-		log.Println("Error while saving image "+name+" to disk: ", err)
+		log.Println("Error while saving image "+path+" to disk: ", err)
 		return
 	}
 	log.Println("saved variation", newPath)

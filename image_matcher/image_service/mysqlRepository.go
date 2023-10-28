@@ -29,8 +29,9 @@ type FeatureImageEntity struct {
 }
 
 type PHashImageEntity struct {
-	externalReference string
-	hash              uint64
+	externalReference     string
+	regularHash           uint64
+	rotationInvariantHash uint64
 }
 
 type SearchImageEntity struct {
@@ -136,7 +137,7 @@ func retrievePHashImageChunk(
 
 		var err = imageRows.Scan(
 			&image.externalReference,
-			&image.hash,
+			&image.regularHash,
 		)
 
 		if err != nil {

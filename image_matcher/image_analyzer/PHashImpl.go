@@ -13,7 +13,7 @@ import (
 const DctWidth = 8
 const HighfreqFactor = 4
 
-func calculateHash(image image.Image) uint64 {
+func calculateHash(image *image.Image) uint64 {
 	imageSiteLength := DctWidth * HighfreqFactor
 	preprocessedImage := preprocessImage(image, imageSiteLength, imageSiteLength)
 
@@ -24,11 +24,11 @@ func calculateHash(image image.Image) uint64 {
 	return computeHash(lowFrequencyMatrix, median)
 }
 
-func preprocessImage(img image.Image, width, height int) image.Image {
+func preprocessImage(img *image.Image, width, height int) image.Image {
 	imageDimensions := image.Rect(0, 0, width, height)
 	resizedImage := image.NewRGBA(imageDimensions)
 
-	draw.Draw(resizedImage, imageDimensions, img, img.Bounds().Min, draw.Over)
+	draw.Draw(resizedImage, imageDimensions, *img, (*img).Bounds().Min, draw.Over)
 
 	preprocessedImage := image.NewGray(imageDimensions)
 

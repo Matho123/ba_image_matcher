@@ -11,9 +11,9 @@ import (
 	"strconv"
 )
 
-func GetPHashValue(image image.Image) (uint64, float64) {
+func GetPHashValue(image *image.Image) (uint64, float64) {
 	imageByteBuffer := new(bytes.Buffer)
-	err := png.Encode(imageByteBuffer, image)
+	err := png.Encode(imageByteBuffer, *image)
 	if err != nil {
 		log.Fatal("couldn't create bytebuffer from image!")
 	}

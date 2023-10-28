@@ -63,7 +63,7 @@ func InsertDuplicateSearchImage(variations *[]image_handling.ImageVariation, ori
 		for _, variation := range *variations {
 			imageReference := externalReference + "-" + variation.ModificationInfo
 
-			image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.ModifiedImage)
+			image_handling.SaveImageToDisk(fmt.Sprintf("images/variations/%s/%s", scenario, imageReference), variation.ModifiedImage)
 
 			err = insertImageIntoSearchSet(
 				databaseConnection,
@@ -115,7 +115,7 @@ func insertUniqueSearchImage(
 ) {
 	externalReference := fmt.Sprintf("%s-%s-%s", originalReference, scenario, uniqueVariation.ModificationInfo)
 
-	image_handling.SaveImageToDisk(scenario+"/"+externalReference, uniqueVariation.ModifiedImage)
+	image_handling.SaveImageToDisk(fmt.Sprintf("images/variations/%s/%s", scenario, externalReference), uniqueVariation.ModifiedImage)
 
 	err := insertImageIntoSearchSet(
 		databaseConnection,
