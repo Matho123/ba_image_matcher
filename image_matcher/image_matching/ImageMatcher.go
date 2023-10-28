@@ -56,7 +56,7 @@ func FindHashMatchesPerThreshold(
 
 	i := 0
 	for threshold, matchedImages := range *matchedPerThreshold {
-		isMatch, matchingTime := HashesAreMatch(hash1, hash2, threshold, false)
+		isMatch, _, matchingTime := HashesAreMatch(hash1, hash2, threshold, false)
 		if isMatch {
 			matchedImages = append(matchedImages, originalReference)
 			(*matchedPerThreshold)[threshold] = matchedImages
@@ -70,7 +70,7 @@ func FindHashMatchesPerThreshold(
 	return finalMatchingTime
 }
 
-func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bool, time.Duration) {
+func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bool, int, time.Duration) {
 	matchingStart := time.Now()
 	hammingDistance := calculateHammingDistance(hash1, hash2)
 	matchingTime := time.Since(matchingStart)
@@ -78,9 +78,20 @@ func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bo
 		println("hamming distance: ", hammingDistance)
 	}
 
-	return hammingDistance <= maxDistance, matchingTime
+	return hammingDistance <= maxDistance, hammingDistance, matchingTime
 }
 
 func calculateHammingDistance(hash1, hash2 uint64) int {
 	return bits.OnesCount64(hash1 ^ hash2)
+}
+
+func MatchRotationInvariantHashes(hash1 uint64, hashes2 []uint64, threshold int) (bool, uint64, int, time.Duration) {
+	start := time.Now()
+	for _, hash2 := range hashes2 {
+		isMatch, hammingDistance, _ := HashesAreMatch(hash1, hash2, threshold, true)
+		if isMatch {
+			return true, hash2, hammingDistance, time.Since(start)
+		}
+	}
+	return false, 0, 0, time.Since(start)
 }

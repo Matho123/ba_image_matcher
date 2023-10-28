@@ -1,4 +1,4 @@
-package image_service
+package image_database
 
 import (
 	"database/sql"
@@ -9,28 +9,29 @@ import (
 )
 
 type ForbiddenImageCreation struct {
-	externalReference string
-	siftDescriptor    []byte
-	orbDescriptor     []byte
-	briskDescriptor   []byte
-	pHash             uint64
+	ExternalReference     string
+	SiftDescriptor        []byte
+	OrbDescriptor         []byte
+	BriskDescriptor       []byte
+	PHash                 uint64
+	RotationInvariantHash uint64
 }
 
 type SearchImageCreation struct {
-	externalReference string
-	originalReference string
-	scenario          string
-	modificationInfo  string
+	ExternalReference string
+	OriginalReference string
+	Scenario          string
+	ModificationInfo  string
 }
 
 type FeatureImageEntity struct {
-	externalReference string
-	descriptors       []byte
+	ExternalReference string
+	Descriptors       []byte
 }
 
 type PHashImageEntity struct {
-	externalReference string
-	hash              uint64
+	ExternalReference string
+	Hash              uint64
 }
 
 type SearchImageEntity struct {
@@ -39,6 +40,12 @@ type SearchImageEntity struct {
 	OriginalReference string
 	Scenario          string
 	Notes             string
+}
+
+type HybridEntity struct {
+	ExternalReference     string
+	RotationInvariantHash uint64
+	SiftDescriptors       []byte
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
@@ -54,12 +61,12 @@ func openDatabaseConnection() (*sql.DB, error) {
 	return databaseConnection, nil
 }
 
-func insertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage ForbiddenImageCreation) error {
-	externalReference := databaseSetImage.externalReference
-	siftDescriptor := databaseSetImage.siftDescriptor
-	orbDescriptor := databaseSetImage.orbDescriptor
-	briskDescriptor := databaseSetImage.briskDescriptor
-	pHash := databaseSetImage.pHash
+func InsertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage ForbiddenImageCreation) error {
+	externalReference := databaseSetImage.ExternalReference
+	siftDescriptor := databaseSetImage.SiftDescriptor
+	orbDescriptor := databaseSetImage.OrbDescriptor
+	briskDescriptor := databaseSetImage.BriskDescriptor
+	pHash := databaseSetImage.PHash
 
 	_, err := databaseConnection.Exec(
 		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash) VALUES (?, ?, ?, ?, ?)",
@@ -99,8 +106,8 @@ func retrieveFeatureImageChunk(
 		var image FeatureImageEntity
 
 		var err = imageRows.Scan(
-			&image.externalReference,
-			&image.descriptors,
+			&image.ExternalReference,
+			&image.Descriptors,
 		)
 
 		if err != nil {
@@ -109,15 +116,12 @@ func retrieveFeatureImageChunk(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.ExternalReference))
 	}
 	return &imageEntityChunk, nil
 }
 
-func retrievePHashImageChunk(
-	databaseConnection *sql.DB,
-	offset int,
-	limit int) (*[]PHashImageEntity, error) {
+func retrievePHashImageChunk(databaseConnection *sql.DB, offset int, limit int) (*[]PHashImageEntity, error) {
 	imageRows, err := databaseConnection.Query(
 		"SELECT external_reference, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
@@ -135,8 +139,8 @@ func retrievePHashImageChunk(
 		var image PHashImageEntity
 
 		var err = imageRows.Scan(
-			&image.externalReference,
-			&image.hash,
+			&image.ExternalReference,
+			&image.Hash,
 		)
 
 		if err != nil {
@@ -145,16 +149,50 @@ func retrievePHashImageChunk(
 
 		imageEntityChunk = append(imageEntityChunk, image)
 
-		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.externalReference))
+		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.ExternalReference))
 	}
 	return &imageEntityChunk, nil
 }
 
-func insertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage SearchImageCreation) error {
-	externalReference := modifiedImage.externalReference
-	originalReference := modifiedImage.originalReference
-	scenario := modifiedImage.scenario
-	notes := modifiedImage.modificationInfo
+func retrieveHybridChunk(databaseConnection *sql.DB, offset int, limit int) (*[]HybridEntity, error) {
+	imageRows, err := databaseConnection.Query(
+		"SELECT external_reference, sift_descriptor, rotation_p_hash FROM forbidden_image LIMIT ? OFFSET ?",
+		limit,
+		offset,
+	)
+
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("couldn't retreive database set images from database: %s", err.Error()))
+	}
+	defer imageRows.Close()
+
+	var imageEntityChunk []HybridEntity
+
+	for imageRows.Next() {
+		var image HybridEntity
+
+		var err = imageRows.Scan(
+			&image.ExternalReference,
+			&image.SiftDescriptors,
+			&image.RotationInvariantHash,
+		)
+
+		if err != nil {
+			continue
+		}
+
+		imageEntityChunk = append(imageEntityChunk, image)
+
+		//log.Println(fmt.Sprintf("Retrieved %s from Database Set", image.ExternalReference))
+	}
+	return &imageEntityChunk, nil
+}
+
+func InsertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage SearchImageCreation) error {
+	externalReference := modifiedImage.ExternalReference
+	originalReference := modifiedImage.OriginalReference
+	scenario := modifiedImage.Scenario
+	notes := modifiedImage.ModificationInfo
 
 	_, err := databaseConnection.Exec(
 		"INSERT INTO search_image (external_reference, original_reference, scenario, notes) VALUES (?, ?, ?, ?)",
@@ -171,7 +209,7 @@ func insertImageIntoSearchSet(databaseConnection *sql.DB, modifiedImage SearchIm
 	return nil
 }
 
-func retrieveChunkFromSearchSet(
+func RetrieveChunkFromSearchSet(
 	databaseConnection *sql.DB,
 	scenario string,
 	offset int,

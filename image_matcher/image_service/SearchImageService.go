@@ -3,6 +3,7 @@ package image_service
 import (
 	"database/sql"
 	"fmt"
+	"image_matcher/image_database"
 	"image_matcher/image_handling"
 	"log"
 )
@@ -20,17 +21,17 @@ const (
 
 var Scenarios = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART, MIXED}
 
-func GetSearchImages(scenario string) *[]SearchImageEntity {
-	var searchSetImages []SearchImageEntity
+func GetSearchImages(scenario string) *[]image_database.SearchImageEntity {
+	var searchSetImages []image_database.SearchImageEntity
 
-	err := applyDatabaseOperation(func(databaseConnection *sql.DB) {
+	err := image_database.ApplyDatabaseOperation(func(databaseConnection *sql.DB) {
 		offset := 0
 		for {
-			retrievedImages, err := retrieveChunkFromSearchSet(
+			retrievedImages, err := image_database.RetrieveChunkFromSearchSet(
 				databaseConnection,
 				scenario,
 				offset,
-				maxChunkSize+1,
+				image_database.MaxChunkSize+1,
 			)
 			if err != nil {
 				log.Println("Error while retrieving chunk from search images: ", err)
@@ -41,10 +42,10 @@ func GetSearchImages(scenario string) *[]SearchImageEntity {
 				searchSetImages = append(searchSetImages, retrievedImages[:numberOfRetrievedImages-1]...)
 			}
 
-			if len(retrievedImages) < maxChunkSize+1 {
+			if len(retrievedImages) < image_database.MaxChunkSize+1 {
 				break
 			}
-			offset += maxChunkSize
+			offset += image_database.MaxChunkSize
 		}
 	})
 	if err != nil {
@@ -59,19 +60,19 @@ func InsertDuplicateSearchImage(variations *[]image_handling.ImageVariation, ori
 	var externalReference = fmt.Sprintf("%s-%s", originalReference, scenario)
 	var err error
 
-	err = applyDatabaseOperation(func(databaseConnection *sql.DB) {
+	err = image_database.ApplyDatabaseOperation(func(databaseConnection *sql.DB) {
 		for _, variation := range *variations {
 			imageReference := externalReference + "-" + variation.ModificationInfo
 
-			image_handling.SaveImageToDisk(scenario+"/"+imageReference, variation.ModifiedImage)
+			image_handling.SaveImageToDisk(fmt.Sprintf("images/variations/%s/%s", scenario, imageReference), variation.ModifiedImage)
 
-			err = insertImageIntoSearchSet(
+			err = image_database.InsertImageIntoSearchSet(
 				databaseConnection,
-				SearchImageCreation{
-					externalReference: imageReference,
-					originalReference: originalReference,
-					scenario:          scenario,
-					modificationInfo:  variation.ModificationInfo,
+				image_database.SearchImageCreation{
+					ExternalReference: imageReference,
+					OriginalReference: originalReference,
+					Scenario:          scenario,
+					ModificationInfo:  variation.ModificationInfo,
 				},
 			)
 			if err != nil {
@@ -85,7 +86,7 @@ func InsertDuplicateSearchImage(variations *[]image_handling.ImageVariation, ori
 }
 
 func GenerateAndInsertUniqueSearchImages(originalImage *image_handling.RawImage) {
-	err := applyDatabaseOperation(func(databaseConnection *sql.DB) {
+	err := image_database.ApplyDatabaseOperation(func(databaseConnection *sql.DB) {
 		for _, scenario := range Scenarios {
 			var variation *image_handling.ImageVariation
 			if scenario == MIXED {
@@ -115,15 +116,15 @@ func insertUniqueSearchImage(
 ) {
 	externalReference := fmt.Sprintf("%s-%s-%s", originalReference, scenario, uniqueVariation.ModificationInfo)
 
-	image_handling.SaveImageToDisk(scenario+"/"+externalReference, uniqueVariation.ModifiedImage)
+	image_handling.SaveImageToDisk(fmt.Sprintf("images/variations/%s/%s", scenario, externalReference), uniqueVariation.ModifiedImage)
 
-	err := insertImageIntoSearchSet(
+	err := image_database.InsertImageIntoSearchSet(
 		databaseConnection,
-		SearchImageCreation{
-			externalReference: externalReference,
-			originalReference: "",
-			scenario:          scenario,
-			modificationInfo:  uniqueVariation.ModificationInfo,
+		image_database.SearchImageCreation{
+			ExternalReference: externalReference,
+			OriginalReference: "",
+			Scenario:          scenario,
+			ModificationInfo:  uniqueVariation.ModificationInfo,
 		},
 	)
 	if err != nil {

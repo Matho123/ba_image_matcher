@@ -2,6 +2,7 @@ package testing
 
 import (
 	"fmt"
+	"gocv.io/x/gocv"
 	"image_matcher/image_analyzer"
 	"image_matcher/image_handling"
 	"image_matcher/image_service"
@@ -51,19 +52,22 @@ func compareTwoImages(arguments []string) {
 	image1 := image_handling.LoadRawImage(imagePath1)
 	image2 := image_handling.LoadRawImage(imagePath2)
 
-	isMatch, kp1, kp2, extractionTime, matchingTime, err := image_service.AnalyzeAndMatchTwoImages(
-		*image1, *image2, imageAnalyzer, imageMatcher, SimilarityThreshold, debug,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	var isMatch bool
+	var extractionTime, matchingTime time.Duration
 
-	if imageAnalyzer != image_analyzer.PHASH {
-		log.Println(fmt.Sprintf(
-			"Keypoints extracted: %d for image1 and %d for image2",
-			len(kp1),
-			len(kp2),
-		))
+	if imageAnalyzer == image_analyzer.PHASH || imageAnalyzer == image_analyzer.NewAnalyzer {
+		isMatch, extractionTime, matchingTime =
+			image_service.AnalyzeAndMatchTwoImagesHashPHash(*image1, *image2, imageAnalyzer, 12)
+	} else {
+		var err error
+		var kp1, kp2 []gocv.KeyPoint
+		isMatch, kp1, kp2, extractionTime, matchingTime, err = image_service.AnalyzeAndMatchTwoImagesFeatureBased(
+			*image1, *image2, imageAnalyzer, imageMatcher, SimilarityThreshold, debug,
+		)
+		log.Println(fmt.Sprintf("Keypoints extracted: %d for image1 and %d forimage2", len(kp1), len(kp2)))
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
 	log.Println(fmt.Sprintf(

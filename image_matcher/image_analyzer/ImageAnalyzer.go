@@ -13,6 +13,8 @@ const ORB = "orb"
 const BRISK = "brisk"
 const PHASH = "phash"
 
+const NewAnalyzer = "new"
+
 var AnalyzerMapping = map[string]FeatureBasedImageAnalyzer{
 	SIFT:  &SiftImageAnalyzer{gocv.NewSIFT()},
 	ORB:   &ORBImageAnalyzer{gocv.NewORB()},
@@ -59,19 +61,13 @@ func (brisk *BRISKImageAnalyzer) AnalyzeImage(image *gocv.Mat) ([]gocv.KeyPoint,
 	return keypoints, descriptors, extractionTime
 }
 
-type PHash struct{}
-
-func (PHash) GetHash(image image.Image) uint64 {
-	return calculateHash(image)
-}
-
 func ExtractKeypointsAndDescriptors(img *image.Image, imageAnalyzer *FeatureBasedImageAnalyzer) (
 	[]gocv.KeyPoint,
 	gocv.Mat,
 	time.Duration,
 ) {
-	blackBgMat := image_handling.ConvertImageToMat(img, color.RGBA{A: 255})
-	whiteBgMat := image_handling.ConvertImageToMat(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
+	blackBgMat := image_handling.ConvertImageToGrayMatWithBackground(img, color.RGBA{A: 255})
+	whiteBgMat := image_handling.ConvertImageToGrayMatWithBackground(img, color.RGBA{R: 255, G: 255, B: 255, A: 255})
 
 	var finalKeypoints []gocv.KeyPoint
 	var finalExtractionTime time.Duration

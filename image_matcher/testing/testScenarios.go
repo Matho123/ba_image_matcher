@@ -3,6 +3,7 @@ package testing
 import (
 	"fmt"
 	"image_matcher/image_analyzer"
+	"image_matcher/image_database"
 	"image_matcher/image_handling"
 	"image_matcher/image_matching"
 	"image_matcher/image_service"
@@ -81,7 +82,7 @@ func runPHashScenario(
 		classificationMap[threshold] = statistics.ClassificationEvaluation{}
 	}
 
-	applyScenarioRun(func(searchImage image_service.SearchImageEntity, rawImage *image_handling.RawImage) {
+	applyScenarioRun(func(searchImage image_database.SearchImageEntity, rawImage *image_handling.RawImage) {
 		matchedPerThreshold, err, extractionTime, matchingTime :=
 			image_service.MatchImageAgainstDatabasePHashWithMultipleThresholds(rawImage, thresholds)
 		if err != nil {
@@ -122,7 +123,7 @@ func runFeatureBasedScenario(
 		classificationMap[threshold] = statistics.ClassificationEvaluation{}
 	}
 
-	applyScenarioRun(func(searchImage image_service.SearchImageEntity, rawImage *image_handling.RawImage) {
+	applyScenarioRun(func(searchImage image_database.SearchImageEntity, rawImage *image_handling.RawImage) {
 		matchedPerThreshold, err, searchImageDescriptors, extractionTime, matchingTime :=
 			image_service.MatchAgainstDatabaseFeatureBasedWithMultipleThresholds(
 				rawImage,
@@ -159,7 +160,7 @@ func runFeatureBasedScenario(
 }
 
 func applyScenarioRun(
-	applyFunction func(searchImage image_service.SearchImageEntity, rawImage *image_handling.RawImage),
+	applyFunction func(searchImage image_database.SearchImageEntity, rawImage *image_handling.RawImage),
 	scenario string,
 ) {
 	searchImages := image_service.GetSearchImages(scenario)
