@@ -61,20 +61,59 @@ func openDatabaseConnection() (*sql.DB, error) {
 	return databaseConnection, nil
 }
 
+func GetForbiddenReferences(databaseConnection *sql.DB) (*[]string, error) {
+	imageRows, err := databaseConnection.Query("SELECT external_reference FROM forbidden_image")
+	if err != nil {
+		return nil, errors.New(fmt.Sprintf("couldn't retrieve external references from database %s", err.Error()))
+	}
+	defer imageRows.Close()
+
+	var forbiddenReferences []string
+
+	for imageRows.Next() {
+		var externalReference string
+
+		var err = imageRows.Scan(&externalReference)
+
+		if err != nil {
+			continue
+		}
+
+		forbiddenReferences = append(forbiddenReferences, externalReference)
+	}
+
+	return &forbiddenReferences, nil
+}
+
+func InsertRotationHashIntoDatabase(databaseConnection *sql.DB, externalReference string, rotHash uint64) error {
+	_, err := databaseConnection.Exec(
+		"UPDATE forbidden_image SET rotation_phash = ? WHERE external_reference = ?",
+		rotHash,
+		externalReference,
+	)
+	if err != nil {
+		return errors.New(fmt.Sprintf("couldn't update %s into database %s", externalReference, err.Error()))
+	}
+	log.Println(fmt.Sprintf("Updated %s into Database Set with %d", externalReference, rotHash))
+	return nil
+}
+
 func InsertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage ForbiddenImageCreation) error {
 	externalReference := databaseSetImage.ExternalReference
 	siftDescriptor := databaseSetImage.SiftDescriptor
 	orbDescriptor := databaseSetImage.OrbDescriptor
 	briskDescriptor := databaseSetImage.BriskDescriptor
 	pHash := databaseSetImage.PHash
+	rotationInvariantHash := databaseSetImage.RotationInvariantHash
 
 	_, err := databaseConnection.Exec(
-		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash) VALUES (?, ?, ?, ?, ?)",
+		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash, rotation_phash) VALUES (?, ?, ?, ?, ?, ?)",
 		externalReference,
 		siftDescriptor,
 		orbDescriptor,
 		briskDescriptor,
 		pHash,
+		rotationInvariantHash,
 	)
 
 	if err != nil {
@@ -156,7 +195,7 @@ func retrievePHashImageChunk(databaseConnection *sql.DB, offset int, limit int) 
 
 func retrieveHybridChunk(databaseConnection *sql.DB, offset int, limit int) (*[]HybridEntity, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT external_reference, sift_descriptor, rotation_p_hash FROM forbidden_image LIMIT ? OFFSET ?",
+		"SELECT external_reference, sift_descriptor, rotation_phash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
 		offset,
 	)

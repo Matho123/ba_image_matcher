@@ -159,6 +159,48 @@ func runFeatureBasedScenario(
 	return &classificationMap, totalExtractionTime, totalMatchingTime
 }
 
+func runHybridScenario(scenario string) (*map[float64]statistics.ClassificationEvaluation, time.Duration, time.Duration) {
+	var totalExtractionTime, totalMatchingTime time.Duration
+	classificationMap := make(map[float64]statistics.ClassificationEvaluation)
+	classificationMap[0] = statistics.ClassificationEvaluation{}
+
+	applyScenarioRun(func(searchImage image_database.SearchImageEntity, rawImage *image_handling.RawImage) {
+		matchedRefs, poolSize, err, extractionTime, matchingTime :=
+			image_service.MatchImageAgainstDatabaseHybrid(rawImage, false)
+		if err != nil {
+			log.Println("error while matching", searchImage.ExternalReference, "against database!")
+		}
+
+		totalExtractionTime += extractionTime
+		totalMatchingTime += matchingTime
+
+		eval := classificationMap[0]
+		class := eval.EvaluateClassification(matchedRefs, &searchImage.OriginalReference)
+		classificationMap[0] = eval
+
+		statistics.WriteHybridImageEvalToCSV(
+			scenario,
+			statistics.SearchImageHybridEval{
+				ExternalReference: searchImage.ExternalReference,
+				ClassEval:         class,
+				PoolSize:          poolSize,
+				ExtractionTime:    extractionTime.String(),
+				MatchingTime:      matchingTime.String(),
+			},
+		)
+	}, scenario)
+
+	for threshold, evaluation := range classificationMap {
+		statistics.WriteOverallEvalToCSV(
+			scenario, "hybrid", "hybrid", fmt.Sprintf("%.2f", threshold), &evaluation,
+			totalExtractionTime,
+			totalMatchingTime,
+		)
+	}
+
+	return &classificationMap, totalExtractionTime, totalMatchingTime
+}
+
 func applyScenarioRun(
 	applyFunction func(searchImage image_database.SearchImageEntity, rawImage *image_handling.RawImage),
 	scenario string,

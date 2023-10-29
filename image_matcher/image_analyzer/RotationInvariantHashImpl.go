@@ -36,7 +36,7 @@ func CalculateRotationInvariantHash(image *image.Image) (uint64, time.Duration) 
 	normalizedImage := image_handling.RotateImage(image, orientation)
 	end := time.Since(start)
 
-	image_handling.SaveImageToDisk("debug/normalized1", normalizedImage)
+	//image_handling.SaveImageToDisk("debug/normalized1", normalizedImage)
 
 	hash, extractionTime := GetPHashValue(&normalizedImage)
 

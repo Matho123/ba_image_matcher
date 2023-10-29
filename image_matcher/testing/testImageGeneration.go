@@ -1,6 +1,10 @@
 package testing
 
 import (
+	"database/sql"
+	"fmt"
+	"image_matcher/image_analyzer"
+	"image_matcher/image_database"
 	"image_matcher/image_handling"
 	"image_matcher/image_service"
 	"log"
@@ -106,4 +110,27 @@ func populateDatabase([]string) {
 	}
 
 	paths = nil
+}
+
+func updateDatabaseWithNewHash([]string) {
+	err := image_database.ApplyDatabaseOperation(func(databaseConnection *sql.DB) {
+		references, err := image_database.GetForbiddenReferences(databaseConnection)
+		if err != nil {
+			log.Println(err)
+		}
+		println(len(*references))
+		for _, reference := range *references {
+			rawImage := image_handling.LoadRawImage(fmt.Sprintf("images/originals/%s", reference))
+			hash, _ := image_analyzer.CalculateRotationInvariantHash(&rawImage.Data)
+			err := image_database.InsertRotationHashIntoDatabase(databaseConnection, reference, hash)
+			if err != nil {
+				log.Println(err)
+			}
+		}
+
+	})
+	if err != nil {
+		log.Println(err)
+	}
+
 }

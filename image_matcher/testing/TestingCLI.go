@@ -21,6 +21,7 @@ var CommandMapping = map[string]func([]string){
 	"scenario": runScenario,
 	"populate": populateDatabase,
 	"runAll":   runAllScenariosPerAlgorithm,
+	"update":   updateDatabaseWithNewHash,
 }
 
 func registerImages(arguments []string) {

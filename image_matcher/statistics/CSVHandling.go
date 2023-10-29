@@ -27,6 +27,14 @@ type SearchImageFeatureBasedEval struct {
 	MatchingTime        string
 }
 
+type SearchImageHybridEval struct {
+	ExternalReference string
+	ClassEval         string
+	PoolSize          int
+	ExtractionTime    string
+	MatchingTime      string
+}
+
 func WriteOverallEvalToCSV(
 	scenario string,
 	analyzer string,
@@ -64,6 +72,23 @@ func WriteOverallEvalToCSV(
 		filename,
 		&data,
 	)
+}
+
+func WriteHybridImageEvalToCSV(scenario string, imageEval SearchImageHybridEval) {
+	data := [][]string{
+		{"image reference", "classification", "pool size", "extraction time", "matching time"},
+	}
+	data = append(
+		data,
+		[]string{
+			imageEval.ExternalReference,
+			imageEval.ClassEval,
+			fmt.Sprintf("%d", imageEval.PoolSize),
+			imageEval.ExtractionTime,
+			imageEval.MatchingTime,
+		},
+	)
+	appendToCSV(fmt.Sprintf("phash/%s-detail-evaluation", scenario), &data)
 }
 
 func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePHashEval) {
