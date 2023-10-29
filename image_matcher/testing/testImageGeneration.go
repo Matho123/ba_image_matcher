@@ -121,7 +121,7 @@ func updateDatabaseWithNewHash([]string) {
 		println(len(*references))
 		for _, reference := range *references {
 			rawImage := image_handling.LoadRawImage(fmt.Sprintf("images/originals/%s.png", reference))
-			hash, _ := image_analyzer.CalculateRotationInvariantHash(&rawImage.Data)
+			hash, _ := image_analyzer.CalculateOrientedPHash(&rawImage.Data)
 			err := image_database.InsertRotationHashIntoDatabase(databaseConnection, reference, hash)
 			if err != nil {
 				log.Println(err)

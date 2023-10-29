@@ -13,9 +13,9 @@ const matchingPoolHammingDistance = 16
 const similarityThreshold = 0.45
 
 func HybridImageMatcher(
-	searchImageHashes []uint64, searchImageDescriptors *gocv.Mat, debug bool,
+	orientedHashes []uint64, regularHash uint64, searchImageDescriptors *gocv.Mat, debug bool,
 ) (*[]string, int, time.Duration) {
-	matchingPool, matchedImages, matchingTime := buildMatchingPool(searchImageHashes, debug)
+	matchingPool, matchedImages, matchingTime := buildMatchingPool(orientedHashes, regularHash, debug)
 	bfm := MatcherMapping[BFMatcher]
 
 	totalMatchedImages := *matchedImages
@@ -32,7 +32,8 @@ func HybridImageMatcher(
 	return &totalMatchedImages, len(*matchingPool), time.Since(start) + matchingTime
 }
 
-func buildMatchingPool(searchImageHashes []uint64, debug bool) (*map[string][]byte, *[]string, time.Duration) {
+func buildMatchingPool(orientedHashes []uint64, regularHash uint64, debug bool) (*map[string][]byte, *[]string,
+	time.Duration) {
 	var matchedImages []string
 	var totalMatchingTime time.Duration
 	matchingPool := make(map[string][]byte)
@@ -41,8 +42,16 @@ func buildMatchingPool(searchImageHashes []uint64, debug bool) (*map[string][]by
 		if debug {
 			println("Comparing to " + databaseImage.ExternalReference)
 		}
-		isMatch, _, hammingDistance, matchingTime :=
-			MatchRotationInvariantHashes(databaseImage.RotationInvariantHash, searchImageHashes, matchingPoolHammingDistance)
+
+		isMatch, hammingDistance, matchingTime :=
+			HashesAreMatch(databaseImage.RegularHash, regularHash, matchingPoolHammingDistance, false)
+
+		if !isMatch {
+			orientedMatch, _, orientedHammingDistance, orientedMatchingTime :=
+				MatchOrientedHashes(databaseImage.OrientedHash, orientedHashes, matchingPoolHammingDistance)
+			isMatch, hammingDistance = orientedMatch, orientedHammingDistance
+			matchingTime += orientedMatchingTime
+		}
 
 		if isMatch {
 			if hammingDistance <= matchedHammingDistance {

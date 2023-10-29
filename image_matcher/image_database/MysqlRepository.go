@@ -43,9 +43,10 @@ type SearchImageEntity struct {
 }
 
 type HybridEntity struct {
-	ExternalReference     string
-	RotationInvariantHash uint64
-	SiftDescriptors       []byte
+	ExternalReference string
+	OrientedHash      uint64
+	RegularHash       uint64
+	SiftDescriptors   []byte
 }
 
 func openDatabaseConnection() (*sql.DB, error) {
@@ -195,7 +196,7 @@ func retrievePHashImageChunk(databaseConnection *sql.DB, offset int, limit int) 
 
 func retrieveHybridChunk(databaseConnection *sql.DB, offset int, limit int) (*[]HybridEntity, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT external_reference, sift_descriptor, rotation_phash FROM forbidden_image LIMIT ? OFFSET ?",
+		"SELECT external_reference, sift_descriptor, rotation_phash, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
 		offset,
 	)
@@ -213,7 +214,8 @@ func retrieveHybridChunk(databaseConnection *sql.DB, offset int, limit int) (*[]
 		var err = imageRows.Scan(
 			&image.ExternalReference,
 			&image.SiftDescriptors,
-			&image.RotationInvariantHash,
+			&image.OrientedHash,
+			&image.RegularHash,
 		)
 
 		if err != nil {

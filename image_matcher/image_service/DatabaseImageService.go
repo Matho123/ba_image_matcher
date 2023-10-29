@@ -36,7 +36,7 @@ func AnalyzeAndSaveDatabaseImage(rawImages []*image_handling.RawImage) error {
 			_, briskDesc, _ := image_analyzer.ExtractKeypointsAndDescriptors(&rawImage.Data, &brisk)
 
 			pHash, _ := image_analyzer.GetPHashValue(&rawImage.Data)
-			rotationInvariantHash, _ := image_analyzer.CalculateRotationInvariantHash(&rawImage.Data)
+			rotationInvariantHash, _ := image_analyzer.CalculateOrientedPHash(&rawImage.Data)
 
 			err = image_database.InsertImageIntoDatabaseSet(
 				databaseConnection,
@@ -62,18 +62,20 @@ func MatchImageAgainstDatabaseHybrid(searchImage *image_handling.RawImage, debug
 	time.Duration,
 	time.Duration,
 ) {
+	regularHash, extractionTime1 := image_analyzer.GetPHashValue(&searchImage.Data)
+
 	start := time.Now()
 	mirroredX, _ := image_handling.MirrorImage(&searchImage.Data, true)
 	mirroredY, _ := image_handling.MirrorImage(&searchImage.Data, false)
 	totalExtractionTime := time.Since(start)
 
-	hashes, _ := image_analyzer.CalculateRotationInvariantHashes(&searchImage.Data)
-	mirroredXHashes, extractionTime1 := image_analyzer.CalculateRotationInvariantHashes(&mirroredX)
-	mirroredYHashes, extractionTime2 := image_analyzer.CalculateRotationInvariantHashes(&mirroredY)
+	hashes, _ := image_analyzer.CalculateOrientedHashes(&searchImage.Data)
+	mirroredXHashes, extractionTime2 := image_analyzer.CalculateOrientedHashes(&mirroredX)
+	mirroredYHashes, extractionTime3 := image_analyzer.CalculateOrientedHashes(&mirroredY)
 
 	sift := image_analyzer.AnalyzerMapping[image_analyzer.SIFT]
 
-	_, searchImageDescriptors, extractionTime3 := image_analyzer.ExtractKeypointsAndDescriptors(&mirroredX, &sift)
+	_, searchImageDescriptors, extractionTime4 := image_analyzer.ExtractKeypointsAndDescriptors(&mirroredX, &sift)
 
 	hashes = append(hashes, mirroredXHashes...)
 	hashes = append(hashes, mirroredYHashes...)
@@ -81,10 +83,12 @@ func MatchImageAgainstDatabaseHybrid(searchImage *image_handling.RawImage, debug
 	matchedReferences, poolSize, matchingTime :=
 		image_matching.HybridImageMatcher(
 			hashes,
+			regularHash,
 			&searchImageDescriptors,
 			debug,
 		)
-	totalExtractionTime = totalExtractionTime + +extractionTime1 + extractionTime2 + extractionTime3
+	totalExtractionTime =
+		totalExtractionTime + time.Duration(extractionTime1)*time.Second + extractionTime2 + extractionTime3 + extractionTime4
 	return matchedReferences, poolSize, nil, totalExtractionTime, matchingTime
 }
 
@@ -248,25 +252,28 @@ func AnalyzeAndMatchTwoImagesHash(
 	analyzer string,
 	threshold int,
 ) (bool, time.Duration, time.Duration) {
-	if analyzer == image_analyzer.PHASH {
-		hash1, extractionTime1 := image_analyzer.GetPHashValue(&image1.Data)
-		hash2, extractionTime2 := image_analyzer.GetPHashValue(&image2.Data)
-		extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
+	hash1, extractionTime1 := image_analyzer.GetPHashValue(&image1.Data)
+	hash2, extractionTime2 := image_analyzer.GetPHashValue(&image2.Data)
+	extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
 
-		log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash1, hash2))
+	log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash1, hash2))
 
-		imagesAreMatch, _, matchingTime := image_matching.HashesAreMatch(hash1, hash2, threshold, true)
-
+	imagesAreMatch, _, matchingTime := image_matching.HashesAreMatch(hash1, hash2, threshold, true)
+	if imagesAreMatch {
 		return imagesAreMatch, extractionTime, matchingTime
-	} else {
-		hash, extractionTime1 := image_analyzer.CalculateRotationInvariantHash(&image1.Data)
-		hashes, extractionTime2 := image_analyzer.CalculateRotationInvariantHashes(&image2.Data)
-		match, matchedHash, _, matchingTime := image_matching.MatchRotationInvariantHashes(hash, hashes, threshold)
+	}
+
+	if analyzer == image_analyzer.NewAnalyzer {
+		hash, extractionTime1 := image_analyzer.CalculateOrientedPHash(&image1.Data)
+		hashes, extractionTime2 := image_analyzer.CalculateOrientedHashes(&image2.Data)
+		match, matchedHash, _, matchingTime2 := image_matching.MatchOrientedHashes(hash, hashes, threshold)
 
 		log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash, matchedHash))
 
-		return match, extractionTime1 + extractionTime2, matchingTime
+		return match, extractionTime + extractionTime1 + extractionTime2, matchingTime + matchingTime2
 	}
+
+	return false, extractionTime, matchingTime
 }
 
 func AnalyzeAndMatchTwoImagesFeatureBased(

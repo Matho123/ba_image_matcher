@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func CalculateRotationInvariantHashes(image *image.Image) ([]uint64, time.Duration) {
+func CalculateOrientedHashes(image *image.Image) ([]uint64, time.Duration) {
 	orientation := getOrientation(image)
 	//println(fmt.Sprintf("%.2f", orientation))
 
@@ -16,7 +16,7 @@ func CalculateRotationInvariantHashes(image *image.Image) ([]uint64, time.Durati
 	normalizedImage1 := image_handling.RotateImage(image, orientation)
 	normalizedImage2 := image_handling.RotateImage(image, 360-(180-orientation))
 	end := time.Since(start)
-	//
+
 	//image_handling.SaveImageToDisk("debug/normalized2", normalizedImage1)
 	//image_handling.SaveImageToDisk("debug/normalized3", normalizedImage2)
 
@@ -28,7 +28,7 @@ func CalculateRotationInvariantHashes(image *image.Image) ([]uint64, time.Durati
 	return []uint64{hash1, hash2}, totalExtractionTime
 }
 
-func CalculateRotationInvariantHash(image *image.Image) (uint64, time.Duration) {
+func CalculateOrientedPHash(image *image.Image) (uint64, time.Duration) {
 	orientation := getOrientation(image)
 	//println(fmt.Sprintf("%.2f", orientation))
 
