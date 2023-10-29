@@ -58,7 +58,7 @@ func compareTwoImages(arguments []string) {
 
 	if imageAnalyzer == image_analyzer.PHASH || imageAnalyzer == image_analyzer.NewAnalyzer {
 		isMatch, extractionTime, matchingTime =
-			image_service.AnalyzeAndMatchTwoImagesHashPHash(*image1, *image2, imageAnalyzer, 12)
+			image_service.AnalyzeAndMatchTwoImagesHash(*image1, *image2, imageAnalyzer, 12)
 	} else {
 		var err error
 		var kp1, kp2 []gocv.KeyPoint
@@ -108,6 +108,9 @@ func matchToDatabase(arguments []string) {
 			4,
 			debug,
 		)
+	} else if imageAnalyzer == image_analyzer.NewAnalyzer {
+		matchReferences, _, err, extractionTime, matchingTime =
+			image_service.MatchImageAgainstDatabaseHybrid(image, true)
 	} else {
 		matchReferences, err, _, extractionTime, matchingTime = image_service.MatchAgainstDatabaseFeatureBased(
 			image,

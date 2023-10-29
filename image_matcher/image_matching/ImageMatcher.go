@@ -88,7 +88,7 @@ func calculateHammingDistance(hash1, hash2 uint64) int {
 func MatchRotationInvariantHashes(hash1 uint64, hashes2 []uint64, threshold int) (bool, uint64, int, time.Duration) {
 	start := time.Now()
 	for _, hash2 := range hashes2 {
-		isMatch, hammingDistance, _ := HashesAreMatch(hash1, hash2, threshold, true)
+		isMatch, hammingDistance, _ := HashesAreMatch(hash1, hash2, threshold, false)
 		if isMatch {
 			return true, hash2, hammingDistance, time.Since(start)
 		}

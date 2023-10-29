@@ -50,6 +50,10 @@ func runSingleScenario(
 		startTime := time.Now()
 		classEvalPhash, extractionTime, matchingTime = runPHashScenario(scenario, &thresholdsInt)
 		scenarioRuntime = time.Since(startTime)
+	} else if analyzingAlgorithm == image_analyzer.NewAnalyzer {
+		startTime := time.Now()
+		classEvalFeatureBased, extractionTime, matchingTime = runHybridScenario(scenario)
+		scenarioRuntime = time.Since(startTime)
 	} else {
 		startTime := time.Now()
 		classEvalFeatureBased, extractionTime, matchingTime =
@@ -63,6 +67,9 @@ func runSingleScenario(
 	println("MatchingTime", matchingTime.String())
 	if analyzingAlgorithm == image_analyzer.PHASH {
 		evaluation := (*classEvalPhash)[int((*thresholds)[0])]
+		println("Eval: ", evaluation.String())
+	} else if analyzingAlgorithm == image_analyzer.NewAnalyzer {
+		evaluation := (*classEvalFeatureBased)[(*thresholds)[0]]
 		println("Eval: ", evaluation.String())
 	} else {
 		evaluation := (*classEvalFeatureBased)[(*thresholds)[0]]

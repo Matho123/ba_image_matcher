@@ -67,6 +67,7 @@ func MatchImageAgainstDatabaseHybrid(searchImage *image_handling.RawImage, debug
 	mirroredY, _ := image_handling.MirrorImage(&searchImage.Data, false)
 	totalExtractionTime := time.Since(start)
 
+	hashes, _ := image_analyzer.CalculateRotationInvariantHashes(&searchImage.Data)
 	mirroredXHashes, extractionTime1 := image_analyzer.CalculateRotationInvariantHashes(&mirroredX)
 	mirroredYHashes, extractionTime2 := image_analyzer.CalculateRotationInvariantHashes(&mirroredY)
 
@@ -74,7 +75,7 @@ func MatchImageAgainstDatabaseHybrid(searchImage *image_handling.RawImage, debug
 
 	_, searchImageDescriptors, extractionTime3 := image_analyzer.ExtractKeypointsAndDescriptors(&mirroredX, &sift)
 
-	hashes := mirroredXHashes
+	hashes = append(hashes, mirroredXHashes...)
 	hashes = append(hashes, mirroredYHashes...)
 
 	matchedReferences, poolSize, matchingTime :=
@@ -241,7 +242,7 @@ func MatchImageAgainstDatabasePHashWithMultipleThresholds(searchImage *image_han
 	return &matchedImagesPerThreshold, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
 }
 
-func AnalyzeAndMatchTwoImagesHashPHash(
+func AnalyzeAndMatchTwoImagesHash(
 	image1 image_handling.RawImage,
 	image2 image_handling.RawImage,
 	analyzer string,

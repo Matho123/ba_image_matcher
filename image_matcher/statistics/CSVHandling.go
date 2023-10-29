@@ -88,7 +88,7 @@ func WriteHybridImageEvalToCSV(scenario string, imageEval SearchImageHybridEval)
 			imageEval.MatchingTime,
 		},
 	)
-	appendToCSV(fmt.Sprintf("phash/%s-detail-evaluation", scenario), &data)
+	appendToCSV(fmt.Sprintf("hybrid/%s-detail-evaluation", scenario), &data)
 }
 
 func WritePHashImageEvalToCSV(scenario string, imageEvaluations *[]SearchImagePHashEval) {

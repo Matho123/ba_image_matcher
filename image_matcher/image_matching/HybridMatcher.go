@@ -29,7 +29,7 @@ func HybridImageMatcher(
 			totalMatchedImages = append(totalMatchedImages, searchImageReference)
 		}
 	}
-	return &totalMatchedImages, len((*matchingPool)), time.Since(start) + matchingTime
+	return &totalMatchedImages, len(*matchingPool), time.Since(start) + matchingTime
 }
 
 func buildMatchingPool(searchImageHashes []uint64, debug bool) (*map[string][]byte, *[]string, time.Duration) {
@@ -39,7 +39,7 @@ func buildMatchingPool(searchImageHashes []uint64, debug bool) (*map[string][]by
 
 	err := image_database.ApplyChunkedHybridRetrievalOperation(func(databaseImage image_database.HybridEntity) {
 		if debug {
-			println("\nComparing to " + databaseImage.ExternalReference)
+			println("Comparing to " + databaseImage.ExternalReference)
 		}
 		isMatch, _, hammingDistance, matchingTime :=
 			MatchRotationInvariantHashes(databaseImage.RotationInvariantHash, searchImageHashes, matchingPoolHammingDistance)
