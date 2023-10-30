@@ -4,7 +4,7 @@
 
 *Starting database*
 
-- you can start the database by simply using `docker-compose up`
+- you can start the database by simply using `docker-compose up` in projects root
 
 # Arguments
 *`image_path`:*
@@ -60,10 +60,12 @@
 
 *`image_matcher/image_matcher scenario <scenario> <analyzer> <matcher> <threshold>`*
 - runs the specified scenario for the algorithm
+- the results from the tests are saved in test-output/csv-files
 - **the search images are expected to be found in images/variations when running a scenario**
 - **command should be run from project root**
 
 *`image_matcher/image_matcher runAll`*
 - runs all scenarios for phash, sift, brisk and orb
+- the results from the tests are saved in test-output/csv-files
 - **the search images are expected to be found in images/variations when running a scenario**
 - **command should be run from project root**
