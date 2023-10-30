@@ -60,5 +60,10 @@
 
 *`image_matcher/image_matcher scenario <scenario> <analyzer> <matcher> <threshold>`*
 - runs the specified scenario for the algorithm
+- **the search images are expected to be found in images/variations when running a scenario**
+- **command should be run from project root**
 
-*` `*
+*`image_matcher/image_matcher runAll`*
+- runs all scenarios for phash, sift, brisk and orb
+- **the search images are expected to be found in images/variations when running a scenario**
+- **command should be run from project root**
