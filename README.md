@@ -1,10 +1,17 @@
 # bachelor thesis image matching
 
+
+
 # Installation
+- image_matcher/image_matcher is a pre compiled binary which can be executed without installing anything
+
+- if you want to build the project you need to install go https://go.dev/doc/install
+- `cd image_matcher` and execute `go get` to install dependencies from the go.mod
+- run `go build` to build the project 
 
 *Starting database*
 
-- you can start the database by simply using `docker-compose up` in projects root
+- you can start the mysql database by simply executing `docker-compose up` command in projects root
 
 # Arguments
 *`image_path`:*

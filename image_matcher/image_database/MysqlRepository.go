@@ -89,7 +89,7 @@ func GetForbiddenReferences(databaseConnection *sql.DB) (*[]string, error) {
 
 func InsertRotationHashIntoDatabase(databaseConnection *sql.DB, externalReference string, rotHash uint64) error {
 	_, err := databaseConnection.Exec(
-		"UPDATE forbidden_image SET rotation_phash = ? WHERE external_reference = ?",
+		"UPDATE forbidden_image SET rotation_hash = ? WHERE external_reference = ?",
 		rotHash,
 		externalReference,
 	)
@@ -109,7 +109,7 @@ func InsertImageIntoDatabaseSet(databaseConnection *sql.DB, databaseSetImage For
 	rotationInvariantHash := databaseSetImage.RotationInvariantHash
 
 	_, err := databaseConnection.Exec(
-		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash, rotation_phash) VALUES (?, ?, ?, ?, ?, ?)",
+		"INSERT INTO forbidden_image (external_reference, sift_descriptor, orb_descriptor, brisk_descriptor, p_hash, rotation_hash) VALUES (?, ?, ?, ?, ?, ?)",
 		externalReference,
 		siftDescriptor,
 		orbDescriptor,
@@ -197,7 +197,7 @@ func retrievePHashImageChunk(databaseConnection *sql.DB, offset int, limit int) 
 
 func retrieveHybridChunk(databaseConnection *sql.DB, offset int, limit int) (*[]HybridEntity, error) {
 	imageRows, err := databaseConnection.Query(
-		"SELECT external_reference, sift_descriptor, rotation_phash, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
+		"SELECT external_reference, sift_descriptor, rotation_hash, p_hash FROM forbidden_image LIMIT ? OFFSET ?",
 		limit,
 		offset,
 	)

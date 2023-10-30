@@ -38,7 +38,7 @@ func ApplyChunkedFeatureBasedRetrievalOperation(
 				log.Fatal("No Images retrieved!")
 			}
 
-			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
+			for _, databaseImage := range (*databaseImageChunk)[0:len(*databaseImageChunk)] {
 				applyFunction(databaseImage)
 			}
 
@@ -65,7 +65,7 @@ func ApplyChunkedPHashRetrievalOperation(applyFunction func(databaseImage PHashI
 				log.Fatal("No Images retrieved!")
 			}
 
-			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
+			for _, databaseImage := range (*databaseImageChunk)[0:len(*databaseImageChunk)] {
 				applyFunction(databaseImage)
 			}
 
@@ -90,7 +90,7 @@ func ApplyChunkedHybridRetrievalOperation(applyFunction func(databaseImage Hybri
 				log.Fatal("No Images retrieved!")
 			}
 
-			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
+			for _, databaseImage := range (*databaseImageChunk)[0:len(*databaseImageChunk)] {
 				applyFunction(databaseImage)
 			}
 

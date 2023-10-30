@@ -39,7 +39,7 @@ func GetSearchImages(scenario string) *[]image_database.SearchImageEntity {
 
 			numberOfRetrievedImages := len(retrievedImages)
 			if numberOfRetrievedImages > 0 {
-				searchSetImages = append(searchSetImages, retrievedImages[:numberOfRetrievedImages-1]...)
+				searchSetImages = append(searchSetImages, retrievedImages[:numberOfRetrievedImages]...)
 			}
 
 			if len(retrievedImages) < image_database.MaxChunkSize+1 {
