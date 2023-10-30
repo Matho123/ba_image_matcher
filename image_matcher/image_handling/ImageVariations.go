@@ -9,6 +9,7 @@ import (
 )
 
 const (
+	IDENTICAL  = "identical"
 	SCALED     = "scaled"
 	ROTATED    = "rotated"
 	MIRRORED   = "mirrored"
@@ -17,7 +18,7 @@ const (
 	PART       = "part"
 )
 
-var modifiers = []string{SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART}
+var Modifiers = []string{IDENTICAL, SCALED, ROTATED, MIRRORED, MOVED, BACKGROUND, PART}
 
 var scalingFactors = []int{2, 4, 10}
 
@@ -58,7 +59,7 @@ func GenerateUniqueVariation(originalImage *RawImage, modifier string) *ImageVar
 }
 
 func GenerateMixedVariation(originalImage *RawImage) *ImageVariation {
-	shuffledModifiers := shuffleArray(modifiers)
+	shuffledModifiers := shuffleArray(Modifiers)
 
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	modifierAmount := random.Intn(4)

@@ -17,13 +17,10 @@ func CalculateOrientedHashes(image *image.Image) ([]uint64, time.Duration) {
 	normalizedImage2 := image_handling.RotateImage(image, 360-(180-orientation))
 	end := time.Since(start)
 
-	//image_handling.SaveImageToDisk("debug/normalized2", normalizedImage1)
-	//image_handling.SaveImageToDisk("debug/normalized3", normalizedImage2)
-
 	hash1, extractionTime1 := GetPHashValue(&normalizedImage1)
 	hash2, extractionTime2 := GetPHashValue(&normalizedImage2)
 
-	totalExtractionTime := time.Duration((extractionTime1+extractionTime2)*float64(time.Second)) + end
+	totalExtractionTime := extractionTime1 + extractionTime2 + end
 
 	return []uint64{hash1, hash2}, totalExtractionTime
 }
@@ -40,7 +37,7 @@ func CalculateOrientedPHash(image *image.Image) (uint64, time.Duration) {
 
 	hash, extractionTime := GetPHashValue(&normalizedImage)
 
-	return hash, time.Duration((extractionTime)*float64(time.Second)) + end
+	return hash, extractionTime + end
 }
 
 func getOrientation(image *image.Image) float64 {

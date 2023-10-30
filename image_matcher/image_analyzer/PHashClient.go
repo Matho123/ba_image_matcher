@@ -9,16 +9,30 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 )
 
-func GetPHashValue(image *image.Image) (uint64, float64) {
+type PHashDTO struct {
+	Hash string `json:"hash"`
+	//runtime in seconds
+	Runtime float64 `json:"runtime"`
+}
+
+const phashCalculatorUrl = "http://localhost:8000"
+
+func GetPHashValue(image *image.Image) (uint64, time.Duration) {
+	if !isURLUp(phashCalculatorUrl + "/status") {
+		log.Println("using local phash implementation!")
+		return CalculateHash(image)
+	}
+
 	imageByteBuffer := new(bytes.Buffer)
 	err := png.Encode(imageByteBuffer, *image)
 	if err != nil {
 		log.Fatal("couldn't create bytebuffer from image!")
 	}
 
-	response, err := http.Post("http://localhost:8000/calculateHash", "application/json", imageByteBuffer)
+	response, err := http.Post(phashCalculatorUrl+"/calculateHash", "application/json", imageByteBuffer)
 	if err != nil {
 		log.Fatal("failed to do request: ", err)
 	}
@@ -43,14 +57,19 @@ func GetPHashValue(image *image.Image) (uint64, float64) {
 	if err != nil {
 		log.Fatal("Error while converting hash to uint: ", err)
 	}
-	//println(hashDTO.Hash)
-	//println(strconv.FormatUint(uIntHash, 2))
-
-	return uIntHash, hashDTO.Runtime
+	return uIntHash, time.Duration(hashDTO.Runtime * float64(time.Second))
 }
 
-type PHashDTO struct {
-	Hash string `json:"hash"`
-	//runtime in seconds
-	Runtime float64 `json:"runtime"`
+func isURLUp(url string) bool {
+	response, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer response.Body.Close()
+
+	if response.StatusCode == http.StatusOK {
+		return true
+	}
+
+	return false
 }

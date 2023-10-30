@@ -119,7 +119,7 @@ func MatchImageAgainstDatabasePHash(searchImage *image_handling.RawImage, maxHam
 		return nil, err, time.Duration(0), time.Duration(0)
 	}
 
-	return &matchedImages, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
+	return &matchedImages, nil, extractionTime, totalMatchingTime
 }
 
 func MatchAgainstDatabaseFeatureBased(
@@ -243,7 +243,7 @@ func MatchImageAgainstDatabasePHashWithMultipleThresholds(searchImage *image_han
 		return nil, err, time.Duration(0), time.Duration(0)
 	}
 
-	return &matchedImagesPerThreshold, nil, time.Duration(extractionTime * float64(time.Second)), totalMatchingTime
+	return &matchedImagesPerThreshold, nil, extractionTime, totalMatchingTime
 }
 
 func AnalyzeAndMatchTwoImagesHash(
@@ -252,28 +252,27 @@ func AnalyzeAndMatchTwoImagesHash(
 	analyzer string,
 	threshold int,
 ) (bool, time.Duration, time.Duration) {
-	hash1, extractionTime1 := image_analyzer.GetPHashValue(&image1.Data)
-	hash2, extractionTime2 := image_analyzer.GetPHashValue(&image2.Data)
-	extractionTime := time.Duration((extractionTime1 + extractionTime2) * float64(time.Second))
+	if analyzer == image_analyzer.PHASH {
+		hash1, extractionTime1 := image_analyzer.GetPHashValue(&image1.Data)
+		hash2, extractionTime2 := image_analyzer.GetPHashValue(&image2.Data)
+		extractionTime := extractionTime1 + extractionTime2
 
-	log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash1, hash2))
+		imagesAreMatch, _, matchingTime := image_matching.HashesAreMatch(hash1, hash2, threshold, true)
 
-	imagesAreMatch, _, matchingTime := image_matching.HashesAreMatch(hash1, hash2, threshold, true)
-	if imagesAreMatch {
 		return imagesAreMatch, extractionTime, matchingTime
 	}
-
 	if analyzer == image_analyzer.NewAnalyzer {
 		hash, extractionTime1 := image_analyzer.CalculateOrientedPHash(&image1.Data)
 		hashes, extractionTime2 := image_analyzer.CalculateOrientedHashes(&image2.Data)
-		match, matchedHash, _, matchingTime2 := image_matching.MatchOrientedHashes(hash, hashes, threshold)
+		match, matchedHash, _, matchingTime := image_matching.MatchOrientedHashes(hash, hashes, threshold)
 
 		log.Println(fmt.Sprintf("hash1: %d | hash2: %d", hash, matchedHash))
 
-		return match, extractionTime + extractionTime1 + extractionTime2, matchingTime + matchingTime2
+		return match, extractionTime1 + extractionTime2, matchingTime
+	} else {
+		log.Fatal("Couldn't find analyzer!")
+		return false, 0, 0
 	}
-
-	return false, extractionTime, matchingTime
 }
 
 func AnalyzeAndMatchTwoImagesFeatureBased(

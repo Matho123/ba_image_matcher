@@ -34,6 +34,9 @@ func ApplyChunkedFeatureBasedRetrievalOperation(
 			if err != nil {
 				log.Println("Error while retrieving chunk from database images: ", err)
 			}
+			if len(*databaseImageChunk) == 0 {
+				log.Fatal("No Images retrieved!")
+			}
 
 			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
 				applyFunction(databaseImage)
@@ -58,6 +61,9 @@ func ApplyChunkedPHashRetrievalOperation(applyFunction func(databaseImage PHashI
 			if err != nil {
 				log.Println("Error while retrieving chunk from database images: ", err)
 			}
+			if len(*databaseImageChunk) == 0 {
+				log.Fatal("No Images retrieved!")
+			}
 
 			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {
 				applyFunction(databaseImage)
@@ -79,6 +85,9 @@ func ApplyChunkedHybridRetrievalOperation(applyFunction func(databaseImage Hybri
 			databaseImageChunk, err := retrieveHybridChunk(databaseConnection, offset, MaxChunkSize+1)
 			if err != nil {
 				log.Println("Error while retrieving chunk from database images: ", err)
+			}
+			if len(*databaseImageChunk) == 0 {
+				log.Fatal("No Images retrieved!")
 			}
 
 			for _, databaseImage := range (*databaseImageChunk)[0 : len(*databaseImageChunk)-1] {

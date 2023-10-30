@@ -10,97 +10,55 @@ import (
 	"log"
 )
 
-var indizes = [12]int{10, 50, 70, 130, 180, 540, 650, 670, 710, 730, 750, 780}
-
-func contains(arr *[]int, number int) bool {
-	for _, e := range *arr {
-		if number == e {
-			return true
-		}
-	}
-	return false
-}
-
-func populateDatabase([]string) {
-
-	paths := image_handling.GetFilePathsFromDirectory("images/originals")
-
-	arr3 := indizes[8:12]
-	arr4 := indizes[6:11]
-	arr6 := indizes[0:7]
-	arr12 := indizes[0:12]
-
+func populateDatabase(directoryPath string) {
+	paths := image_handling.GetFilePathsFromDirectory(directoryPath)
 	var chunkSize = 10
 
-	for index1 := chunkSize; index1 <= 820; index1 += chunkSize {
-		originals := image_handling.LoadImagesFromDirectory(paths[(index1 - chunkSize):(index1)])
+	//creates duplicates for search set
+	offset := 0
+	for {
+		limit := offset + chunkSize
 
-		//register db set images
-		err := image_service.AnalyzeAndSaveDatabaseImage(originals)
-		if err != nil {
-			log.Println("Error while analysing and saving db images: ", err)
+		if limit > len(paths) {
+			limit = len(paths)
 		}
+
+		originals := image_handling.LoadImagesFromDirectory(paths[offset:limit])
 
 		for _, original := range originals {
-			if contains(&arr12, index1) {
-				modifier := "identical"
+			for _, modifier := range image_handling.Modifiers {
 				variations := image_handling.GenerateDuplicateVariations(original, modifier)
 				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
 				variations = nil
 			}
-			if contains(&arr4, index1) {
-				modifier := image_handling.SCALED
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr3, index1) {
-				modifier := image_handling.ROTATED
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr6, index1) {
-				modifier := image_handling.MIRRORED
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr12, index1) {
-				modifier := image_handling.BACKGROUND
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr12, index1) {
-				modifier := image_handling.MOVED
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr12, index1) {
-				modifier := image_handling.PART
-				variations := image_handling.GenerateDuplicateVariations(original, modifier)
-				image_service.InsertDuplicateSearchImage(variations, original.ExternalReference, modifier)
-				variations = nil
-			}
-			if contains(&arr12, index1) {
-				variation := image_handling.GenerateMixedVariation(original)
-				image_service.InsertDuplicateSearchImage(
-					&[]image_handling.ImageVariation{*variation},
-					original.ExternalReference,
-					"mixed",
-				)
-				variation = nil
-			}
+			variation := image_handling.GenerateMixedVariation(original)
+			image_service.InsertDuplicateSearchImage(
+				&[]image_handling.ImageVariation{*variation},
+				original.ExternalReference,
+				"mixed",
+			)
+			variation = nil
 		}
 
-		originals = nil
+		if len(originals) < chunkSize {
+			break
+		}
+		offset += chunkSize
 	}
+}
 
-	//create uniques for search sets
-	for index := 820 + chunkSize; index <= 820+len(paths[820:]); index += chunkSize {
-		originals := image_handling.LoadImagesFromDirectory(paths[(index - chunkSize):(index)])
+// create uniques for search sets
+func generateUniques(directoryPath string) {
+
+	paths := image_handling.GetFilePathsFromDirectory(directoryPath)
+	var chunkSize = 10
+
+	for index := 0; index <= len(paths); index += chunkSize {
+		limit := index + chunkSize
+		if limit > len(paths) {
+			limit = len(paths)
+		}
+		originals := image_handling.LoadImagesFromDirectory(paths[index:limit])
 
 		for _, original := range originals {
 			image_service.GenerateAndInsertUniqueSearchImages(original)

@@ -1,2 +1,0 @@
-threshold,tp,tn,fp,fn,recall,specificity,balanced accuracy,extraction time,matching time
-0.00,69,77,2,11,0.86,0.97,0.92,6.98847434s,85.750602ms

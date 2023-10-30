@@ -213,6 +213,9 @@ func applyScenarioRun(
 	scenario string,
 ) {
 	searchImages := image_service.GetSearchImages(scenario)
+	if searchImages == nil || len(*searchImages) == 0 {
+		log.Fatal("Couldn't retrieve search images")
+	}
 	for _, searchImage := range *searchImages {
 		log.Println("Matching", searchImage.ExternalReference)
 

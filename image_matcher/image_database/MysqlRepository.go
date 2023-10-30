@@ -53,6 +53,7 @@ func openDatabaseConnection() (*sql.DB, error) {
 	databaseConnection, err := sql.Open("mysql", "root:root@/duplicates")
 
 	if err != nil {
+		log.Fatal("Couldn't connect to database!", err)
 		return nil, errors.New(fmt.Sprintf("couldn't connect to database %s", err.Error()))
 	}
 	databaseConnection.SetConnMaxLifetime(-1)

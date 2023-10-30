@@ -71,6 +71,9 @@ func FindHashMatchesPerThreshold(
 }
 
 func HashesAreMatch(hash1 uint64, hash2 uint64, maxDistance int, debug bool) (bool, int, time.Duration) {
+	if hash1 == 0 || hash2 == 0 {
+		return false, 100, 0
+	}
 	matchingStart := time.Now()
 	hammingDistance := calculateHammingDistance(hash1, hash2)
 	matchingTime := time.Since(matchingStart)

@@ -1,45 +1,46 @@
 package image_analyzer
 
 import (
+	"github.com/nfnt/resize"
 	"image"
 	"image/color"
-	"image/draw"
 	"sort"
+	"time"
 
 	"gonum.org/v1/gonum/dsp/fourier"
 	"gonum.org/v1/gonum/mat"
 )
 
-const DctWidth = 8
-const HighfreqFactor = 4
+const DctWidth uint = 8
+const HighfreqFactor uint = 4
 
-func calculateHash(image *image.Image) uint64 {
+func CalculateHash(image *image.Image) (uint64, time.Duration) {
+	start := time.Now()
 	imageSiteLength := DctWidth * HighfreqFactor
+
 	preprocessedImage := preprocessImage(image, imageSiteLength, imageSiteLength)
 
 	dctMatrix := computeDCT(convertImageToMatrix(preprocessedImage))
-	lowFrequencyMatrix := extractDCTLowFrequency(dctMatrix, DctWidth)
-	median := calculateMedian(lowFrequencyMatrix)
+	lowFrequencyMatrix := extractDCTLowFrequency(dctMatrix, int(DctWidth))
 
-	return computeHash(lowFrequencyMatrix, median)
+	median := calculateMedian(lowFrequencyMatrix)
+	hash := computeHash(lowFrequencyMatrix, median)
+
+	return hash, time.Since(start)
 }
 
-func preprocessImage(img *image.Image, width, height int) image.Image {
-	imageDimensions := image.Rect(0, 0, width, height)
-	resizedImage := image.NewRGBA(imageDimensions)
+func preprocessImage(img *image.Image, width, height uint) image.Image {
+	resizedImage := resize.Resize(width, height, *img, resize.Lanczos3)
+	preprocessedImage := image.NewGray(image.Rect(0, 0, int(width), int(height)))
 
-	draw.Draw(resizedImage, imageDimensions, *img, (*img).Bounds().Min, draw.Over)
-
-	preprocessedImage := image.NewGray(imageDimensions)
-
-	for y := 0; y < height; y++ {
-		for x := 0; y < width; x++ {
+	for y := 0; y < int(height); y++ {
+		for x := 0; x < int(width); x++ {
 			pixelColor := resizedImage.At(x, y)
-			pixelGrayScale := color.GrayModel.Convert(pixelColor)
-			preprocessedImage.Set(x, y, pixelGrayScale)
+			_, _, _, alpha := pixelColor.RGBA()
+			r, g, b, _ := color.GrayModel.Convert(pixelColor).RGBA()
+			preprocessedImage.Set(x, y, color.RGBA{R: uint8(r), G: uint8(g), B: uint8(b), A: uint8(alpha)})
 		}
 	}
-
 	return preprocessedImage
 }
 
