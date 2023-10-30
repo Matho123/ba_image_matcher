@@ -7,10 +7,16 @@ type ClassificationEvaluation struct {
 }
 
 func (c *ClassificationEvaluation) Recall() float64 {
+	if c.TP+c.FN == 0 {
+		return 1
+	}
 	return float64(c.TP) / float64(c.TP+c.FN)
 }
 
 func (c *ClassificationEvaluation) Specificity() float64 {
+	if c.TN+c.FP == 0 {
+		return 1
+	}
 	return float64(c.TN) / float64(c.TN+c.FP)
 }
 
