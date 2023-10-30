@@ -1,5 +1,0 @@
-image reference,classification,number of descriptors,extraction time,matching time
-0.40,1010632162-identical-,true-positive,508,29.148969ms,34.720152ms
-0.40,1010632162-identical-,true-positive,508,26.390265ms,49.58507ms
-0.40,1010694938-identical-,true-positive,392,36.270507ms,42.058792ms
-0.40,1010694970-identical-,true-positive,529,35.557887ms,42.00768ms
