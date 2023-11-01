@@ -53,7 +53,7 @@
 - **the search images are expected to be found in images/variations when running a scenario**
 - **command should be run from project root**
 
-*`image_matcher/image_matcher duplicate <directory_path>`*
+*`image_matcher/image_matcher uniques <directory_path>`*
 - generates unique images and stores them in the database as search images
 - `<directory_path>` **should not** be a path to images that were already registered in the forbidden set in the 
   duplicate set
